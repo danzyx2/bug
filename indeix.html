@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Eka Nur Rohman</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi Tailwind untuk Mode Gelap (menggunakan class) dan Font Inter -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Mengaktifkan dark mode via class 'dark'
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Skema Warna Kustom
+                        'primary-dark': '#1F2937', // Abu-abu gelap untuk latar belakang utama dark mode
+                        'secondary-dark': '#374151', // Abu-abu sedang untuk elemen di dark mode
+                        'footer-bg': '#101725', // Biru gelap untuk footer
+                        'highlight-blue': '#3B82F6', // Biru cerah untuk highlight
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Memuat Font Inter dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Icon Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* Menggunakan transisi halus untuk pergantian mode */
+        body, .transition-colors, .transition-all {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Style untuk bayangan pada kartu agar terlihat menonjol */
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .dark .card-shadow {
+             box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.05), 0 4px 6px -4px rgba(255, 255, 255, 0.05);
+        }
+        /* Style kustom untuk teks Sambutan agar terlihat bagus di layar penuh */
+        #welcome-content {
+            /* Menambahkan bayangan teks untuk visibilitas yang lebih baik */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-primary-dark text-gray-800 dark:text-gray-200 font-sans min-h-screen flex flex-col transition-colors">
+
+    <!-- ============================================== -->
+    <!-- MAIN CONTENT WRAPPER (KONTEN UTAMA) -->
+    <!-- ============================================== -->
+    <div id="main-content" class="min-h-screen flex flex-col opacity-100 transition-opacity duration-500">
+
+        <!-- Kontainer Utama (Konten header dan main) -->
+        <div class="flex-grow">
+
+            <!-- Header/Navbar -->
+            <header class="sticky top-0 z-50 bg-white dark:bg-secondary-dark card-shadow transition-colors">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-2">
+                        <!-- Placeholder untuk Logo MOEXIPOB / Eka Nur Rohman -->
+                        <div class="w-8 h-8 rounded-full bg-highlight-blue flex items-center justify-center text-white text-lg font-bold">E</div>
+                        <span class="text-xl font-extrabold tracking-widest text-gray-900 dark:text-white uppercase">Eka Nur Rohman</span>
+                    </div>
+
+                    <!-- Navigasi Tengah -->
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="beranda.html" class="text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">HOME</a>
+                        <a href="daftar.html" class="text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">ARTIKEL</a>
+                        <a href="#" class="text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">ABOUT</a>
+                        <a href="#" class="text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">CONTACT US</a>
+                        <div class="group relative">
+                            <a href="#" class="text-sm font-semibold hover:text-highlight-blue transition-all flex items-center">
+                                MORE <i class="fas fa-chevron-down text-xs ml-1 transition-transform group-hover:rotate-180"></i>
+                            </a>
+                        </div>
+                    </nav>
+
+                    <!-- Tombol Aksi Kanan -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Tombol Search -->
+                        <button class="text-gray-500 dark:text-gray-400 hover:text-highlight-blue transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                        <!-- Tombol Dark Mode (Fokus Utama) -->
+                        <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-yellow-400 hover:ring-2 hover:ring-highlight-blue transition-all">
+                            <!-- Ikon akan diubah oleh JavaScript -->
+                            <i id="theme-icon" class="fas fa-sun"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+                <!-- Hero Section (Gambar Besar) -->
+                <section class="mb-12">
+                    <div class="relative w-full h-96 overflow-hidden rounded-xl card-shadow">
+                        <!-- Placeholder Gambar -->
+                        <img src="bag.jpg"
+                             alt="Pemandangan Matahari Terbit"
+                             class="w-full h-full object-cover"
+                             onerror="this.onerror=null;this.src='https://placehold.co/1200x400/3B82F6/FFFFFF?text=Pemandangan+Indah';"
+                        >
+                        <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+                        <!-- Ikon Sosial di Hero (Seperti di Gambar) -->
+                        <div class="absolute bottom-4 right-4 flex space-x-3 text-white">
+                            <a href="#" class="p-2 bg-black bg-opacity-30 rounded-full hover:bg-opacity-70 transition-all"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="p-2 bg-black bg-opacity-30 rounded-full hover:bg-opacity-70 transition-all"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="p-2 bg-black bg-opacity-30 rounded-full hover:bg-opacity-70 transition-all"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Feature/Content Blocks (3 Kolom) -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                    <!-- Blok 1: Visi & Misi Eka Nur Rohman -->
+                    <div class="p-6 rounded-xl card-shadow bg-white dark:bg-secondary-dark transition-colors border border-gray-100 dark:border-gray-700">
+                        <div class="text-highlight-blue text-4xl mb-4"><i class="fas fa-gem"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Visi Jangka Panjang</h3>
+                        <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                            Menjadi entitas terdepan dalam inovasi teknologi, berfokus pada solusi berkelanjutan dan memberikan dampak positif yang signifikan bagi komunitas global.
+                        </p>
+                    </div>
+
+                    <!-- Blok 2: Keahlian Utama -->
+                    <div class="p-6 rounded-xl card-shadow bg-white dark:bg-secondary-dark transition-colors border border-gray-100 dark:border-gray-700">
+                        <div class="text-highlight-blue text-4xl mb-4"><i class="fas fa-cogs"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Keahlian Pengembangan</h3>
+                        <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                            Memanfaatkan keahlian mendalam dalam pengembangan aplikasi web dan sistem enterprise. Kami menjamin kode yang efisien, aman, dan dapat diskalakan.
+                        </p>
+                    </div>
+
+                    <!-- Blok 3: Keterlibatan Komunitas -->
+                    <div class="p-6 rounded-xl card-shadow bg-white dark:bg-secondary-dark transition-colors border border-gray-100 dark:border-gray-700">
+                        <div class="text-highlight-blue text-4xl mb-4"><i class="fas fa-handshake"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Kolaborasi & Etika Kerja</h3>
+                        <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                            Mengutamakan transparansi dan etika profesional dalam setiap proyek. Kami percaya bahwa kolaborasi yang kuat menghasilkan solusi terbaik dan tahan lama.
+                        </p>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-footer-bg text-white mt-12 pt-10 pb-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-8 border-b border-gray-700 pb-8">
+
+                    <!-- Kolom 1: Tentang Kami (Eka Nur Rohman) -->
+                    <div>
+                        <h5 class="text-lg font-bold mb-4 text-highlight-blue">EKA NUR ROHMAN</h5>
+                        <p class="text-sm text-gray-400 mb-2">Fokus pada kualitas, inovasi, dan kepuasan klien. Mari bangun masa depan digital bersama.</p>
+                        <a href="mailto:info@ekanurrohman.com" class="text-sm text-gray-400 hover:text-white">info@ekanurrohman.com</a>
+                    </div>
+
+                    <!-- Kolom 2: MOEXIPOB (Tautan Produk) -->
+                    <div>
+                        <h5 class="text-lg font-bold mb-4">PRODUK</h5>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="text-gray-400 hover:text-white">Layanan Konsultasi</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Solusi Enterprise</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Pengembangan Mobile</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Portofolio</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Kolom 3: DUKUNGAN -->
+                    <div>
+                        <h5 class="text-lg font-bold mb-4">DUKUNGAN</h5>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Pusat Bantuan</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Syarat & Ketentuan</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Kolom 4: TAJUK-KHAS (Berita) -->
+                    <div class="col-span-2 md:col-span-1">
+                        <h5 class="text-lg font-bold mb-4">TAJUK KHAS</h5>
+                        <p class="text-sm text-gray-400">
+                            Daftar untuk buletin kami dan dapatkan update terbaru tentang inovasi dan teknologi kami.
+                        </p>
+                        <form class="mt-4">
+                            <input type="email" placeholder="Email Anda" class="w-full p-2 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-highlight-blue">
+                            <button type="submit" class="mt-2 w-full bg-highlight-blue hover:bg-blue-600 text-white font-semibold py-2 rounded-md transition-colors">Daftar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Baris Bawah Footer (Hak Cipta & Sosial) -->
+                <div class="flex flex-col md:flex-row justify-between items-center mt-4">
+                    <p class="text-sm text-gray-400 mb-4 md:mb-0">
+                        &copy; 2025 Eka Nur Rohman. Hak Cipta Dilindungi.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f text-lg"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter text-lg"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram text-lg"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-linkedin-in text-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // Fungsionalitas Dark/Light Mode
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        // 3. Fungsi untuk beralih mode (Dark/Light)
+        function toggleTheme() {
+            if (htmlElement.classList.contains('dark')) {
+                // Ganti ke Light Mode
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                // Ganti ke Dark Mode
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // 4. Periksa preferensi pengguna atau local storage saat memuat
+        function initializeTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        }
+        
+        // 5. Inisialisasi tema saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+             // Inisialisasi tema
+            initializeTheme();
+            
+            // Tambahkan event listener untuk tombol Dark Mode
+            themeToggle.addEventListener('click', toggleTheme);
+        });
+    </script>
+</body>
+</html>

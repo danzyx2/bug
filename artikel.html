@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judul Artikel - Eka Nur Rohman</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi Tailwind untuk Mode Gelap (menggunakan class) dan Font Inter -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Mengaktifkan dark mode via class 'dark'
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Skema Warna Kustom (Sama dengan index.html)
+                        'primary-dark': '#1F2937', // Abu-abu gelap untuk latar belakang utama dark mode
+                        'secondary-dark': '#374151', // Abu-abu sedang untuk elemen di dark mode
+                        'footer-bg': '#101725', // Biru gelap untuk footer
+                        'highlight-blue': '#3B82F6', // Biru cerah untuk highlight
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Memuat Font Inter dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Icon Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* Menggunakan transisi halus untuk pergantian mode */
+        body, .transition-colors, .transition-all {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Style untuk bayangan pada kartu agar terlihat menonjol (Sama dengan index.html) */
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .dark .card-shadow {
+             box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.05), 0 4px 6px -4px rgba(255, 255, 255, 0.05);
+        }
+        /* Style untuk visibilitas yang lebih baik */
+        .article-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: inherit;
+        }
+        .article-content p, .article-content li {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+        }
+        .article-content ul, .article-content ol {
+            list-style-position: outside;
+            margin-left: 1.5rem;
+        }
+        .article-content ul {
+            list-style-type: disc;
+        }
+        .article-content ol {
+            list-style-type: decimal;
+        }
+
+        /* Tambahkan semua animasi */
+        @keyframes slideDownHeader { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+        header { animation: slideDownHeader 0.6s ease-out; }
+
+        @keyframes logoPopIn { 0% { opacity: 0; transform: scale(0.5) rotate(-180deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
+        .header-logo { animation: logoPopIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-50px); } 100% { opacity: 1; transform: translateX(0); } }
+        .typing-text { animation: slideInLeft 0.8s ease-out 0.2s both; }
+
+        @keyframes fadeInDown { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+        .nav-item { animation: fadeInDown 0.6s ease-out both; }
+        .nav-item:nth-child(1) { animation-delay: 0.3s; }
+        .nav-item:nth-child(2) { animation-delay: 0.4s; }
+        .nav-item:nth-child(3) { animation-delay: 0.5s; }
+        .nav-item:nth-child(4) { animation-delay: 0.6s; }
+        .nav-item:nth-child(5) { animation-delay: 0.7s; }
+
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(59, 130,246, 0); } }
+        .header-button { animation: pulseGlow 2s infinite; }
+        .header-button:hover { animation: none; }
+
+        @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .fade-in-text { opacity: 0; animation: fadeInUp 0.8s ease-out forwards; }
+        .fade-in-delay-1 { animation-delay: 0.2s; }
+        .fade-in-delay-2 { animation-delay: 0.4s; }
+        .fade-in-delay-3 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-primary-dark text-gray-800 dark:text-gray-200 font-sans min-h-screen flex flex-col transition-colors">
+
+    <!-- ============================================== -->
+    <!-- MAIN CONTENT WRAPPER (KONTEN UTAMA) -->
+    <!-- ============================================== -->
+    <div id="main-content" class="min-h-screen flex flex-col opacity-100 transition-opacity duration-500">
+
+        <!-- Kontainer Utama (Konten header dan main) -->
+        <div class="flex-grow">
+
+            <!-- Header/Navbar (Sama dengan index.html) -->
+            <header class="sticky top-0 z-50 bg-white dark:bg-secondary-dark card-shadow transition-colors">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-2">
+                        <img src="ic_launchera.png" 
+                             alt="Logo"
+                             class="w-8 h-8 rounded-full object-cover header-logo">
+                        <span class="typing-text text-xl font-extrabold tracking-widest text-gray-900 dark:text-white uppercase">Eka Nur Rohman</span>
+                    </div>
+
+                    <!-- Navigasi Tengah (Ganti tautan ke index.html) -->
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="beranda.html" class="nav-item text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">HOME</a>
+                        <a href="daftar.html" class="nav-item text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">ARTIKEL</a>
+                        <a href="profil.html" class="nav-item text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">PROFIL</a>
+                        <a href="#" class="nav-item text-sm font-semibold hover:text-highlight-blue border-b-2 border-transparent hover:border-highlight-blue pb-1 transition-all">CONTACT US</a>
+                        <div class="nav-item group relative">
+                            <a href="#" class="text-sm font-semibold hover:text-highlight-blue transition-all flex items-center">
+                                MORE <i class="fas fa-chevron-down text-xs ml-1 transition-transform group-hover:rotate-180"></i>
+                            </a>
+                        </div>
+                    </nav>
+
+                    <!-- Tombol Aksi Kanan -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Tombol Search -->
+                        <button class="header-button text-gray-500 dark:text-gray-400 hover:text-highlight-blue transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                        <!-- Tombol Dark Mode (Fokus Utama) -->
+                        <button id="theme-toggle" class="header-button p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-yellow-400 hover:ring-2 hover:ring-highlight-blue transition-all">
+                            <!-- Ikon akan diubah oleh JavaScript -->
+                            <i id="theme-icon" class="fas fa-sun"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area: Artikel -->
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+                <!-- Breadcrumb atau Tombol Kembali -->
+                <div class="mb-8">
+                    <a href="daftar.html" class="text-sm font-medium text-highlight-blue hover:text-blue-700 dark:hover:text-blue-400 transition-colors fade-in-text fade-in-delay-1">
+                        <i class="fas fa-chevron-left text-xs mr-2"></i> Kembali ke Daftar
+                    </a>
+                </div>
+
+                <!-- Kontainer Artikel Utama -->
+                    <article class="bg-white dark:bg-secondary-dark p-6 sm:p-10 rounded-xl card-shadow border border-gray-100 dark:border-gray-700 mb-12 fade-in-text fade-in-delay-2">
+
+                    
+                    <!-- Judul Utama -->
+                    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">
+                        Menguasai Tailwind CSS: 5 Tips untuk Pengembang Web Modern
+                    </h1>
+                    
+                    <!-- Metadata Artikel -->
+                    <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4 mb-8 border-b pb-4 dark:border-gray-600">
+                        <span class="flex items-center"><i class="fas fa-user-circle mr-2"></i> Ditulis oleh Eka Nur Rohman</span>
+                        <span class="flex items-center"><i class="fas fa-clock mr-2"></i> 17 November 2025</span>
+                        <span class="flex items-center"><i class="fas fa-tag mr-2"></i> Teknologi, Web Dev</span>
+                    </div>
+
+                    <!-- Gambar Utama Artikel -->
+                    <figure class="mb-10 w-full h-auto max-h-96 overflow-hidden rounded-lg">
+                        <img src="https://placehold.co/1000x400/3B82F6/FFFFFF?text=Ilustrasi+Artikel+Tailwind+CSS" 
+                             alt="Ilustrasi tentang Tailwind CSS"
+                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                             onerror="this.onerror=null;this.src='https://placehold.co/1000x400/3B82F6/FFFFFF?text=Gambar+Utama+Artikel';"
+                        >
+                        <figcaption class="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                            Penerapan Tailwind CSS menawarkan kecepatan dan konsistensi.
+                        </figcaption>
+                    </figure>
+
+                    <!-- Isi Artikel -->
+                    <div class="article-content text-gray-700 dark:text-gray-300">
+                        <p class="text-lg font-serif italic mb-6">
+                            "Dalam era pengembangan web yang serba cepat, efisiensi adalah kunci. Tailwind CSS memberikan fondasi yang kuat untuk membangun antarmuka pengguna yang menakjubkan tanpa harus meninggalkan kode HTML Anda."
+                        </p>
+
+                        <p>
+                            Tailwind CSS telah merevolusi cara pengembang mendekati desain frontend. Alih-alih menulis CSS tradisional, kita dapat menggunakan kelas utilitas yang siap pakai langsung di markup kita. Ini menghasilkan proses pengembangan yang lebih cepat dan lebih terstruktur. Namun, untuk benar-benar memaksimalkan potensi Tailwind, ada beberapa trik dan praktik terbaik yang perlu Anda ketahui.
+                        </p>
+
+                        <h2>1. Manfaatkan Konfigurasi Kustom</h2>
+                        <p>
+                            Meskipun Tailwind hadir dengan sistem desain yang komprehensif, jangan ragu untuk memperluas atau memodifikasi konfigurasi default-nya di berkas `tailwind.config.js`. Anda dapat menambahkan warna kustom (seperti yang kita lakukan di sini dengan 'highlight-blue'), breakpoint, atau bahkan spasi. Kustomisasi ini memastikan desain Anda sesuai dengan panduan merek yang spesifik.
+                        </p>
+
+                        <h2>2. Gunakan `@apply` dengan Bijak</h2>
+                        <p>
+                            Untuk komponen yang berulang atau kompleks (misalnya, tombol utama atau kartu), gunakan direktif `@apply` di dalam berkas CSS kustom Anda. Ini memungkinkan Anda untuk menggabungkan banyak kelas utilitas Tailwind menjadi satu kelas semantik. Ini membantu menjaga kode HTML tetap bersih sambil tetap mempertahankan kecepatan pengembangan ala utilitas.
+                        </p>
+                        
+                        <div class="p-4 my-6 rounded-lg bg-gray-100 dark:bg-gray-800 border border-highlight-blue/50">
+                            <h3 class="font-semibold text-highlight-blue mb-2 flex items-center"><i class="fas fa-lightbulb mr-2"></i> Catatan Cepat</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                Selalu ingat untuk membersihkan (purge) CSS yang tidak terpakai saat membangun proyek untuk produksi. Ini akan memastikan ukuran berkas CSS Anda tetap minimal dan waktu loading situs cepat.
+                            </p>
+                        </div>
+                        
+                        <h2>3. Responsivitas Mobile-First</h2>
+                        <p>
+                            Tailwind dirancang dengan filosofi *mobile-first*. Artinya, kelas yang Anda terapkan tanpa prefiks (seperti `p-4`) berlaku untuk semua ukuran layar. Gunakan prefiks responsif (`sm:`, `md:`, `lg:`) hanya ketika Anda perlu *mengubah* gaya untuk ukuran layar yang lebih besar. Pendekatan ini mempermudah pembuatan desain yang adaptif.
+                        </p>
+
+                        <h2>4. Styling Mode Gelap (Dark Mode)</h2>
+                        <p>
+                            Seperti yang kita terapkan di halaman ini, Tailwind mendukung mode gelap yang mudah diaktifkan dengan prefiks `dark:`. Pastikan Anda mendefinisikan skema warna gelap di konfigurasi Anda (seperti `primary-dark` dan `secondary-dark`) dan menggunakan kelas `dark:` untuk mengatur properti CSS yang berbeda saat mode gelap aktif.
+                        </p>
+
+                        <h2>5. Optimalisasi dengan JIT/AOT</h2>
+                        <p>
+                            Jika Anda menggunakan versi Tailwind terbaru, pastikan Anda menggunakan mesin JIT (Just-In-Time) atau AOT (Ahead-of-Time). Kompiler ini sangat mempercepat waktu build, terutama selama pengembangan, dan hanya menghasilkan CSS yang benar-benar Anda gunakan.
+                        </p>
+                        
+                        <p class="mt-8 pt-4 border-t dark:border-gray-700 text-base italic text-gray-600 dark:text-gray-400">
+                            Dengan mengintegrasikan tips-tips ini ke dalam alur kerja Anda, Anda akan dapat mengembangkan proyek-proyek yang lebih bersih, lebih cepat, dan lebih mudah dikelola menggunakan Tailwind CSS.
+                        </p>
+                    </div>
+                </article>
+
+
+
+
+            </main>
+        </div>
+
+        <!-- Footer (Sama dengan index.html) -->
+        <footer class="bg-footer-bg text-white mt-12 pt-12 pb-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- GRID UTAMA FOOTER -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 border-b border-gray-700 pb-10">
+
+            <!-- Kolom 1: Brand / Tentang -->
+            <div>
+                <h5 class="text-lg font-bold mb-4 text-highlight-blue">EKA NUR ROHMAN</h5>
+                <p class="text-sm text-gray-400 mb-3">
+                    Fokus pada kualitas, inovasi, dan kepuasan klien. Mari bangun masa depan digital bersama.
+                </p>
+                <a href="mailto:info@ekanurrohman.com" 
+                   class="text-sm text-gray-400 hover:text-white transition-colors">
+                    info@ekanurrohman.com
+                </a>
+            </div>
+
+            <!-- Kolom 2: Produk -->
+            <div>
+                <h5 class="text-lg font-bold mb-4">PRODUK</h5>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="text-gray-400 hover:text-white">Layanan Konsultasi</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Solusi Enterprise</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Pengembangan Mobile</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Portofolio</a></li>
+                </ul>
+            </div>
+
+            <!-- Kolom 3: Dukungan -->
+            <div>
+                <h5 class="text-lg font-bold mb-4">DUKUNGAN</h5>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Pusat Bantuan</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Syarat & Ketentuan</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
+                </ul>
+            </div>
+
+            <!-- Kolom 4: Insight Terbaru -->
+            <div>
+                <h5 class="text-lg font-bold mb-4">INSIGHT TERBARU</h5>
+
+                <div class="space-y-4 text-sm">
+
+                    <div>
+                        <h6 class="font-semibold text-white hover:text-highlight-blue cursor-pointer transition-colors">
+                            Tren Desain Web 2026: Minimalis, Cepat, dan AI-Driven
+                        </h6>
+                        <p class="text-xs text-gray-400 mt-1">10 Nov 2025</p>
+                    </div>
+
+                    <div>
+                        <h6 class="font-semibold text-white hover:text-highlight-blue cursor-pointer transition-colors">
+                            Strategi Branding Digital untuk UMKM di Era Modern
+                        </h6>
+                        <p class="text-xs text-gray-400 mt-1">8 Nov 2025</p>
+                    </div>
+
+                    
+                </div>
+            </div>
+
+        </div>
+        <!-- END GRID -->
+
+        <!-- BARIS BAWAH FOOTER -->
+        <div class="flex flex-col md:flex-row justify-between items-center mt-6">
+            <p class="text-sm text-gray-400 mb-4 md:mb-0">
+                &copy; 2025 Eka Nur Rohman. Hak Cipta Dilindungi.
+            </p>
+
+            <div class="flex space-x-4">
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f text-lg"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter text-lg"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram text-lg"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-linkedin-in text-lg"></i></a>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+
+    </div>
+
+    <!-- Script Fungsionalitas Dark/Light Mode (Sama dengan index.html) -->
+    <script>
+        // Fungsionalitas Dark/Light Mode
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        // 3. Fungsi untuk beralih mode (Dark/Light)
+        function toggleTheme() {
+            if (htmlElement.classList.contains('dark')) {
+                // Ganti ke Light Mode
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                // Ganti ke Dark Mode
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // 4. Periksa preferensi pengguna atau local storage saat memuat
+        function initializeTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        }
+        
+        // 5. Inisialisasi tema saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+             // Inisialisasi tema
+            initializeTheme();
+            
+            // Tambahkan event listener untuk tombol Dark Mode
+            themeToggle.addEventListener('click', toggleTheme);
+        });
+    </script>
+</body>
+</html>
