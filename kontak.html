@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hubungi Akademi Trophage untuk pertanyaan, saran, dan masukan.">
+    <title>Hubungi Kami | Akademi Trophage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #1e293b;
+            --panel: rgba(15, 23, 42, 0.72);
+            --blue: #60a5fa;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; color: var(--ink); font-family: 'DM Sans', sans-serif; background: #020617; overflow-x: hidden; }
+        a { color: inherit; text-decoration: none; }
+        .background-orbs { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .background-orbs::before, .background-orbs::after { content: ''; position: absolute; width: 50%; height: 50%; border-radius: 999px; filter: blur(120px); mix-blend-mode: screen; opacity: .2; }
+        .background-orbs::before { top: -20%; left: -10%; background: #1e3a8a; animation: drift-blue 18s ease-in-out infinite; }
+        .background-orbs::after { right: -10%; bottom: -20%; background: #581c87; animation: drift-purple 22s ease-in-out infinite; }
+        @keyframes drift-blue { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(7vw, 4vh, 0) scale(1.08); } }
+        @keyframes drift-purple { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(-6vw, -5vh, 0) scale(1.1); } }
+        .shell { position: relative; z-index: 1; width: min(980px, calc(100% - 48px)); margin: 0 auto; padding: 142px 0 70px; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 9px; margin: 0 0 16px; color: #93c5fd; font-size: .76rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+        .eyebrow::before { content: ''; width: 28px; height: 1px; background: #60a5fa; }
+        h1, h2 { font-family: 'Space Grotesk', sans-serif; }
+        h1 { max-width: 760px; margin: 0; color: #fff; font-size: clamp(2.7rem, 7vw, 5.6rem); line-height: .98; letter-spacing: -.04em; }
+        .intro { max-width: 720px; margin-bottom: 44px; }
+        .intro p { max-width: 650px; margin: 22px 0 0; color: var(--muted); font-size: 1.05rem; line-height: 1.75; }
+        .contact-layout { display: grid; grid-template-columns: minmax(260px, .78fr) minmax(0, 1.22fr); gap: 20px; align-items: stretch; }
+        .contact-panel, .info-panel { padding: clamp(26px, 4vw, 40px); border: 1px solid rgba(51, 65, 85, .8); border-radius: 18px; background: linear-gradient(145deg, rgba(15, 23, 42, .94), var(--panel)); box-shadow: 0 24px 80px rgba(0, 0, 0, .2); }
+        .contact-panel { border-color: rgba(96, 165, 250, .34); }
+        .contact-panel h2, .info-panel h2 { margin: 0; color: #fff; font-size: 1.4rem; letter-spacing: -.02em; }
+        .panel-intro { margin: 10px 0 28px; color: #94a3b8; font-size: .92rem; line-height: 1.65; }
+        .form-group { margin-bottom: 20px; }
+        .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        label { display: block; margin-bottom: 9px; color: #e2e8f0; font-size: .88rem; font-weight: 600; }
+        .field-hint { display: block; margin-top: 7px; color: #64748b; font-size: .78rem; line-height: 1.4; }
+        input, textarea { width: 100%; border: 1px solid #334155; border-radius: 11px; padding: 13px 15px; color: #f8fafc; background: rgba(2, 6, 23, .62); font: inherit; outline: none; transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease; }
+        input::placeholder, textarea::placeholder { color: #64748b; }
+        input:focus, textarea:focus { border-color: var(--blue); background: rgba(2, 6, 23, .82); box-shadow: 0 0 0 3px rgba(96, 165, 250, .14); }
+        textarea { min-height: 150px; resize: vertical; }
+        button { display: inline-flex; width: 100%; align-items: center; justify-content: center; gap: 9px; border: 0; border-radius: 11px; padding: 14px 18px; color: #fff; background: linear-gradient(135deg, #2563eb, #1d4ed8); font: inherit; font-weight: 700; cursor: pointer; box-shadow: 0 10px 24px rgba(37, 99, 235, .18); transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+        button:hover:not(:disabled) { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 14px 28px rgba(37, 99, 235, .28); transform: translateY(-1px); }
+        button:disabled { background: #475569; box-shadow: none; cursor: not-allowed; }
+        .status-message { min-height: 24px; margin-top: 18px; font-size: .9rem; line-height: 1.5; text-align: center; }
+        .status-success { color: #86efac; }
+        .status-error { color: #fca5a5; }
+        .info-panel { position: relative; overflow: hidden; }
+        .info-panel::before { content: ''; position: absolute; top: 0; right: 0; width: 150px; height: 150px; border-radius: 50%; background: rgba(37, 99, 235, .14); filter: blur(34px); transform: translate(28%, -28%); }
+        .info-panel h2, .info-panel p, .info-panel ul, .direct-contact, .info-points { position: relative; }
+        .info-panel p, .info-panel li { color: #cbd5e1; font-size: .94rem; line-height: 1.75; }
+        .info-panel p { margin: 0 0 20px; }
+        .info-points { display: grid; gap: 14px; margin-top: 28px; }
+        .info-point { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; }
+        .info-point i { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(96, 165, 250, .24); border-radius: 9px; color: #93c5fd; background: rgba(30, 58, 138, .28); }
+        .info-point strong { display: block; margin-bottom: 3px; color: #f8fafc; font-size: .88rem; }
+        .info-point span { display: block; color: #94a3b8; font-size: .84rem; line-height: 1.5; }
+        .direct-contact { margin-top: 30px; padding-top: 21px; border-top: 1px solid var(--line); }
+        .direct-contact a { color: #93c5fd; word-break: break-word; }
+        .direct-contact a:hover { color: #bfdbfe; }
+        footer { margin-top: 42px; padding-top: 22px; border-top: 1px solid var(--line); color: #64748b; font-size: .85rem; }
+        footer a { color: #94a3b8; }
+        footer a:hover { color: #60a5fa; }
+        @media (max-width: 720px) { .shell { width: min(100% - 32px, 560px); padding-top: 125px; } .contact-layout { grid-template-columns: 1fr; } .intro { margin-bottom: 32px; } }
+        @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; gap: 0; } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
+    </style>
+</head>
+<body>
+    <div class="background-orbs" aria-hidden="true"></div>
+
+    <nav class="fixed top-0 w-full z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+            <a href="index.html#home" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <i data-lucide="activity" class="text-blue-400 w-7 h-7"></i>
+                <span class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">AKADEMI TROPHAGE</span>
+            </a>
+            <a href="portal.html" class="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-4 py-2">
+                Portal <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <header class="intro">
+            <p class="eyebrow">Terhubung dengan kami</p>
+            <h1>Hubungi Kami</h1>
+            <p>Kirim pertanyaan, saran, atau masukan kepada tim Akademi Trophage. Kami akan meneruskan pesan Anda melalui sistem kontak yang tersedia.</p>
+        </header>
+
+        <div class="contact-layout">
+            <aside class="info-panel">
+                <p class="eyebrow">Ruang komunikasi</p>
+                <h2>Temukan jawaban atau mulai percakapan.</h2>
+                <p class="panel-intro">Sampaikan kebutuhan Anda dengan jelas. Pesan akan diteruskan ke pengelola untuk ditinjau.</p>
+                <div class="info-points">
+                    <div class="info-point">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <div><strong>Pertanyaan umum</strong><span>Masukan tentang konten, fitur, dan pengalaman menggunakan website.</span></div>
+                    </div>
+                    <div class="info-point">
+                        <i data-lucide="handshake" class="w-4 h-4"></i>
+                        <div><strong>Kerja sama</strong><span>Jelaskan ide atau kebutuhan kolaborasi Anda secara singkat.</span></div>
+                    </div>
+                    <div class="info-point">
+                        <i data-lucide="bug" class="w-4 h-4"></i>
+                        <div><strong>Laporan masalah</strong><span>Sertakan halaman atau fitur yang mengalami kendala.</span></div>
+                    </div>
+                </div>
+                <div class="direct-contact">
+                    <p>Kontak langsung:</p>
+                    <a href="mailto:admin@kehidupanbumiofficial.my.id">admin@kehidupanbumiofficial.my.id</a>
+                </div>
+            </aside>
+
+            <section class="contact-panel" aria-labelledby="contact-title">
+                <p class="eyebrow">Kirim pesan</p>
+                <h2 id="contact-title">Apa yang ingin Anda sampaikan?</h2>
+                <p class="panel-intro">Isi formulir di bawah ini. Kolom bertanda bintang wajib diisi.</p>
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nama">Nama <span aria-hidden="true">*</span></label>
+                            <input type="text" id="nama" name="nama" placeholder="Nama Anda" autocomplete="name" maxlength="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="kontak">Email / No. HP <span aria-hidden="true">*</span></label>
+                            <input type="text" id="kontak" name="kontak" placeholder="Email atau nomor HP" autocomplete="email" maxlength="150" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="isi">Pesan <span aria-hidden="true">*</span></label>
+                        <textarea id="isi" name="isi" rows="5" placeholder="Tulis pesan Anda dengan detail yang diperlukan..." maxlength="3000" required></textarea>
+                        <span class="field-hint">Jangan sertakan kata sandi atau informasi yang bersifat sangat sensitif.</span>
+                    </div>
+                    <button type="submit" id="submitBtn"><i data-lucide="send" class="w-4 h-4"></i><span id="submitLabel">Kirim Pesan</span></button>
+                </form>
+                <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
+            </section>
+        </div>
+
+        <footer>
+            <div class="flex flex-col sm:flex-row justify-between gap-3">
+                <span>&copy; 2026 Akademi Trophage. Semua hak dilindungi.</span>
+                <span><a href="index.html">Beranda</a> &middot; <a href="portal.html">Portal</a> &middot; <a href="tentang-kami.html">Tentang Kami</a> &middot; <a href="kebijakan-privasi.html">Kebijakan Privasi</a> &middot; <a href="disclaimer.html">Disclaimer</a></span>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const WORKER_URL = 'https://red-admin-min.paku683.workers.dev';
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitLabel = document.getElementById('submitLabel');
+        const statusMessage = document.getElementById('statusMessage');
+
+        contactForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            submitBtn.disabled = true;
+            submitLabel.textContent = 'Mengirim...';
+            statusMessage.className = 'status-message';
+            statusMessage.textContent = '';
+
+            const payload = {
+                nama: document.getElementById('nama').value.trim(),
+                kontak: document.getElementById('kontak').value.trim(),
+                isi: document.getElementById('isi').value.trim()
+            };
+
+            try {
+                const response = await fetch(`${WORKER_URL}/api/contacts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+
+                statusMessage.className = 'status-message status-success';
+                statusMessage.textContent = 'Pesan berhasil dikirim. Terima kasih telah menghubungi kami.';
+                contactForm.reset();
+            } catch (error) {
+                console.error('Contact form error:', error);
+                statusMessage.className = 'status-message status-error';
+                statusMessage.textContent = 'Pesan gagal dikirim. Periksa koneksi atau coba lagi nanti.';
+            } finally {
+                submitBtn.disabled = false;
+                submitLabel.textContent = 'Kirim Pesan';
+            }
+        });
+    </script>
+</body>
+</html>
