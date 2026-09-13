@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar - Kehidupan Bumi</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Font Awesome untuk ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Inter untuk tampilan yang bersih dan modern -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS dari CDN untuk styling yang cepat dan spesial -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            slate: {
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            earth: {
+              50: '#f2f9f4',
+              100: '#e1f3e6',
+              200: '#c4e7cf',
+              300: '#99d4ac',
+              400: '#67ba81',
+              500: '#429e61',
+              600: '#2f7e4a',
+              700: '#2b7a0b', /* Warna utama Anda */
+              800: '#21562b',
+              900: '#1b4724',
+            }
+          },
+          animation: {
+            'blob': 'blob 7s infinite',
+            'fade-in': 'fadeIn 0.5s ease-out forwards',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Styling tambahan untuk menyempurnakan tampilan */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #020617;
+      color: #cbd5e1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+      align-items: stretch;
+    }
+
+    /* Animasi latar belakang - Blob dekoratif */
+    .bg-shape {
+      position: absolute;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+    }
+    .bg-shape-1 {
+      top: -10%; left: -10%; width: 400px; height: 400px;
+      background: #86efac; animation: blob 7s infinite alternate;
+    }
+    .bg-shape-2 {
+      bottom: -10%; right: -10%; width: 500px; height: 500px;
+      background: #4ade80; animation: blob 8s infinite alternate-reverse;
+    }
+    .bg-shape-3 {
+      top: 40%; left: 60%; width: 300px; height: 300px;
+      background: #2b7a0b; opacity: 0.3; animation: blob 9s infinite;
+    }
+
+    /* Efek Glassmorphism pada Card */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #1e293b;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .glass-card h2 { color: #ffffff; }
+    .glass-card label { color: #cbd5e1; }
+    .glass-card .custom-input { background: rgba(2, 6, 23, 0.5); border-color: #1e293b; color: #f8fafc; }
+    .glass-card .footer { border-color: #1e293b; }
+    .glass-card .footer p { color: #94a3b8; }
+
+    .registration-intro {
+      max-width: 600px;
+      padding: 1rem 0;
+    }
+
+    .eyebrow,
+    .form-kicker {
+      color: #60a5fa;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow span {
+      display: block;
+      width: 2.5rem;
+      height: 1px;
+      background: #60a5fa;
+    }
+
+    .intro-title {
+      max-width: 10ch;
+      color: #f8fafc;
+      font-size: 5.75rem;
+      font-weight: 800;
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .intro-title em {
+      color: #60a5fa;
+      font-style: normal;
+    }
+
+    .intro-copy {
+      max-width: 30rem;
+      margin-top: 1.75rem;
+      color: #94a3b8;
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .intro-rule {
+      width: 100%;
+      max-width: 30rem;
+      height: 1px;
+      margin: 2.5rem 0 1.5rem;
+      background: linear-gradient(90deg, #334155, transparent);
+    }
+
+    .intro-points {
+      display: grid;
+      gap: 0.8rem;
+      max-width: 30rem;
+    }
+
+    .intro-points div {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+
+    .intro-points strong {
+      color: #475569;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.7rem;
+    }
+
+    .form-mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 1.5rem;
+      color: #93c5fd;
+      background: rgba(30, 64, 175, 0.3);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      border-radius: 0.9rem;
+    }
+
+    .form-kicker {
+      margin-bottom: 0.4rem;
+    }
+
+    @media (max-width: 1023px) {
+      main#home {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 3rem;
+      }
+
+      .registration-intro { max-width: 42rem; }
+      .intro-title { max-width: 12ch; font-size: 4.5rem; }
+      .glass-card { width: 100%; }
+    }
+
+    @media (max-width: 639px) {
+      main#home { padding-right: 1.25rem; padding-left: 1.25rem; }
+      .intro-title { font-size: 3.35rem; }
+      .intro-copy { font-size: 0.95rem; }
+      .intro-points { display: none; }
+    }
+
+    /* Styling input khusus saat fokus */
+    .custom-input:focus {
+      outline: none;
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased">
+
+  <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
+    <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+      <a href="index.html#home" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <i data-lucide="activity" class="text-blue-400 w-8 h-8"></i>
+        <span class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">AKADEMI TROPHAGE</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <div class="flex gap-6">
+          <a href="index.html#home" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Beranda</a>
+          <a href="monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Konsep Kosmis</a>
+          <a href="index.html#prinsip" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prinsip Navigasi</a>
+        </div>
+        <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+      </div>
+      <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+        <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
+        <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
+      <a href="index.html#home" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
+      <a href="index.html#konsep" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Konsep Kosmis</a>
+      <a href="index.html#prinsip" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prinsip Navigasi</a>
+      <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+    </div>
+  </nav>
+
+  <main id="home" class="relative z-10 w-full max-w-7xl px-6 md:px-12 pt-32 pb-20 mx-auto animate-fade-in flex-1 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-20 items-center">
+    <section class="registration-intro">
+      <div class="eyebrow"><span></span> AKSES EKOSISTEM</div>
+      <h1 class="intro-title">Bangun jejakmu di <em>Kehidupan Bumi.</em></h1>
+      <p class="intro-copy">Satu akun untuk membaca, berbagi, dan ikut merawat percakapan tentang bumi yang kita tinggali.</p>
+      <div class="intro-rule"></div>
+      <div class="intro-points">
+        <div><strong>01</strong><span>Bagikan kisah yang bermakna</span></div>
+        <div><strong>02</strong><span>Temukan perspektif baru</span></div>
+        <div><strong>03</strong><span>Tumbuh bersama komunitas</span></div>
+      </div>
+    </section>
+
+    <!-- Komponen Card Glassmorphism -->
+    <div class="glass-card rounded-2xl overflow-hidden p-8 sm:p-10 relative">
+      
+      <!-- Aksen dekoratif di atas card -->
+      <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-earth-400 via-earth-700 to-earth-900"></div>
+
+      <!-- Header Card -->
+      <div class="mb-8">
+        <div class="form-mark"><i data-lucide="sprout" class="w-6 h-6"></i></div>
+        <div class="text-left">
+          <p class="form-kicker">MEMULAI PERJALANAN</p>
+          <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Daftar Penduduk Bumi</h2>
+          <p class="text-sm text-gray-500 mt-2">Buat ruangmu dan mulai berbagi.</p>
+        </div>
+      </div>
+
+      <!-- Form Pendaftaran -->
+      <form id="regForm" class="space-y-5">
+        
+        <!-- Grup Input: Username -->
+        <div class="form-group space-y-1.5">
+          <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <i class="fa-solid fa-user text-sm"></i>
+            </div>
+            <input 
+              type="text" 
+              id="username" 
+              required 
+              autocomplete="off" 
+              placeholder="Pilih nama yang unik"
+              class="custom-input w-full pl-10 pr-4 py-3 bg-white/50 border border-gray-200 rounded-xl text-gray-900 text-sm transition-all duration-200 ease-in-out placeholder-gray-400"
+            >
+          </div>
+        </div>
+
+        <!-- Grup Input: Kata Sandi -->
+        <div class="form-group space-y-1.5">
+          <label for="password" class="block text-sm font-semibold text-gray-700">Kata Sandi</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <i class="fa-solid fa-lock text-sm"></i>
+            </div>
+            <input 
+              type="password" 
+              id="password" 
+              required 
+              placeholder="Minimal 8 karakter"
+              class="custom-input w-full pl-10 pr-4 py-3 bg-white/50 border border-gray-200 rounded-xl text-gray-900 text-sm transition-all duration-200 ease-in-out placeholder-gray-400"
+            >
+          </div>
+        </div>
+
+        <!-- Area Pesan Error (Tersembunyi secara default) -->
+        <div id="errMsg" class="error hidden text-red-500 text-sm font-medium text-center bg-red-50 py-2 px-3 rounded-lg border border-red-100"></div>
+
+        <!-- Tombol Submit -->
+        <button 
+          type="submit" 
+          id="btnSubmit"
+          class="w-full py-3.5 px-4 mt-2 bg-gradient-to-r from-earth-600 to-earth-800 hover:from-earth-500 hover:to-earth-700 text-white font-bold rounded-xl shadow-lg hover:shadow-earth-700/30 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out flex items-center justify-center gap-2 focus:ring-4 focus:ring-earth-200 outline-none disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          <span>Bergabung</span>
+          <i class="fa-solid fa-user-plus text-sm"></i>
+        </button>
+
+      </form>
+
+      <!-- Footer Card -->
+      <div class="footer mt-8 pt-6 border-t border-gray-100 text-center">
+        <p class="text-sm text-gray-600">
+          Sudah memiliki akses? 
+          <a href="ceritadunia.html" class="text-earth-700 hover:text-earth-900 font-semibold hover:underline decoration-2 underline-offset-4 transition-colors">
+            Masuk di sini
+          </a>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Hak Cipta kecil di bawah card -->
+    <p class="lg:col-span-2 text-center text-xs text-slate-600 mt-6 font-medium">
+      &copy; 2026 Kehidupan Bumi. Semua hak dilindungi.
+    </p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-12">
+        <div class="max-w-xs">
+          <a href="index.html#home" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+            <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
+            <span class="text-xl font-bold text-white">AKADEMI TROPHAGE</span>
+          </a>
+          <p class="text-slate-500 text-sm">Pusat komando finansial. Melipat dimensi pasar, menyerap energi kekayaan.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-12 sm:gap-24">
+          <div class="flex flex-col gap-3">
+            <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Navigasi Utama</h4>
+            <a href="index.html#home" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
+            <a href="index.html#konsep" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Konsep Kosmis</a>
+            <a href="index.html#prinsip" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prinsip Navigasi</a>
+          </div>
+          <div class="flex flex-col gap-3">
+            <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Portal Eksternal</h4>
+            <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors bg-blue-950/30 px-4 py-2 rounded-lg border border-blue-900/50 text-sm">
+              <i data-lucide="globe" class="w-4 h-4"></i>
+              Website Resmi
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="text-slate-500 text-sm flex items-center gap-2">
+          Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">Astrophage_Sukses</span>
+        </div>
+      </div>
+      <div class="mt-12 bg-slate-900/50 border border-slate-800 rounded-xl p-6 flex gap-4 items-start">
+        <i data-lucide="shield-alert" class="text-yellow-600 w-6 h-6 flex-shrink-0 mt-1"></i>
+        <p class="text-sm text-slate-500 leading-relaxed font-mono">
+          <strong class="text-yellow-600/80">Disclaimer:</strong> Semua konten di website dan saluran ini bersifat edukasi dan berbagi informasi futuristik. Bukan ajakan atau penasihat keuangan legal. Lakukan riset Anda sendiri (DYOR - Do Your Own Research) sebelum melakukan lompatan kuantum di pasar modal.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        navbar.classList.add('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+        navbar.classList.remove('bg-transparent', 'py-6');
+      } else {
+        navbar.classList.add('bg-transparent', 'py-6');
+        navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+      }
+    });
+
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function toggleMenu() {
+      mobileMenu.classList.toggle('hidden');
+      mobileMenu.classList.toggle('flex');
+      menuIcon.classList.toggle('hidden');
+      menuIcon.classList.toggle('block');
+      closeIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('block');
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMenu);
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (!mobileMenu.classList.contains('hidden')) toggleMenu();
+      });
+    });
+
+    // URL WORKER CLOUDFLARE KAMU
+    const WORKER_URL = "https://cerita-dunia-7fd8.paku683.workers.dev";
+
+    document.getElementById('regForm').onsubmit = async function(e) {
+      e.preventDefault();
+      
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value;
+      const btn = document.getElementById('btnSubmit');
+      const err = document.getElementById('errMsg');
+
+      // Reset tampilan error
+      err.innerText = "";
+      err.classList.add('hidden'); // Sembunyikan elemen pesan error di Tailwind
+      
+      // State loading pada tombol
+      btn.disabled = true;
+      btn.innerHTML = `
+        <i class="fa-solid fa-circle-notch fa-spin"></i> 
+        <span>Mempersiapkan...</span>
+      `;
+
+      try {
+        // Panggil endpoint /register persis seperti proyek lama
+        const response = await fetch(`${WORKER_URL}/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: user, password: pass })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Gagal mendaftar.");
+        }
+
+        // Tampilkan notifikasi sukses yang lebih menarik alih-alih alert bawaan jika memungkinkan
+        // Namun demi kesederhanaan dan agar sesuai struktur asli, kita tetap gunakan alert
+        alert("Pendaftaran berhasil! Selamat datang di Kehidupan Bumi. Silakan masuk.");
+        window.location.href = "ceritadunia.html";
+
+      } catch (error) {
+        // Tampilkan pesan error
+        err.innerText = error.message;
+        err.classList.remove('hidden'); // Tampilkan elemen pesan error
+        
+        // Efek goyang (shake) saat error
+        const card = document.querySelector('.glass-card');
+        card.classList.add('animate-pulse');
+        setTimeout(() => card.classList.remove('animate-pulse'), 500);
+        
+      } finally {
+        // Kembalikan tombol ke keadaan semula jika gagal
+        // Jika sukses, halaman akan dialihkan sehingga baris ini tidak terlihat
+        btn.disabled = false;
+        btn.innerHTML = `
+          <span>Bergabung</span>
+          <i class="fa-solid fa-user-plus text-sm"></i>
+        `;
+      }
+    };
+  </script>
+</body>
+</html>

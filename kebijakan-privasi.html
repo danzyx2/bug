@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kebijakan Privasi Akademi Trophage tentang pengumpulan, penggunaan, dan perlindungan data pengunjung.">
+    <title>Kebijakan Privasi | Akademi Trophage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: #1e293b;
+            --panel: rgba(15, 23, 42, 0.72);
+            --blue: #60a5fa;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; color: var(--ink); font-family: 'DM Sans', sans-serif; background: #020617; overflow-x: hidden; }
+        a { color: inherit; text-decoration: none; }
+        .background-orbs { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .background-orbs::before, .background-orbs::after { content: ''; position: absolute; width: 50%; height: 50%; border-radius: 999px; filter: blur(120px); mix-blend-mode: screen; opacity: .2; }
+        .background-orbs::before { top: -20%; left: -10%; background: #1e3a8a; animation: drift-blue 18s ease-in-out infinite; }
+        .background-orbs::after { right: -10%; bottom: -20%; background: #581c87; animation: drift-purple 22s ease-in-out infinite; }
+        @keyframes drift-blue { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(7vw, 4vh, 0) scale(1.08); } }
+        @keyframes drift-purple { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(-6vw, -5vh, 0) scale(1.1); } }
+        .shell { position: relative; z-index: 1; width: min(900px, calc(100% - 48px)); margin: 0 auto; padding: 150px 0 70px; }
+        .eyebrow { margin: 0 0 16px; color: #93c5fd; font-size: .76rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+        h1, h2 { font-family: 'Space Grotesk', sans-serif; }
+        h1 { margin: 0; font-size: clamp(2.5rem, 7vw, 5rem); line-height: 1; letter-spacing: -.04em; }
+        .intro { max-width: 700px; margin-bottom: 40px; }
+        .intro p { max-width: 650px; margin: 24px 0 0; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+        .updated { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; color: #64748b; font-size: .85rem; }
+        .policy { padding: clamp(24px, 5vw, 48px); border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(145deg, rgba(15, 23, 42, .9), var(--panel)); box-shadow: 0 24px 80px rgba(0, 0, 0, .18); }
+        .policy section + section { margin-top: 34px; padding-top: 34px; border-top: 1px solid var(--line); }
+        .policy h2 { margin: 0 0 12px; color: #fff; font-size: 1.35rem; }
+        .policy p, .policy li { color: #cbd5e1; font-size: .98rem; line-height: 1.75; }
+        .policy p { margin: 0 0 12px; }
+        .policy ul { margin: 10px 0 0; padding-left: 22px; }
+        .policy li + li { margin-top: 7px; }
+        .policy strong { color: #f8fafc; }
+        .contact { margin-top: 16px; padding: 16px 18px; border-left: 3px solid var(--blue); background: rgba(30, 58, 138, .2); color: #dbeafe; }
+        footer { margin-top: 42px; padding-top: 22px; border-top: 1px solid var(--line); color: #64748b; font-size: .85rem; }
+        footer a { color: #94a3b8; }
+        footer a:hover { color: #60a5fa; }
+        @media (max-width: 640px) { .shell { width: min(100% - 32px, 560px); padding-top: 125px; } .policy { padding: 24px 20px; } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
+    </style>
+</head>
+<body>
+    <div class="background-orbs" aria-hidden="true"></div>
+
+    <nav id="navbar" class="fixed top-0 w-full z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+            <a href="index.html#home" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <i data-lucide="activity" class="text-blue-400 w-7 h-7"></i>
+                <span class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">AKADEMI TROPHAGE</span>
+            </a>
+            <a href="portal.html" class="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-4 py-2">
+                Portal <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <header class="intro">
+            <p class="eyebrow">Transparansi dan kepercayaan</p>
+            <h1>Kebijakan Privasi</h1>
+            <p>Halaman ini menjelaskan bagaimana Akademi Trophage mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pengunjung saat menggunakan website kami.</p>
+            <span class="updated"><i data-lucide="calendar-days" class="w-4 h-4"></i> Terakhir diperbarui: 13 September 2026</span>
+        </header>
+
+        <article class="policy">
+            <section>
+                <h2>1. Pendahuluan</h2>
+                <p>Akademi Trophage menghormati privasi setiap pengunjung. Dengan mengakses website ini, Anda memahami praktik yang dijelaskan dalam kebijakan ini. Kebijakan ini berlaku untuk halaman, fitur, dan layanan yang tersedia di domain Akademi Trophage.</p>
+            </section>
+
+            <section>
+                <h2>2. Informasi yang Kami Kumpulkan</h2>
+                <p>Kami dapat mengumpulkan informasi berikut, bergantung pada cara Anda menggunakan website:</p>
+                <ul>
+                    <li><strong>Informasi teknis:</strong> alamat IP, jenis perangkat, browser, sistem operasi, halaman yang dikunjungi, waktu akses, dan sumber kunjungan.</li>
+                    <li><strong>Informasi penggunaan:</strong> interaksi dengan halaman, tautan yang dibuka, dan data diagnostik untuk membantu kami memahami serta meningkatkan performa website.</li>
+                    <li><strong>Informasi yang Anda berikan:</strong> data yang dikirim secara sukarela melalui formulir, pendaftaran, atau komunikasi kepada kami.</li>
+                </ul>
+                <p>Kami tidak meminta informasi pribadi sensitif untuk membaca konten website ini.</p>
+            </section>
+
+            <section>
+                <h2>3. Cara Kami Menggunakan Informasi</h2>
+                <p>Informasi yang dikumpulkan dapat digunakan untuk:</p>
+                <ul>
+                    <li>menyediakan, mengoperasikan, dan memelihara website;</li>
+                    <li>menganalisis penggunaan website serta memperbaiki konten, keamanan, dan pengalaman pengguna;</li>
+                    <li>mendeteksi aktivitas penyalahgunaan, spam, atau pelanggaran keamanan; dan</li>
+                    <li>memenuhi kewajiban hukum yang berlaku.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Cookie dan Teknologi Serupa</h2>
+                <p>Website ini dapat menggunakan cookie, penyimpanan lokal, atau teknologi serupa untuk mengingat preferensi, memahami pola penggunaan, menjaga fungsi tertentu, dan mengukur kinerja halaman. Anda dapat menghapus atau memblokir cookie melalui pengaturan browser. Beberapa fungsi website mungkin tidak berjalan optimal setelah cookie dinonaktifkan.</p>
+            </section>
+
+            <section>
+                <h2>5. Google AdSense dan Pihak Ketiga</h2>
+                <p>Website ini dapat menggunakan Google AdSense atau layanan iklan pihak ketiga lainnya. Penyedia iklan dapat menggunakan cookie untuk menayangkan iklan berdasarkan kunjungan pengguna ke website ini dan website lain. Google dan mitranya dapat menggunakan data seperti cookie atau pengenal perangkat sesuai kebijakan privasi mereka.</p>
+                <p>Pengunjung dapat mempelajari cara Google menggunakan data ketika mengakses situs atau aplikasi mitranya melalui <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">Kebijakan Google</a>. Pengaturan iklan juga dapat dikelola melalui <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">Setelan Iklan Google</a>.</p>
+            </section>
+
+            <section>
+                <h2>6. Tautan Eksternal</h2>
+                <p>Website ini dapat memuat tautan ke website atau layanan pihak ketiga. Kami tidak mengendalikan isi, keamanan, atau praktik privasi pihak ketiga tersebut. Kami menyarankan Anda membaca kebijakan privasi setiap website yang Anda kunjungi.</p>
+            </section>
+
+            <section>
+                <h2>7. Perlindungan dan Penyimpanan Data</h2>
+                <p>Kami menerapkan langkah teknis dan administratif yang wajar untuk melindungi informasi dari akses, perubahan, pengungkapan, atau penghancuran yang tidak sah. Namun, tidak ada metode transmisi atau penyimpanan elektronik yang sepenuhnya aman. Data disimpan hanya selama diperlukan untuk tujuan yang dijelaskan dalam kebijakan ini atau selama diwajibkan oleh hukum.</p>
+            </section>
+
+            <section>
+                <h2>8. Hak Pengunjung</h2>
+                <p>Jika Anda telah memberikan informasi pribadi kepada kami, Anda dapat meminta penjelasan tentang penggunaan data tersebut, meminta koreksi, atau meminta penghapusan sepanjang tidak bertentangan dengan kewajiban hukum. Kami dapat meminta verifikasi identitas sebelum memenuhi permintaan.</p>
+            </section>
+
+            <section>
+                <h2>9. Privasi Anak</h2>
+                <p>Website ini tidak ditujukan secara khusus kepada anak-anak dan kami tidak dengan sengaja mengumpulkan data pribadi anak. Jika Anda mengetahui bahwa seorang anak telah memberikan data pribadi kepada kami, silakan hubungi kami agar data tersebut dapat ditinjau dan dihapus bila diperlukan.</p>
+            </section>
+
+            <section>
+                <h2>10. Perubahan Kebijakan</h2>
+                <p>Kami dapat memperbarui kebijakan ini dari waktu ke waktu untuk mencerminkan perubahan layanan, teknologi, atau peraturan. Versi terbaru akan selalu dipublikasikan di halaman ini dengan tanggal pembaruan yang sesuai.</p>
+            </section>
+
+            <section>
+                <h2>11. Hubungi Kami</h2>
+                <p>Untuk pertanyaan, permintaan terkait data pribadi, atau masukan mengenai kebijakan ini, silakan hubungi:</p>
+                <p class="contact"><strong>Akademi Trophage</strong><br><a href="mailto:admin@kehidupanbumiofficial.my.id" class="text-blue-300 hover:text-blue-200">admin@kehidupanbumiofficial.my.id</a></p>
+            </section>
+        </article>
+
+        <footer>
+            <div class="flex flex-col sm:flex-row justify-between gap-3">
+                <span>&copy; 2026 Akademi Trophage. Semua hak dilindungi.</span>
+                <span><a href="index.html">Beranda</a> &middot; <a href="portal.html">Portal</a> &middot; <a href="kebijakan-privasi.html">Kebijakan Privasi</a></span>
+            </div>
+        </footer>
+    </main>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>

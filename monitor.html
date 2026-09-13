@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrophage Professional Trading Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Mengimpor Font Inter untuk tampilan tipografi modern -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS via CDN agar class navigasi bekerja secara presisi -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons via CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Config untuk Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Desain Sistem Token Warna & Variabel */
+        :root {
+            --bg-main: #020617; /* Tailwind slate-950 */
+            --bg-card: rgba(15, 23, 42, 0.6); /* Tailwind slate-900 dengan transparansi */
+            --bg-card-hover: rgba(30, 41, 59, 0.8); /* Tailwind slate-800 */
+            --border: #1e293b; /* Tailwind slate-800 */
+            --text-primary: #cbd5e1; /* Tailwind slate-300 */
+            --text-secondary: #64748b; /* Tailwind slate-500 */
+            --accent: #60a5fa; /* Tailwind blue-400 */
+            --accent-green: #22c55e; /* Tailwind green-500 */
+            --accent-red: #ef4444; /* Tailwind red-500 */
+            --accent-green-bg: rgba(34, 197, 94, 0.15);
+            --accent-red-bg: rgba(239, 68, 68, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 0;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Orbs */
+        .background-orbs {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .orb-1 {
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 50%;
+            height: 50%;
+            border-radius: 50%;
+            background-color: rgba(30, 58, 138, 0.2);
+            filter: blur(120px);
+            mix-blend-mode: screen;
+        }
+        .orb-2 {
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            border-radius: 50%;
+            background-color: rgba(88, 28, 135, 0.2);
+            filter: blur(120px);
+            mix-blend-mode: screen;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding: 8rem 1rem 4rem;
+        }
+
+        /* Header Judul Halaman Dashboard */
+        .dashboard-header-desc {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-title h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title h1 span {
+            background: linear-gradient(to right, #60a5fa, #818cf8, #a855f7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .header-title a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .header-title a:hover {
+            text-decoration: underline;
+        }
+
+        /* Status Sinkronisasi Real-time */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: pulse 1.8s infinite;
+        }
+
+        /* Statistik Panel Atas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(96, 165, 250, 0.5);
+            transform: translateY(-2px);
+            background-color: var(--bg-card-hover);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        /* Navigasi Tab Profesional */
+        .tab-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background-color: var(--border);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-download {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        .btn-download:hover { 
+            border-color: var(--accent);
+            color: #ffffff;
+            background-color: rgba(96, 165, 250, 0.1);
+        }
+
+        .btn-buy {
+            background: linear-gradient(to right, #2563eb, #4f46e5);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-buy:hover { 
+            background: linear-gradient(to right, #3b82f6, #6366f1);
+            transform: scale(1.05); 
+            box-shadow: 0 0 20px -5px rgba(59, 130, 246, 0.5); 
+        }
+
+        .dashboard-panel {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 8px 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(2, 6, 23, 0.4);
+        }
+
+        td {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: rgba(30, 41, 59, 0.4); }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 99px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-long {
+            color: var(--accent-green);
+            background: var(--accent-green-bg);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .badge-short {
+            color: var(--accent-red);
+            background: var(--accent-red-bg);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .val-profit { color: var(--accent-green) !important; }
+        .val-loss { color: var(--accent-red) !important; }
+        .text-muted { color: var(--text-secondary); font-size: 12px; font-weight: 400; }
+
+        .loading-state {
+            text-align: center;
+            padding: 64px 0;
+            color: var(--text-secondary);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+
+        .modal-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 550px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.show .modal-content { transform: translateY(0) scale(1); }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+
+        .modal-content h2 { color: var(--accent); font-size: 20px; display: flex; align-items: center; gap: 8px; }
+
+        .close-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; transition: color 0.2s; }
+        .close-btn:hover { color: #ffffff; }
+
+        .modal-body { color: var(--text-primary); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+        .modal-body strong { color: #ffffff; }
+        .modal-body ul { margin-top: 12px; padding-left: 20px; color: var(--text-secondary); }
+        .modal-body li { margin-bottom: 8px; }
+
+        .warning-box {
+            background: var(--accent-red-bg);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .warning-box p { color: #fca5a5; margin-bottom: 8px; }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: rgba(255,255,255,0.02);
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+        .checkbox-container input[type="checkbox"] { margin-top: 3px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
+        .checkbox-container label { cursor: pointer; color: var(--text-primary); font-weight: 500; }
+
+        .quiz-group {
+            margin-bottom: 24px;
+            background: rgba(2, 6, 23, 0.5);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .quiz-group p { color: #ffffff; font-weight: 600; margin-bottom: 12px; }
+        .quiz-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 10px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .quiz-label:hover { background: rgba(255,255,255,0.05); border-color: var(--border); color: var(--text-primary); }
+        .quiz-label input { margin-right: 10px; accent-color: var(--accent); }
+
+        .btn-modal-action {
+            background: linear-gradient(to right, #2563eb, #4f46e5);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 99px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-modal-action:hover { transform: scale(1.02); box-shadow: 0 0 20px -5px rgba(59, 130, 246, 0.5); }
+        
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(96, 165, 250, 0.1);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 16px auto;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .container { padding: 7rem 1rem 3rem; }
+            .dashboard-header-desc { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .tab-wrapper { flex-direction: column; align-items: stretch; gap: 16px; }
+            .tab-navigation { width: 100%; overflow-x: auto; white-space: nowrap; }
+            .tab-btn { flex: 1; text-align: center; }
+            .action-buttons { width: 100%; flex-direction: column; }
+            .btn-action { justify-content: center; width: 100%; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes drift-blue {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(7vw, 4vh, 0) scale(1.08); }
+        }
+
+        @keyframes drift-purple {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(-6vw, -5vh, 0) scale(1.1); }
+        }
+
+        .orb-blue { animation: drift-blue 18s ease-in-out infinite; }
+        .orb-purple { animation: drift-purple 22s ease-in-out infinite; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.75s ease, transform 0.75s ease;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased min-h-screen flex flex-col">
+
+<!-- Animated Background Orbs -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+    <div class="orb-blue absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
+    <div class="orb-purple absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
+</div>
+
+<!-- Navbar -->
+<nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <i data-lucide="activity" class="text-blue-400 w-8 h-8"></i>
+            <span class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">
+                AKADEMI TROPHAGE
+            </span>
+        </a>
+        <div class="hidden md:flex items-center gap-5">
+            <div class="flex gap-4">
+                <a href="index.html#home" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Beranda</a>
+                <a href="monitor.html" class="text-sm font-medium text-blue-400 transition-colors">Live Trade</a>
+                <a href="predik.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prediksi Pasar</a>
+                <a href="bilik_baca.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bilik Baca</a>
+                <a href="bot-monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bot Monitor</a>
+                <a href="index.html#prinsip" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prinsip Navigasi</a>
+            </div>
+            <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+        </div>
+        <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+            <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
+            <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+        </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
+        <a href="index.html#home" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
+        <a href="monitor.html" class="mobile-link text-base font-medium text-blue-400 transition-colors py-2 block">Live Trade</a>
+        <a href="predik.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prediksi Pasar</a>
+        <a href="bilik_baca.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bilik Baca</a>
+        <a href="bot-monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bot Monitor</a>
+        <a href="index.html#prinsip" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prinsip Navigasi</a>
+        <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+    </div>
+</nav>
+
+<!-- MODAL 1: Disclaimer Awal -->
+<div id="disclaimer-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>⚠️ Peringatan & Penafian (Disclaimer)</h2>
+        <div class="modal-body">
+            <p>Selamat datang di <strong>SMC Trading Desk</strong>.</p>
+            <p>Sebelum Anda melihat atau menyontek (copy trade) data pada dashboard ini, harap dipahami:</p>
+            <ul>
+                <li><strong>Bukan Nasihat Keuangan:</strong> Semua aktivitas trading yang ditampilkan adalah untuk keperluan dokumentasi pribadi.</li>
+                <li><strong>Risiko Trading Futures:</strong> Perdagangan kripto menggunakan margin memiliki risiko volatilitas yang sangat tinggi.</li>
+                <li><strong>Tanggung Jawab Pribadi (DYOR):</strong> Segala bentuk kerugian finansial sepenuhnya menjadi <strong>tanggung jawab Anda sendiri</strong>.</li>
+            </ul>
+        </div>
+        <button class="btn-modal-action" onclick="tutupDisclaimer()">Saya Mengerti & Setuju</button>
+    </div>
+</div>
+
+<!-- MODAL 2: Alur Pembelian Script Bot -->
+<div id="buy-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="buy-modal-title">🛒 Beli Script Bot Trading</h2>
+            <button class="close-btn" onclick="tutupBuyModal()">&times;</button>
+        </div>
+
+        <div id="buy-step-1">
+            <div class="modal-body">
+                <div class="warning-box">
+                    <strong>PERHATIAN SEBELUM MEMBELI!</strong>
+                    <p>Bot Trading ini HANYA ALAT BANTU (Automasi Eksekusi), BUKAN mesin pencetak uang gaib.</p>
+                </div>
+                <p>Harap pahami hal berikut sebelum Anda melanjutkan:</p>
+                <ul>
+                    <li>Bot akan mengeksekusi order berdasarkan parameter algoritma, pasar bisa saja bergerak berlawanan (Loss).</li>
+                    <li>Kami <strong>tidak memberikan garansi profit bulanan atau harian</strong> dalam bentuk apapun.</li>
+                    <li>Sangat disarankan menjalankan bot di <strong>Akun Demo (VST)</strong> terlebih dahulu.</li>
+                </ul>
+                
+                <label class="checkbox-container">
+                    <input type="checkbox" id="agree-buy-checkbox">
+                    <span>Saya mengerti bahwa trading Futures berisiko tinggi dan saya menerima segala bentuk risiko kerugian jika menggunakan Bot ini.</span>
+                </label>
+            </div>
+            <button class="btn-modal-action" onclick="lanjutKeKuis()">Lanjutkan</button>
+        </div>
+
+        <div id="buy-step-2" class="hidden">
+            <div class="modal-body">
+                <p style="margin-bottom: 20px;">Jawablah 3 pertanyaan dasar ini untuk membuka tautan pembelian.</p>
+                
+                <div class="quiz-group">
+                    <p>1. Apa risiko terburuk dari trading Futures dengan Leverage tinggi?</p>
+                    <label class="quiz-label"><input type="radio" name="q1" value="a"> A. Pasti mendapatkan profit berlipat ganda.</label>
+                    <label class="quiz-label"><input type="radio" name="q1" value="b"> B. Likuidasi (Kehilangan seluruh modal di posisi tersebut).</label>
+                    <label class="quiz-label"><input type="radio" name="q1" value="c"> C. Modal selalu dijamin aman.</label>
+                </div>
+
+                <div class="quiz-group">
+                    <p>2. Apakah script Bot Trading ini menjamin profit 100% tanpa Loss?</p>
+                    <label class="quiz-label"><input type="radio" name="q2" value="a"> A. Ya, menggunakan sistem AI.</label>
+                    <label class="quiz-label"><input type="radio" name="q2" value="b"> B. Tidak, kondisi pasar tidak bisa diprediksi pasti, loss bisa terjadi.</label>
+                    <label class="quiz-label"><input type="radio" name="q2" value="c"> C. Ya, asalkan margin besar.</label>
+                </div>
+
+                <div class="quiz-group">
+                    <p>3. Apa langkah pertama yang paling bijak setelah membeli script Bot?</p>
+                    <label class="quiz-label"><input type="radio" name="q3" value="a"> A. Langsung menggunakan seluruh uang tabungan.</label>
+                    <label class="quiz-label"><input type="radio" name="q3" value="b"> B. Meminjam uang agar modal maksimal.</label>
+                    <label class="quiz-label"><input type="radio" name="q3" value="c"> C. Menjalankan di Akun Demo/VST dulu.</label>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-modal-action" style="background: transparent; color: var(--text-primary); border: 1px solid var(--border); box-shadow: none;" onclick="kembaliKeStep1()">Kembali</button>
+                <button class="btn-modal-action" onclick="submitKuis()">Kirim Jawaban</button>
+            </div>
+        </div>
+
+        <div id="buy-step-3" class="hidden">
+            <div class="modal-body" style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
+                <h3 style="color: var(--accent-green); margin-bottom: 12px;">Selamat! Anda Memahami Risikonya.</h3>
+                <p>Silakan klik tombol di bawah untuk diarahkan ke halaman produk / pengunduhan script.</p>
+            </div>
+            <a href="https://lynk.id/kehidupan_bumi_official/9ex74r4x98od" style="text-decoration: none; width: 100%; display: block;">
+                <button class="btn-modal-action">Lanjut ke Toko</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div id="home" class="container">
+    
+    <!-- Bagian Judul Dashboard -->
+    <div class="dashboard-header-desc reveal">
+        <div class="header-title">
+            <h1>SMC <span>Trading Desk</span></h1>
+            <p>Sistem Pemantauan Aset dan Antrean Jaring Real-Time</p>
+            <p>Grup WhatsApp: <a href="https://chat.whatsapp.com/F87KjgnhbK75bVDSCRNrYg" target="_blank">Gabung Grup Komunitas</a></p>
+        </div>
+        <div class="status-badge">
+            <div class="pulse-dot" id="pulse-indicator"></div>
+            <span id="status-text">Sinkronisasi Pertama...</span>
+        </div>
+    </div>
+
+    <!-- Lisensi Input -->
+    <div class="reveal" style="background: var(--bg-card); backdrop-filter: blur(8px); border: 1px solid var(--border); padding: 16px; border-radius: 16px; margin-bottom: 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px;">
+            <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 8px; font-weight: 600;">MASUKKAN KUNCI LISENSI PREMIUM ANDA:</label>
+            <input type="password" id="input-lisensi" placeholder="Contoh: KunciPremium_Anda" style="width: 100%; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--border); padding: 12px 16px; border-radius: 8px; color: #ffffff; font-family: inherit; font-size: 14px; outline: none;">
+        </div>
+        <button onclick="simpanLisensi()" style="background: linear-gradient(to right, #2563eb, #4f46e5); color: #ffffff; border: none; padding: 12px 24px; border-radius: 99px; font-weight: 700; cursor: pointer; font-size: 14px; margin-top: 24px; transition: all 0.3s;">
+            Simpan & Hubungkan
+        </button>
+    </div>
+    
+    <!-- Baris Widget Akun -->
+    <div class="reveal" style="background: var(--bg-card); backdrop-filter: blur(8px); border: 1px solid var(--border); padding: 12px; border-radius: 16px; margin-bottom: 24px; display: flex; gap: 10px;">
+        <button id="btn-acc-real" onclick="switchAccountType('real')" style="flex: 1; padding: 12px; background: linear-gradient(to right, #2563eb, #4f46e5); color: #ffffff; border: none; border-radius: 99px; font-weight: 700; cursor: pointer;">
+            🟢 AKUN REAL
+        </button>
+        <button id="btn-acc-demo" onclick="switchAccountType('demo')" style="flex: 1; padding: 12px; background: transparent; color: var(--text-secondary); border: 1px solid var(--border); border-radius: 99px; font-weight: 700; cursor: pointer;">
+            🟡 AKUN DEMO / VST
+        </button>
+    </div>
+    
+    <div class="stats-grid reveal">
+        <div class="stat-card">
+            <div class="stat-label">Total Keuntungan Berjalan (Unrealized PNL)</div>
+            <div class="stat-val" id="total-pnl">0.00 USDT</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Margin Terpakai</div>
+            <div class="stat-val" id="total-margin" style="color: #ffffff;">0.00 USDT</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Jumlah Posisi Berjalan</div>
+            <div class="stat-val" id="total-positions" style="color: var(--accent);">0 Posisi</div>
+        </div>
+    </div>
+
+    <!-- Tab Navigasi & Aksi -->
+    <div class="tab-wrapper reveal">
+        <div class="tab-navigation">
+            <button class="tab-btn active" id="btn-posisi" onclick="switchTab('position')">Posisi Aktif</button>
+            <button class="tab-btn" id="btn-jaring" onclick="switchTab('orders')">Antrean Jaring (Pending)</button>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="analis.html" class="btn-action btn-download">Ke Halaman Analisis</a>
+            <button class="btn-action btn-download" onclick="downloadPDF()">📄 Download PDF</button>
+            <button class="btn-action btn-buy" onclick="bukaBuyModal()">🛒 Beli Script Bot</button>
+        </div>
+    </div>
+
+    <!-- Kotak Panel Konten Dashboard -->
+    <div class="dashboard-panel reveal">
+        
+        <!-- PANEL POSISI AKTIF (TAB 1) -->
+        <div id="panel-posisi">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Simbol Koin</th>
+                            <th>Arah</th>
+                            <th>Leverage</th>
+                            <th>Harga Masuk (Avg)</th>
+                            <th>Harga Pasar</th>
+                            <th>Ukuran Posisi</th>
+                            <th style="text-align: right;">Unrealized PNL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-posisi">
+                        <tr>
+                            <td colspan="7">
+                                <div class="loading-state">
+                                    <div class="spinner"></div>
+                                    <p>Menghubungkan ke API BingX...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL ANTREAN JARING (TAB 2) -->
+        <div id="panel-jaring" class="hidden">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Simbol Koin</th>
+                            <th>Tipe & Sisi Jaring</th>
+                            <th>Harga Trigger Jaring</th>
+                            <th>Volume (Qty)</th>
+                            <th>Total Nilai</th>
+                            <th style="text-align: right;">Waktu Pasang</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-jaring">
+                        <tr>
+                            <td colspan="6">
+                                <div class="loading-state">
+                                    <div class="spinner"></div>
+                                    <p>Mengambil antrean jaring dari API...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-12">
+            <div class="max-w-xs">
+                <a href="#home" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+                    <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
+                    <span class="text-xl font-bold text-white">AKADEMI TROPHAGE</span>
+                </a>
+                <p class="text-slate-500 text-sm">Pusat komando finansial. Melipat dimensi pasar, menyerap energi kekayaan.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-12 sm:gap-24">
+                <div class="flex flex-col gap-3">
+                    <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Navigasi Utama</h4>
+                    <a href="#home" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
+                    <a href="index.html#konsep" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Konsep Kosmis</a>
+                    <a href="index.html#prinsip" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prinsip Navigasi</a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Dashboard</h4>
+                    <a href="predik.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prediksi Pasar</a>
+                    <a href="bilik_baca.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bilik Baca</a>
+                    <a href="bot-monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bot Monitor</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="text-slate-500 text-sm flex items-center gap-2">
+                Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">Astrophage_Sukses</span>
+            </div>
+        </div>
+
+        <div class="mt-12 bg-slate-900/50 border border-slate-800 rounded-xl p-6 flex gap-4 items-start">
+            <i data-lucide="shield-alert" class="text-yellow-600 w-6 h-6 flex-shrink-0 mt-1"></i>
+            <p class="text-sm text-slate-500 leading-relaxed font-mono">
+                <strong class="text-yellow-600/80">Disclaimer:</strong> Semua konten di website dan saluran ini bersifat edukasi dan berbagi informasi futuristik. Bukan ajakan atau penasihat keuangan legal. Lakukan riset Anda sendiri (DYOR - Do Your Own Research) sebelum melakukan lompatan kuantum di pasar modal.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Inisialisasi Icon Lucide
+    lucide.createIcons();
+
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+        });
+    }, { threshold: 0.12 });
+
+    revealElements.forEach(element => revealObserver.observe(element));
+
+    // Logika Navbar Scroll (Mengubah background saat di-scroll)
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) {
+            navbar.classList.add('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+            navbar.classList.remove('bg-transparent', 'py-6');
+        } else {
+            navbar.classList.add('bg-transparent', 'py-6');
+            navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+        }
+    });
+
+    // Logika Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function toggleMenu() {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('flex');
+        menuIcon.classList.toggle('hidden');
+        menuIcon.classList.toggle('block');
+        closeIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('block');
+    }
+
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+    }
+
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (!mobileMenu.classList.contains('hidden')) {
+                toggleMenu();
+            }
+        });
+    });
+
+    // Konfigurasi & Variabel Bot API
+    const PROXY_URL = "https://bingx-proxy.paku683.workers.dev/"; 
+    let LISENSI_SAYA = localStorage.getItem("user_api_license") || "";
+    let CURRENT_ACCOUNT_TYPE = localStorage.getItem("user_account_type") || "real";
+    let activeTab = "position"; 
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const isDisclaimed = localStorage.getItem("disclaimer_agreed");
+        if (!isDisclaimed) {
+            document.getElementById("disclaimer-modal").classList.add("show");
+        }
+
+        if (LISENSI_SAYA) {
+            const inputElem = document.getElementById("input-lisensi");
+            if (inputElem) inputElem.value = LISENSI_SAYA;
+        }
+
+        updateAccountTabUI();
+        fetchPositions();
+    });
+
+    function downloadPDF() {
+        window.open("STRATEGI_BOT.pdf", "_blank");
+    }
+
+    function bukaBuyModal() {
+        document.getElementById("buy-modal").classList.add("show");
+        document.getElementById("buy-step-1").classList.remove("hidden");
+        document.getElementById("buy-step-2").classList.add("hidden");
+        document.getElementById("buy-step-3").classList.add("hidden");
+        document.getElementById("agree-buy-checkbox").checked = false;
+        document.getElementById("buy-modal-title").innerText = "🛒 Beli Script Bot Trading";
+        
+        const radios = document.querySelectorAll('input[type="radio"]');
+        radios.forEach(r => r.checked = false);
+    }
+
+    function tutupBuyModal() {
+        document.getElementById("buy-modal").classList.remove("show");
+    }
+
+    function lanjutKeKuis() {
+        const isAgreed = document.getElementById("agree-buy-checkbox").checked;
+        if (!isAgreed) {
+            alert("Harap centang persetujuan risiko terlebih dahulu untuk melanjutkan.");
+            return;
+        }
+        document.getElementById("buy-step-1").classList.add("hidden");
+        document.getElementById("buy-step-2").classList.remove("hidden");
+        document.getElementById("buy-modal-title").innerText = "🧠 Tes Pengetahuan Trading";
+    }
+
+    function kembaliKeStep1() {
+        document.getElementById("buy-step-2").classList.add("hidden");
+        document.getElementById("buy-step-1").classList.remove("hidden");
+        document.getElementById("buy-modal-title").innerText = "🛒 Beli Script Bot Trading";
+    }
+
+    function submitKuis() {
+        const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+        const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+        const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+
+        if (!q1 || !q2 || !q3) {
+            alert("Harap jawab semua pertanyaan (1, 2, dan 3) sebelum mengirim.");
+            return;
+        }
+
+        if (q1 === 'b' && q2 === 'b' && q3 === 'c') {
+            document.getElementById("buy-step-2").classList.add("hidden");
+            document.getElementById("buy-step-3").classList.remove("hidden");
+            document.getElementById("buy-modal-title").innerText = "🎉 Pembelian Terbuka";
+        } else {
+            alert("Maaf, jawaban Anda masih ada yang keliru. Silakan coba lagi.");
+        }
+    }
+
+    function tutupDisclaimer() {
+        document.getElementById("disclaimer-modal").classList.remove("show");
+        localStorage.setItem("disclaimer_agreed", "true");
+    }
+    
+    function simpanLisensi() {
+        const inputVal = document.getElementById("input-lisensi").value.trim();
+        if (!inputVal) {
+            alert("Harap masukkan kunci lisensi Anda terlebih dahulu!");
+            return;
+        }
+        localStorage.setItem("user_api_license", inputVal);
+        LISENSI_SAYA = inputVal;
+        alert("Kunci lisensi berhasil diterapkan! Menghubungkan ulang...");
+        
+        if (activeTab === 'position') { fetchPositions(); } else { fetchGridOrders(); }
+    }
+
+    function switchAccountType(type) {
+        CURRENT_ACCOUNT_TYPE = type;
+        localStorage.setItem("user_account_type", type);
+        updateAccountTabUI();
+        alert(`Berhasil pindah ke AKUN ${type.toUpperCase()}! Memperbarui data...`);
+        
+        if (activeTab === 'position') { fetchPositions(); } else { fetchGridOrders(); }
+    }
+
+    function updateAccountTabUI() {
+        const realBtn = document.getElementById('btn-acc-real');
+        const demoBtn = document.getElementById('btn-acc-demo');
+        if (!realBtn || !demoBtn) return;
+
+        if (CURRENT_ACCOUNT_TYPE === 'real') {
+            realBtn.style.background = "linear-gradient(to right, #2563eb, #4f46e5)"; 
+            realBtn.style.color = "#ffffff";
+            demoBtn.style.background = "transparent"; 
+            demoBtn.style.color = "var(--text-secondary)";
+            demoBtn.style.border = "1px solid var(--border)";
+        } else {
+            demoBtn.style.background = "linear-gradient(to right, #2563eb, #4f46e5)"; 
+            demoBtn.style.color = "#ffffff";
+            realBtn.style.background = "transparent"; 
+            realBtn.style.color = "var(--text-secondary)";
+            realBtn.style.border = "1px solid var(--border)";
+        }
+    }
+
+    function switchTab(targetTab) {
+        activeTab = targetTab;
+        const btnPosisi = document.getElementById('btn-posisi');
+        const btnJaring = document.getElementById('btn-jaring');
+        const panelPosisi = document.getElementById('panel-posisi');
+        const panelJaring = document.getElementById('panel-jaring');
+
+        if (targetTab === 'position') {
+            btnPosisi.classList.add('active');
+            btnJaring.classList.remove('active');
+            panelPosisi.classList.remove('hidden');
+            panelJaring.classList.add('hidden');
+            fetchPositions();
+        } else {
+            btnJaring.classList.add('active');
+            btnPosisi.classList.remove('active');
+            panelJaring.classList.remove('hidden');
+            panelPosisi.classList.add('hidden');
+            fetchGridOrders();
+        }
+    }
+
+    async function fetchPositions() {
+        if (activeTab !== 'position') return;
+        try {
+            setSyncStatus("Menghubungkan...");
+            const response = await fetch(`${PROXY_URL}?type=position`, {
+                method: "GET",
+                headers: {
+                    "X-Premium-Key": LISENSI_SAYA,
+                    "X-Account-Type": CURRENT_ACCOUNT_TYPE
+                }
+            });
+            
+            const resData = await response.json();
+            const tbody = document.getElementById('data-posisi');
+
+            if (!response.ok) {
+                tbody.innerHTML = `<tr><td colspan="7" class="loading-state"><p style="color: var(--accent-red); font-weight: bold;">Error ${response.status}: ${resData.error || 'Akses Ditolak'}</p></td></tr>`;
+                setSyncStatus("Gagal sinkronisasi");
+                return;
+            }
+
+            if (resData.code !== 0 || !resData.data || resData.data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="loading-state"><p>Tidak ada posisi aktif yang sedang terbuka.</p></td></tr>`;
+                updateOverview(0, 0, 0);
+                setSyncStatus("Koneksi Bagus (Kosong)");
+                return;
+            }
+
+            let htmlContent = ""; let overallPnl = 0; let overallMargin = 0; let activeCount = 0;
+
+            resData.data.forEach(pos => {
+                const amt = parseFloat(pos.positionAmt || 0);
+                if (amt !== 0) {
+                    activeCount++;
+                    const side = (pos.positionSide || "LONG").toUpperCase();
+                    const isLong = side === "LONG" || side === "PANJANG";
+                    const badgeClass = isLong ? 'badge-long' : 'badge-short';
+                    const sideText = isLong ? 'LONG' : 'SHORT';
+
+                    const entryPrice = parseFloat(pos.entryPrice || 0);
+                    const markPrice = parseFloat(pos.markPrice || pos.isolatedPrice || 0);
+                    const margin = parseFloat(pos.margin || pos.initialMargin || 0);
+                    const pnl = parseFloat(pos.unrealizedProfit || 0);
+                    
+                    overallPnl += pnl;
+                    overallMargin += margin;
+                    const pnlClass = pnl >= 0 ? "val-profit" : "val-loss";
+                    const pnlSign = pnl >= 0 ? "+" : "";
+
+                    htmlContent += `
+                        <tr>
+                            <td><strong>${pos.symbol}</strong></td>
+                            <td><span class="badge ${badgeClass}">${sideText}</span></td>
+                            <td>${pos.leverage}x</td>
+                            <td>$${formatPrice(entryPrice, pos.symbol)}</td>
+                            <td>$${formatPrice(markPrice, pos.symbol)}</td>
+                            <td>${Math.abs(amt)} <span class="text-muted">${pos.symbol.split('-')[0]}</span></td>
+                            <td class="${pnlClass}" style="text-align: right; font-weight: 700;">
+                                ${pnlSign}${pnl.toFixed(4)} USDT
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+
+            tbody.innerHTML = activeCount === 0 ? `<tr><td colspan="7" class="loading-state"><p>Tidak ada posisi aktif.</p></td></tr>` : htmlContent;
+            updateOverview(overallPnl, overallMargin, activeCount);
+            setSyncStatus("Selesai sinkronisasi");
+        } catch (error) {
+            setSyncStatus("Gagal mengambil posisi");
+        }
+    }
+
+    async function fetchGridOrders() {
+        if (activeTab !== 'orders') return;
+        try {
+            setSyncStatus("Menghubungkan...");
+            const response = await fetch(`${PROXY_URL}?type=orders`, {
+                method: "GET",
+                headers: {
+                    "X-Premium-Key": LISENSI_SAYA,
+                    "X-Account-Type": CURRENT_ACCOUNT_TYPE
+                }
+            });
+            
+            const resData = await response.json();
+            const tbody = document.getElementById('data-jaring');
+
+            if (!response.ok) {
+                tbody.innerHTML = `<tr><td colspan="6" class="loading-state"><p style="color: var(--accent-red); font-weight: bold;">Error ${response.status}: ${resData.error || 'Akses Ditolak'}</p></td></tr>`;
+                setSyncStatus("Gagal sinkronisasi");
+                return;
+            }
+
+            let dataArray = resData.data?.orders || (Array.isArray(resData.data) ? resData.data : (Array.isArray(resData) ? resData : []));
+
+            if (dataArray.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="loading-state"><p>Tidak ada antrean jaring aktif.</p></td></tr>`;
+                setSyncStatus("Koneksi Bagus (Kosong)");
+                return;
+            }
+
+            let htmlContent = "";
+            dataArray.forEach(order => {
+                const symbol = order.symbol || "-";
+                let typeText = order.type || "LIMIT";
+                let side = (order.side || "BUY").toUpperCase();
+                const sideClass = side === "BUY" ? "val-profit" : "val-loss";
+
+                const basePrice = parseFloat(order.price || 0);
+                const stopPrice = parseFloat(order.stopPrice || 0);
+                const finalPrice = basePrice > 0 ? basePrice : stopPrice;
+
+                const qty = parseFloat(order.origQty || order.qty || 0);
+                const totalVal = finalPrice * qty;
+                const timeStr = formatDate(order.time || order.updateTime || Date.now());
+
+                htmlContent += `
+                    <tr>
+                        <td><strong>${symbol}</strong></td>
+                        <td><span class="${sideClass}" style="font-weight: 700;">${typeText} / ${side}</span></td>
+                        <td>$${formatPrice(finalPrice, symbol)}</td>
+                        <td>${qty}</td>
+                        <td>$${totalVal.toFixed(2)}</td>
+                        <td style="text-align: right;" class="text-muted">${timeStr}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = htmlContent;
+            setSyncStatus("Selesai sinkronisasi");
+        } catch (error) {
+            setSyncStatus("Gagal mengambil jaring");
+        }
+    }
+
+    function formatDate(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    function formatPrice(price, symbol) {
+        const val = parseFloat(price);
+        if (symbol && (symbol.startsWith("BTC") || symbol.startsWith("ETH"))) {
+            return val.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+        }
+        return val.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    }
+
+    function updateOverview(totalPnl, totalMargin, totalPositions) {
+        const pnlElement = document.getElementById('total-pnl');
+        const marginElement = document.getElementById('total-margin');
+        const positionsElement = document.getElementById('total-positions');
+
+        pnlElement.innerText = `${totalPnl >= 0 ? '+' : ''}${totalPnl.toFixed(4)} USDT`;
+        pnlElement.className = totalPnl > 0 ? "stat-val val-profit" : (totalPnl < 0 ? "stat-val val-loss" : "stat-val");
+        marginElement.innerText = `${totalMargin.toFixed(2)} USDT`;
+        positionsElement.innerText = `${totalPositions} Posisi`;
+    }
+
+    function setSyncStatus(text) {
+        document.getElementById('status-text').innerText = text;
+    }
+
+    setInterval(() => {
+        if (activeTab === 'position') { fetchPositions(); } else { fetchGridOrders(); }
+    }, 10000);
+</script>
+
+</body>
+</html>

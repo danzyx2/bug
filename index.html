@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akademi Trophage - Keuangan & Investasi Finansial</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons via CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Config untuk Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Mencegah highlight biru saat klik di mobile */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Memberikan offset agar saat diklik dari navbar tidak tertutup header */
+        .scroll-mt-32 {
+            scroll-margin-top: 8rem;
+        }
+
+        @keyframes drift-blue {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(7vw, 4vh, 0) scale(1.08); }
+        }
+
+        @keyframes drift-purple {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(-6vw, -5vh, 0) scale(1.1); }
+        }
+
+        @keyframes hero-rise {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .orb-blue {
+            animation: drift-blue 18s ease-in-out infinite;
+        }
+
+        .orb-purple {
+            animation: drift-purple 22s ease-in-out infinite;
+        }
+
+        .hero-stagger > * {
+            opacity: 0;
+            animation: hero-rise 0.8s ease-out forwards;
+        }
+
+        .hero-stagger > *:nth-child(1) { animation-delay: 0.1s; }
+        .hero-stagger > *:nth-child(2) { animation-delay: 0.22s; }
+        .hero-stagger > *:nth-child(3) { animation-delay: 0.34s; }
+        .hero-stagger > *:nth-child(4) { animation-delay: 0.46s; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.75s ease, transform 0.75s ease;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased">
+
+    <!-- Animated Background Orbs -->
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="orb-blue absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
+        <div class="orb-purple absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <a href="#home" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <i data-lucide="activity" class="text-blue-400 w-8 h-8"></i>
+                <span class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">
+                    AKADEMI TROPHAGE
+                </span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center gap-5">
+                <div class="flex gap-4">
+                    <a href="#home" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Beranda</a>
+                    <a href="monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Live Trade</a>
+                    <a href="predik.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prediksi Pasar</a>
+                    <a href="bilik_baca.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bilik Baca</a>
+                    <a href="bot-monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bot Monitor</a>
+                    <a href="#prinsip" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prinsip Navigasi</a>
+                </div>
+                <a 
+                    href="portal.html" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2"
+                >
+                    Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
+                <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
+            <a href="#home" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
+            <a href="monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Konsep Kosmis</a>
+            <a href="predik.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prediksi Pasar</a>
+            <a href="bilik_baca.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bilik Baca</a>
+            <a href="bot-monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bot Monitor</a>
+            <a href="#prinsip" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prinsip Navigasi</a>
+            <a 
+                href="https://kehidupanbumiofficial.my.id/astrophage" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2"
+            >
+                Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 pt-32 pb-16">
+        
+        <!-- Hero Section -->
+        <section id="home" class="hero-stagger max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 text-center scroll-mt-32">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-950/50 border border-blue-900/50 text-blue-300 text-sm md:text-base font-medium mb-8">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                Keuangan & Investasi Finansial
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+                Tesseract <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500">Astrophage</span>
+            </h1>
+            
+            <p class="text-xl md:text-3xl font-light text-slate-300 italic mb-10 max-w-4xl mx-auto">
+                "Melipat Dimensi Pasar, Menyerap Energi Kekayaan."
+            </p>
+            
+            <p class="text-base md:text-lg text-slate-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+                Selamat datang di <strong class="text-white font-semibold">Tesseract Astrophage</strong>, pusat komando finansial tempat analisis pasar tradisional bertransformasi menjadi strategi investasi multi-dimensi.
+            </p>
+
+            <a 
+                href="https://kehidupanbumiofficial.my.id/astrophage"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-lg font-semibold px-8 py-4 rounded-full transition-all hover:scale-105 hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.5)]"
+            >
+                Mulai Lompatan Kuantum <i data-lucide="rocket" class="w-5 h-5"></i>
+            </a>
+        </section>
+
+        <!-- Prediction Statistics -->
+        <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-24" aria-labelledby="prediction-stats-title">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
+                <div>
+                    <p class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">Market Intelligence</p>
+                    <h2 id="prediction-stats-title" class="text-3xl md:text-4xl font-bold text-white">Statistik Prediksi</h2>
+                    <p class="text-slate-400 mt-2">Ringkasan akurasi prediksi pasar terbaru.</p>
+                </div>
+                <a href="predik.html" class="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                    Lihat semua prediksi <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-blue-500/50 transition-colors">
+                    <div class="flex items-center justify-between mb-5">
+                        <span class="text-slate-400 text-sm">Jumlah Prediksi</span>
+                        <i data-lucide="layers-3" class="text-blue-400 w-5 h-5"></i>
+                    </div>
+                    <p id="home-total-pred" class="text-4xl font-bold text-white">--</p>
+                    <p class="text-slate-500 text-sm mt-2">Total catatan analisa</p>
+                </div>
+
+                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-green-500/50 transition-colors">
+                    <div class="flex items-center justify-between mb-5">
+                        <span class="text-slate-400 text-sm">Winrate</span>
+                        <i data-lucide="target" class="text-green-400 w-5 h-5"></i>
+                    </div>
+                    <p id="home-winrate" class="text-4xl font-bold text-green-400">--</p>
+                    <p class="text-slate-500 text-sm mt-2">Akurasi hasil selesai</p>
+                </div>
+
+                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-purple-500/50 transition-colors">
+                    <div class="flex items-center justify-between mb-5">
+                        <span class="text-slate-400 text-sm">Benar / Salah</span>
+                        <i data-lucide="bar-chart-3" class="text-purple-400 w-5 h-5"></i>
+                    </div>
+                    <p class="text-4xl font-bold"><span id="home-correct" class="text-green-400">--</span><span class="text-slate-600"> / </span><span id="home-wrong" class="text-red-400">--</span></p>
+                    <p class="text-slate-500 text-sm mt-2">Hasil prediksi terkonfirmasi</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Articles -->
+        <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-32" aria-labelledby="featured-articles-title">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
+                <div>
+                    <p class="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-3">Bilik Baca</p>
+                    <h2 id="featured-articles-title" class="text-3xl md:text-4xl font-bold text-white">Artikel Tesseract Astrophage</h2>
+                    <p class="text-slate-400 mt-2">Gagasan terbaru dari ruang baca Tesseract Astrophage.</p>
+                </div>
+                <a href="bilik_baca.html" class="inline-flex items-center gap-2 text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors">
+                    Buka Bilik Baca <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div id="featured-articles" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="md:col-span-3 text-center py-10 text-slate-500">
+                    <i data-lucide="book-open" class="w-7 h-7 mx-auto mb-3 animate-pulse"></i>
+                    <p class="text-sm">Memuat artikel...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trading Bot Monitor -->
+        <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-32" aria-labelledby="bot-monitor-title">
+            <a href="bot-monitor.html" class="group block bg-gradient-to-r from-slate-900/80 to-blue-950/30 backdrop-blur-sm border border-slate-800 hover:border-blue-500/60 p-6 md:p-8 rounded-3xl transition-all hover:shadow-[0_0_35px_-15px_rgba(59,130,246,0.6)]">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="flex items-start gap-5">
+                        <div class="w-14 h-14 shrink-0 bg-blue-950/60 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                            <i data-lucide="bot" class="w-7 h-7 text-blue-400"></i>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-3 mb-2">
+                                <h2 id="bot-monitor-title" class="text-2xl font-bold text-white">Automated Trading Monitor</h2>
+                                <span class="inline-flex items-center gap-2 text-xs font-semibold text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                                    Live dashboard
+                                </span>
+                            </div>
+                            <p class="text-slate-400 leading-relaxed">Pantau performa bot, pertumbuhan equity, dan riwayat transaksi dalam satu dashboard real-time.</p>
+                            <div class="flex flex-wrap gap-2 mt-4 text-xs text-slate-500">
+                                <span class="bg-slate-800/80 px-3 py-1.5 rounded-lg">Performance metrics</span>
+                                <span class="bg-slate-800/80 px-3 py-1.5 rounded-lg">Equity curve</span>
+                                <span class="bg-slate-800/80 px-3 py-1.5 rounded-lg">Trade history</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="inline-flex items-center gap-2 self-start md:self-center text-sm font-semibold text-blue-400 group-hover:text-blue-300 whitespace-nowrap">
+                        Buka monitor <i data-lucide="arrow-up-right" class="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                    </span>
+                </div>
+            </a>
+        </section>
+
+        <!-- BTCUSDT Bot Performance -->
+        <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-6" aria-labelledby="btc-performance-title">
+            <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 hover:border-orange-500/50 p-6 md:p-8 rounded-3xl transition-colors">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center justify-center">
+                            <i data-lucide="bitcoin" class="w-6 h-6 text-orange-400"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <h2 id="btc-performance-title" class="text-2xl font-bold text-white">Performa Bot BTCUSDT</h2>
+                                <span id="btc-bot-status" class="text-xs font-semibold text-slate-400 bg-slate-800 border border-slate-700 rounded-full px-3 py-1">Memuat</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mt-1">Strategi EMA 9/21 + RSI berdasarkan trade yang telah selesai.</p>
+                        </div>
+                    </div>
+                    <a href="bot-monitor.html" class="inline-flex items-center gap-2 text-sm font-medium text-orange-400 hover:text-orange-300 transition-colors">
+                        Detail monitor <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-500 mb-2">Total Trade</p>
+                        <p id="btc-total-trades" class="text-2xl font-bold text-white">--</p>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-500 mb-2">Winrate</p>
+                        <p id="btc-winrate" class="text-2xl font-bold text-green-400">--</p>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-500 mb-2">Win / Loss</p>
+                        <p class="text-2xl font-bold"><span id="btc-wins" class="text-green-400">--</span><span class="text-slate-600"> / </span><span id="btc-losses" class="text-red-400">--</span></p>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4">
+                        <p class="text-[11px] uppercase tracking-wider text-slate-500 mb-2">Total PnL</p>
+                        <p id="btc-pnl" class="text-2xl font-bold text-slate-300">--</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Concepts -->
+        <section id="konsep" class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-32 scroll-mt-32">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Inspirasi Kosmis Kami</h2>
+                <div class="h-1 w-20 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Tesseract Card -->
+                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-8 md:p-10 rounded-3xl hover:border-blue-500/50 transition-colors group">
+                    <div class="w-16 h-16 bg-blue-950/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="box" class="text-blue-400 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                        Tesseract <span class="text-sm font-normal text-slate-500 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">(Kubus 4D)</span>
+                    </h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Melambangkan cara kami melihat pasar. Kami tidak hanya melihat grafik secara linear (naik/turun), tetapi melipat dimensi waktu, risiko, dan peluang untuk melihat arah tren masa depan yang tidak terlihat oleh investor biasa.
+                    </p>
+                </div>
+
+                <!-- Astrophage Card -->
+                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-8 md:p-10 rounded-3xl hover:border-purple-500/50 transition-colors group">
+                    <div class="w-16 h-16 bg-purple-950/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="zap" class="text-purple-400 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                        Astrophage <span class="text-sm font-normal text-slate-500 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">(Pemakan Energi)</span>
+                    </h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Melambangkan strategi akumulasi aset kami. Seperti Astrophage yang menyerap energi masif dari matahari, kami fokus menemukan instrumen investasi yang memiliki densitas energi tinggi—aset yang mampu menyerap likuiditas pasar dan melipatgandakan nilai kapital secara eksponensial.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Philosophy Section -->
+        <section id="prinsip" class="reveal max-w-5xl mx-auto px-6 md:px-12 mt-32 scroll-mt-32">
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 p-8 md:p-12 rounded-3xl text-center relative overflow-hidden">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+                
+                <i data-lucide="trending-up" class="w-12 h-12 text-blue-400 mx-auto mb-6"></i>
+                
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Prinsip Navigasi Kami</h2>
+                <p class="text-lg md:text-xl text-slate-300 leading-relaxed italic mb-8">
+                    "Pasar modal adalah ruang hampa yang luas. Tanpa navigasi yang tepat, Anda akan tersesat. Di sini, kami menyediakan bahan bakar dan koordinatnya."
+                </p>
+                
+                <div class="bg-blue-950/30 inline-block px-6 py-3 rounded-xl border border-blue-900/50 text-blue-200">
+                    Bergabunglah dalam perjalanan melintasi ruang finansial. Amankan kursi Anda, serap energinya, dan lipatgandakan kekayaan Anda.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-12">
+                
+                <!-- Footer Logo & Desc -->
+                <div class="max-w-xs">
+                    <a href="#home" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+                        <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
+                        <span class="text-xl font-bold text-white">AKADEMI TROPHAGE</span>
+                    </a>
+                    <p class="text-slate-500 text-sm">
+                        Pusat komando finansial. Melipat dimensi pasar, menyerap energi kekayaan.
+                    </p>
+                </div>
+
+                <!-- Navigasi Internal -->
+                <div class="flex flex-col sm:flex-row gap-12 sm:gap-24">
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Navigasi Utama</h4>
+                        <a href="#home" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
+                        <a href="monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Live Trade</a>
+                        <a href="predik.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prediksi Pasar</a>
+                        <a href="bilik_baca.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bilik Baca</a>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Dashboard</h4>
+                        <a href="bot-monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bot Monitor</a>
+                        <a href="#konsep" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Konsep Kosmis</a>
+                        <a href="#prinsip" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prinsip Navigasi</a>
+                        <a href="tentang-kami.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Tentang Kami</a>
+                        <a href="kebijakan-privasi.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Kebijakan Privasi</a>
+                        <a href="disclaimer.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Disclaimer</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="text-slate-500 text-sm flex items-center gap-2">
+                    Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">Astrophage_Sukses</span>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="mt-12 bg-slate-900/50 border border-slate-800 rounded-xl p-6 flex gap-4 items-start">
+                <i data-lucide="shield-alert" class="text-yellow-600 w-6 h-6 flex-shrink-0 mt-1"></i>
+                <p class="text-sm text-slate-500 leading-relaxed font-mono">
+                    <strong class="text-yellow-600/80">Disclaimer:</strong> Semua konten di website dan saluran ini bersifat edukasi dan berbagi informasi futuristik. Bukan ajakan atau penasihat keuangan legal. Lakukan riset Anda sendiri (DYOR - Do Your Own Research) sebelum melakukan lompatan kuantum di pasar modal.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Utama (Icon Init & Nav Logic) -->
+    <script>
+        // Inisialisasi Icon Lucide
+        lucide.createIcons();
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.12 });
+
+        revealElements.forEach(element => revealObserver.observe(element));
+
+        const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE';
+
+        async function loadPredictionStats() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/predictions?select=status` , {
+                    headers: {
+                        apikey: SUPABASE_ANON_KEY,
+                        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Statistik belum tersedia');
+
+                const predictions = await response.json();
+                const correct = predictions.filter(item => item.status === 'BENAR').length;
+                const wrong = predictions.filter(item => item.status === 'SALAH').length;
+                const completed = correct + wrong;
+                const winrate = completed > 0 ? `${((correct / completed) * 100).toFixed(1)}%` : '0%';
+
+                document.getElementById('home-total-pred').textContent = predictions.length;
+                document.getElementById('home-winrate').textContent = winrate;
+                document.getElementById('home-correct').textContent = correct;
+                document.getElementById('home-wrong').textContent = wrong;
+            } catch (error) {
+                document.getElementById('home-total-pred').textContent = '0';
+                document.getElementById('home-winrate').textContent = '0%';
+                document.getElementById('home-correct').textContent = '0';
+                document.getElementById('home-wrong').textContent = '0';
+            }
+        }
+
+        async function loadBtcBotPerformance() {
+            const statusElement = document.getElementById('btc-bot-status');
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/trades?asset=eq.BTCUSDT&status=eq.CLOSED&select=profit_loss`, {
+                    headers: {
+                        apikey: SUPABASE_ANON_KEY,
+                        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Data bot tidak tersedia');
+
+                const trades = await response.json();
+                const wins = trades.filter(trade => Number(trade.profit_loss) > 0).length;
+                const losses = trades.filter(trade => Number(trade.profit_loss) < 0).length;
+                const totalPnl = trades.reduce((total, trade) => total + (Number(trade.profit_loss) || 0), 0);
+                const winrate = trades.length > 0 ? `${((wins / trades.length) * 100).toFixed(1)}%` : '0.0%';
+
+                document.getElementById('btc-total-trades').textContent = trades.length;
+                document.getElementById('btc-winrate').textContent = winrate;
+                document.getElementById('btc-wins').textContent = wins;
+                document.getElementById('btc-losses').textContent = losses;
+
+                const pnlElement = document.getElementById('btc-pnl');
+                pnlElement.textContent = `${totalPnl >= 0 ? '+' : ''}${totalPnl.toFixed(2)} USDT`;
+                pnlElement.className = `text-2xl font-bold ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`;
+
+                statusElement.textContent = 'Live / Terhubung';
+                statusElement.className = 'text-xs font-semibold text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1';
+            } catch (error) {
+                statusElement.textContent = 'Tidak tersedia';
+                statusElement.className = 'text-xs font-semibold text-red-400 bg-red-500/10 border border-red-500/20 rounded-full px-3 py-1';
+            }
+        }
+
+        const ARTICLES_WORKER_URL = 'https://cerita-dunia-7fd8.paku683.workers.dev';
+        const FEATURED_ARTICLE_USER = 'TESSERACT ASTROPHAGE';
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatArticleDate(dateString) {
+            if (!dateString) return 'Tanggal tidak tersedia';
+            return new Date(dateString).toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        async function loadFeaturedArticles() {
+            const articleContainer = document.getElementById('featured-articles');
+
+            try {
+                const response = await fetch(`${ARTICLES_WORKER_URL}/posts`);
+                if (!response.ok) throw new Error('Artikel belum tersedia');
+
+                const posts = await response.json();
+                const featuredPosts = posts
+                    .filter(post => (post.username || '').trim().toUpperCase() === FEATURED_ARTICLE_USER)
+                    .sort((first, second) => new Date(second.created_at || 0) - new Date(first.created_at || 0))
+                    .slice(0, 3);
+
+                if (featuredPosts.length === 0) {
+                    articleContainer.innerHTML = '<p class="md:col-span-3 text-center py-10 text-slate-500">Belum ada artikel dari Tesseract Astrophage.</p>';
+                    return;
+                }
+
+                articleContainer.innerHTML = featuredPosts.map(post => {
+                    const excerpt = (post.content || 'Artikel tanpa isi.')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    const shortExcerpt = excerpt.length > 150 ? `${excerpt.slice(0, 150)}...` : excerpt;
+
+                    return `
+                        <article class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-purple-500/50 transition-colors flex flex-col">
+                            <div class="flex items-center gap-2 text-xs text-slate-500 mb-4">
+                                <i data-lucide="book-open" class="w-4 h-4 text-purple-400"></i>
+                                <span>${escapeHtml(formatArticleDate(post.created_at))}</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3">Artikel Tesseract Astrophage</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed flex-1">${escapeHtml(shortExcerpt)}</p>
+                            <div class="flex items-center justify-between gap-3 mt-6 pt-4 border-t border-slate-800">
+                                <span class="text-xs text-purple-300 truncate">${escapeHtml(post.username)}</span>
+                                <a href="bilik_baca.html" class="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 whitespace-nowrap">
+                                    Baca <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+
+                lucide.createIcons();
+            } catch (error) {
+                articleContainer.innerHTML = '<p class="md:col-span-3 text-center py-10 text-slate-500">Artikel belum dapat dimuat saat ini.</p>';
+            }
+        }
+
+        loadPredictionStats();
+        loadBtcBotPerformance();
+        loadFeaturedArticles();
+
+        // Logika Navbar Scroll (Mengubah background saat di-scroll)
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+                navbar.classList.remove('bg-transparent', 'py-6');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-6');
+                navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+            }
+        });
+
+        // Logika Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            menuIcon.classList.toggle('hidden');
+            menuIcon.classList.toggle('block');
+            closeIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('block');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+
+        // Tutup menu saat link mobile diklik
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    toggleMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
