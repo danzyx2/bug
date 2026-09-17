@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kamus istilah keuangan dan investasi dalam bahasa Indonesia.">
+    <title>Kamus Investasi | Akademi Trophage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --ink: #f8fafc; --muted: #94a3b8; --line: #1e293b; --panel: rgba(15, 23, 42, .68); --blue: #60a5fa; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; color: var(--ink); font-family: 'DM Sans', sans-serif; background: #020617; overflow-x: hidden; }
+        a { color: inherit; text-decoration: none; }
+        .background { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .background::before, .background::after { content: ''; position: absolute; width: 48%; height: 48%; border-radius: 999px; filter: blur(120px); opacity: .2; mix-blend-mode: screen; }
+        .background::before { top: -18%; left: -10%; background: #1d4ed8; }
+        .background::after { right: -10%; bottom: -20%; background: #047857; }
+        .shell { position: relative; z-index: 1; width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+        .panel { background: var(--panel); border: 1px solid var(--line); }
+        .term-card { background: rgba(15, 23, 42, .58); border: 1px solid var(--line); transition: border-color .2s, transform .2s; }
+        .term-card:hover { border-color: rgba(96, 165, 250, .62); transform: translateY(-2px); }
+        .term-card[hidden] { display: none; }
+        .category-button { border: 1px solid #334155; color: #94a3b8; transition: color .2s, background .2s, border-color .2s; }
+        .category-button:hover, .category-button.active { color: #eff6ff; background: rgba(37, 99, 235, .28); border-color: #3b82f6; }
+        .term-letter { color: #60a5fa; font-family: 'Space Grotesk', sans-serif; }
+        .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; }
+        .reveal.is-visible { opacity: 1; transform: translateY(0); }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } .reveal { opacity: 1; transform: none; } }
+    </style>
+</head>
+<body>
+    <div class="background" aria-hidden="true"></div>
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 border-b border-transparent bg-transparent transition-all duration-300">
+        <div class="shell flex items-center justify-between py-5">
+            <a href="index.html#home" class="flex items-center gap-2">
+                <i data-lucide="activity" class="w-7 h-7 text-blue-400"></i>
+                <span class="font-bold tracking-wide">AKADEMI TROPHAGE</span>
+            </a>
+            <div class="hidden md:flex items-center gap-5 text-sm text-slate-300">
+                <a href="index.html#home" class="hover:text-blue-400">Beranda</a>
+                <a href="monitor.html" class="hover:text-blue-400">Live Trade</a>
+                <a href="ilmu.html" class="hover:text-blue-400">Ilmu Finansial</a>
+                <a href="kamus-investasi.html" class="text-blue-400">Kamus Investasi</a>
+                <a href="portal.html" class="border border-slate-700 rounded-full px-4 py-2 hover:border-blue-500 hover:text-white">Portal</a>
+            </div>
+            <button id="menuButton" class="md:hidden text-slate-300" aria-label="Buka menu"><i data-lucide="menu" class="w-6 h-6"></i></button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden shell pb-5 flex-col gap-3 text-slate-300 text-sm">
+            <a href="index.html#home">Beranda</a>
+            <a href="monitor.html">Live Trade</a>
+            <a href="ilmu.html">Ilmu Finansial</a>
+            <a href="kamus-investasi.html" class="text-blue-400">Kamus Investasi</a>
+            <a href="portal.html">Portal</a>
+        </div>
+    </nav>
+
+    <main class="shell pt-32 pb-20">
+        <header class="reveal max-w-3xl pt-10 pb-12">
+            <p class="text-blue-400 font-bold uppercase tracking-[.2em] text-xs mb-5">Referensi cepat</p>
+            <h1 class="font-['Space_Grotesk'] text-4xl md:text-6xl font-bold leading-tight">Kamus investasi yang berbicara jelas.</h1>
+            <p class="text-slate-400 text-lg leading-relaxed mt-6">Pengertian ringkas istilah yang sering muncul dalam tabungan, pasar modal, trading, dan aset digital. Gunakan sebagai titik awal riset, bukan pengganti prospektus atau nasihat profesional.</p>
+        </header>
+
+        <section class="reveal panel rounded-2xl p-4 md:p-5 mb-10 sticky top-20 z-20">
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500"></i>
+                <input id="searchInput" type="search" placeholder="Cari istilah, contoh: dividen, inflasi, stop loss" class="w-full bg-slate-950/70 border border-slate-700 rounded-xl py-3.5 pl-12 pr-4 text-slate-100 outline-none focus:border-blue-500" autocomplete="off">
+            </div>
+            <div id="categoryList" class="flex flex-wrap gap-2 mt-4" aria-label="Filter kategori"></div>
+            <p id="resultCount" class="text-xs text-slate-500 mt-4"></p>
+        </section>
+
+        <section id="termsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4" aria-live="polite"></section>
+        <div id="emptyState" class="hidden panel rounded-2xl p-12 text-center">
+            <i data-lucide="search-x" class="w-10 h-10 text-slate-500 mx-auto mb-4"></i>
+            <h2 class="text-xl font-bold text-white">Istilah tidak ditemukan</h2>
+            <p class="text-slate-400 mt-2">Coba kata kunci lain atau pilih kategori Semua.</p>
+        </div>
+
+        <section class="reveal mt-16 panel rounded-2xl p-6 md:p-8 flex gap-4 items-start">
+            <i data-lucide="info" class="w-6 h-6 text-amber-400 shrink-0 mt-1"></i>
+            <p class="text-sm text-slate-400 leading-relaxed"><strong class="text-slate-200">Catatan penting:</strong> Investasi mengandung risiko, termasuk kehilangan sebagian atau seluruh modal. Istilah dan strategi di halaman ini bersifat edukasi. Periksa legalitas produk, pahami biaya, baca dokumen resmi, dan sesuaikan keputusan dengan tujuan serta toleransi risiko Anda.</p>
+        </section>
+    </main>
+
+    <footer class="border-t border-slate-800 py-8">
+        <div class="shell flex flex-col md:flex-row justify-between gap-3 text-sm text-slate-500">
+            <span>Akademi Trophage · Kamus Investasi</span>
+            <a href="disclaimer.html" class="hover:text-blue-400">Disclaimer</a>
+        </div>
+    </footer>
+
+    <script>
+        const terms = [
+            ['Aset', 'Fondasi', 'Sesuatu yang memiliki nilai ekonomi dan dapat memberi manfaat atau arus kas di masa depan.'],
+            ['Aset berisiko', 'Fondasi', 'Aset yang nilainya dapat berubah dan berpotensi mengalami kerugian, seperti saham atau kripto.'],
+            ['Aset bebas risiko', 'Fondasi', 'Istilah teoritis untuk aset dengan risiko gagal bayar sangat rendah; bukan berarti bebas dari inflasi atau perubahan harga.'],
+            ['Bunga majemuk', 'Fondasi', 'Pertumbuhan ketika hasil investasi ikut menghasilkan imbal hasil pada periode berikutnya.'],
+            ['Diversifikasi', 'Fondasi', 'Menyebarkan dana pada beberapa aset atau sektor untuk mengurangi ketergantungan pada satu sumber risiko.'],
+            ['Inflasi', 'Fondasi', 'Kenaikan harga barang dan jasa secara umum yang mengurangi daya beli uang.'],
+            ['Likuiditas', 'Fondasi', 'Kemudahan sebuah aset dijual atau dicairkan menjadi uang tanpa perubahan harga yang besar.'],
+            ['Neraca', 'Fondasi', 'Laporan yang menunjukkan aset, kewajiban, dan ekuitas pada waktu tertentu.'],
+            ['Arus kas', 'Fondasi', 'Pergerakan uang masuk dan keluar dari individu, bisnis, atau investasi.'],
+            ['Saham', 'Saham', 'Bukti kepemilikan atas sebagian perusahaan yang dapat memberi hak atas dividen dan potensi kenaikan harga.'],
+            ['Dividen', 'Saham', 'Bagian laba perusahaan yang dibagikan kepada pemegang saham sesuai kebijakan dan keputusan perusahaan.'],
+            ['Capital gain', 'Saham', 'Keuntungan karena menjual aset pada harga lebih tinggi daripada harga belinya.'],
+            ['Capital loss', 'Saham', 'Kerugian karena menjual aset pada harga lebih rendah daripada harga belinya.'],
+            ['IPO', 'Saham', 'Initial Public Offering, yaitu penawaran saham perusahaan kepada publik untuk pertama kali.'],
+            ['Market cap', 'Saham', 'Nilai pasar perusahaan, umumnya dihitung dari harga saham dikali jumlah saham beredar.'],
+            ['Blue chip', 'Saham', 'Sebutan informal untuk saham perusahaan besar, mapan, dan memiliki rekam jejak yang relatif panjang.'],
+            ['Buyback', 'Saham', 'Aksi perusahaan membeli kembali sahamnya dari pasar atau pemegang saham.'],
+            ['Stock split', 'Saham', 'Pemecahan satu saham menjadi beberapa saham dengan harga per lembar lebih rendah tanpa mengubah nilai total kepemilikan secara langsung.'],
+            ['Obligasi', 'Obligasi', 'Surat utang yang diterbitkan pemerintah atau perusahaan dengan kewajiban pembayaran bunga dan pokok sesuai ketentuan.'],
+            ['Kupon', 'Obligasi', 'Pembayaran bunga berkala yang diterima pemegang obligasi.'],
+            ['Jatuh tempo', 'Obligasi', 'Tanggal ketika penerbit wajib melunasi pokok obligasi sesuai perjanjian.'],
+            ['Yield', 'Obligasi', 'Tingkat imbal hasil yang diperoleh atau diharapkan dari suatu obligasi berdasarkan harga dan arus kasnya.'],
+            ['Rating kredit', 'Obligasi', 'Penilaian kemampuan penerbit memenuhi kewajiban utangnya dari lembaga pemeringkat.'],
+            ['Default', 'Obligasi', 'Kegagalan atau keterlambatan penerbit memenuhi pembayaran yang telah dijanjikan.'],
+            ['Reksa dana', 'Reksa Dana dan ETF', 'Wadah yang menghimpun dana investor untuk dikelola ke dalam portofolio aset oleh manajer investasi.'],
+            ['Manajer investasi', 'Reksa Dana dan ETF', 'Pihak berizin yang mengelola portofolio atau dana investasi sesuai mandat dan aturan.'],
+            ['ETF', 'Reksa Dana dan ETF', 'Exchange Traded Fund, produk kumpulan aset yang diperdagangkan di bursa seperti saham.'],
+            ['NAV', 'Reksa Dana dan ETF', 'Net Asset Value, nilai bersih aset setelah kewajiban, biasanya menjadi dasar nilai unit reksa dana.'],
+            ['Indeks', 'Reksa Dana dan ETF', 'Tolok ukur yang mewakili kinerja kelompok aset atau pasar tertentu.'],
+            ['Expense ratio', 'Reksa Dana dan ETF', 'Persentase biaya operasional tahunan dana yang dibebankan terhadap aset kelolaan.'],
+            ['Kripto', 'Aset Digital', 'Aset digital yang umumnya menggunakan kriptografi dan jaringan terdistribusi untuk pencatatan transaksi.'],
+            ['Blockchain', 'Aset Digital', 'Buku besar digital terdistribusi yang menyimpan data transaksi dalam rangkaian blok.'],
+            ['Bitcoin', 'Aset Digital', 'Aset kripto pertama yang dirancang sebagai jaringan pembayaran dan penyimpan nilai tanpa pengendali tunggal.'],
+            ['Altcoin', 'Aset Digital', 'Sebutan untuk aset kripto selain Bitcoin.'],
+            ['Stablecoin', 'Aset Digital', 'Aset kripto yang dirancang untuk menjaga nilai relatif stabil terhadap aset acuan, namun tetap memiliki risiko.'],
+            ['Wallet', 'Aset Digital', 'Perangkat atau aplikasi untuk mengelola kunci yang digunakan mengakses aset digital.'],
+            ['Gas fee', 'Aset Digital', 'Biaya yang dibayar untuk memproses transaksi atau menjalankan program pada jaringan blockchain.'],
+            ['Smart contract', 'Aset Digital', 'Program di blockchain yang menjalankan aturan tertentu secara otomatis ketika syaratnya terpenuhi.'],
+            ['Support', 'Analisis Teknikal', 'Area harga yang sering dipandang berpotensi menahan penurunan.'],
+            ['Resistance', 'Analisis Teknikal', 'Area harga yang sering dipandang berpotensi menahan kenaikan.'],
+            ['Trend', 'Analisis Teknikal', 'Arah pergerakan harga yang dominan dalam periode tertentu, seperti naik, turun, atau mendatar.'],
+            ['Candlestick', 'Analisis Teknikal', 'Representasi harga yang menampilkan pembukaan, tertinggi, terendah, dan penutupan dalam satu periode.'],
+            ['Moving average', 'Analisis Teknikal', 'Rata-rata harga bergerak yang digunakan untuk membantu membaca arah dan momentum.'],
+            ['RSI', 'Analisis Teknikal', 'Relative Strength Index, osilator momentum yang umum dipakai untuk membaca kondisi relatif jenuh beli atau jenuh jual.'],
+            ['Volume', 'Analisis Teknikal', 'Jumlah unit atau nilai transaksi yang terjadi dalam periode tertentu.'],
+            ['BOS', 'Analisis Teknikal', 'Break of Structure, kondisi ketika harga menembus struktur penting dan dapat mengisyaratkan kelanjutan arah.'],
+            ['CHOCH', 'Analisis Teknikal', 'Change of Character, perubahan perilaku struktur harga yang dapat menjadi tanda awal perubahan tren.'],
+            ['Supply zone', 'Analisis Teknikal', 'Area harga yang diperkirakan memiliki tekanan jual relatif besar.'],
+            ['Demand zone', 'Analisis Teknikal', 'Area harga yang diperkirakan memiliki minat beli relatif besar.'],
+            ['Risk-reward ratio', 'Risiko dan Trading', 'Perbandingan potensi kerugian terhadap potensi keuntungan dalam sebuah rencana transaksi.'],
+            ['Stop loss', 'Risiko dan Trading', 'Perintah atau level untuk membatasi kerugian ketika harga bergerak berlawanan dengan rencana.'],
+            ['Take profit', 'Risiko dan Trading', 'Perintah atau level untuk merealisasikan keuntungan sesuai target yang telah ditentukan.'],
+            ['Position sizing', 'Risiko dan Trading', 'Penentuan ukuran posisi berdasarkan modal, jarak invalidasi, dan risiko yang bersedia diterima.'],
+            ['Leverage', 'Risiko dan Trading', 'Penggunaan dana pinjaman atau pengganda eksposur yang dapat memperbesar untung sekaligus rugi.'],
+            ['Margin call', 'Risiko dan Trading', 'Peringatan atau tindakan broker ketika jaminan tidak lagi cukup menutup posisi terbuka.'],
+            ['FOMO', 'Risiko dan Trading', 'Fear of Missing Out, dorongan ikut membeli karena takut melewatkan kenaikan tanpa rencana yang memadai.'],
+            ['FUD', 'Risiko dan Trading', 'Fear, Uncertainty, and Doubt, penyebaran ketakutan atau keraguan yang dapat memengaruhi sentimen pasar.'],
+            ['Broker', 'Pasar dan Biaya', 'Perantara berizin yang membantu investor melakukan transaksi di pasar keuangan.'],
+            ['Bid', 'Pasar dan Biaya', 'Harga tertinggi yang bersedia dibayar pembeli pada saat tertentu.'],
+            ['Ask', 'Pasar dan Biaya', 'Harga terendah yang bersedia diterima penjual pada saat tertentu.'],
+            ['Spread', 'Pasar dan Biaya', 'Selisih antara harga ask dan bid.'],
+            ['Slippage', 'Pasar dan Biaya', 'Perbedaan antara harga yang diharapkan dan harga eksekusi aktual.'],
+            ['Biaya transaksi', 'Pasar dan Biaya', 'Biaya yang timbul ketika membeli, menjual, atau memindahkan aset, termasuk komisi dan biaya jaringan.'],
+            ['Dollar cost averaging', 'Strategi', 'Investasi berkala dengan nominal terencana tanpa berusaha menebak harga terendah.'],
+            ['Lump sum', 'Strategi', 'Investasi seluruh dana yang tersedia pada satu waktu, dengan risiko waktu masuk yang perlu dipertimbangkan.'],
+            ['Backtest', 'Strategi', 'Pengujian aturan strategi menggunakan data historis untuk melihat perilaku masa lalu.'],
+            ['Benchmark', 'Strategi', 'Tolok ukur yang dipakai untuk membandingkan kinerja portofolio atau strategi.'],
+            ['Rebalancing', 'Strategi', 'Mengembalikan bobot portofolio ke target awal setelah pergerakan aset mengubah proporsinya.'],
+            ['Time horizon', 'Strategi', 'Jangka waktu yang direncanakan sampai dana investasi dibutuhkan.'],
+            ['Profil risiko', 'Strategi', 'Gambaran kemampuan dan kesediaan seseorang menanggung fluktuasi atau kerugian investasi.']
+        ];
+
+        const categories = ['Semua', ...new Set(terms.map(term => term[1]))];
+        const grid = document.getElementById('termsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const categoryList = document.getElementById('categoryList');
+        const resultCount = document.getElementById('resultCount');
+        const emptyState = document.getElementById('emptyState');
+        let activeCategory = 'Semua';
+
+        function renderCategories() {
+            categoryList.innerHTML = categories.map(category => `<button type="button" class="category-button rounded-full px-3 py-1.5 text-xs font-semibold ${category === activeCategory ? 'active' : ''}" data-category="${category}">${category}</button>`).join('');
+        }
+
+        function renderTerms() {
+            const query = searchInput.value.trim().toLowerCase();
+            const visibleTerms = terms.filter(([name, category, definition]) => {
+                const matchesCategory = activeCategory === 'Semua' || category === activeCategory;
+                const matchesQuery = !query || `${name} ${category} ${definition}`.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+            grid.innerHTML = visibleTerms.map(([name, category, definition]) => `<article class="term-card rounded-xl p-5"><div class="flex items-start justify-between gap-3"><span class="term-letter text-2xl font-bold">${name.charAt(0)}</span><span class="text-[10px] uppercase tracking-wider text-blue-300 bg-blue-500/10 border border-blue-500/20 rounded-full px-2 py-1">${category}</span></div><h2 class="text-lg font-bold text-white mt-3">${name}</h2><p class="text-sm text-slate-400 leading-relaxed mt-2">${definition}</p></article>`).join('');
+            resultCount.textContent = `${visibleTerms.length} istilah ditampilkan dari ${terms.length} istilah`;
+            emptyState.classList.toggle('hidden', visibleTerms.length > 0);
+        }
+
+        categoryList.addEventListener('click', event => {
+            const button = event.target.closest('[data-category]');
+            if (!button) return;
+            activeCategory = button.dataset.category;
+            renderCategories();
+            renderTerms();
+        });
+        searchInput.addEventListener('input', renderTerms);
+        document.getElementById('menuButton').addEventListener('click', () => document.getElementById('mobileMenu').classList.toggle('hidden'));
+
+        const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }), { threshold: .12 });
+        document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
+        window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('bg-slate-950/90', window.scrollY > 20));
+        lucide.createIcons();
+        renderCategories();
+        renderTerms();
+    </script>
+</body>
+</html>

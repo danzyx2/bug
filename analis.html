@@ -81,7 +81,7 @@
                     <a href="monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Konsep Kosmis</a>
                     <a href="#prinsip" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prinsip Navigasi</a>
                 </div>
-                <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+                <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
             </div>
             <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
                 <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
@@ -92,12 +92,49 @@
             <a href="#home" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
             <a href="#konsep" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Konsep Kosmis</a>
             <a href="#prinsip" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prinsip Navigasi</a>
-            <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+            <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
         </div>
     </nav>
 
     <!-- Main Content Container -->
     <main id="home" class="relative z-10 max-w-7xl mx-auto w-full px-4 pt-32 pb-16 space-y-4 flex-1">
+
+        <!-- Market & Timeframe Controls -->
+        <section class="bg-cardbg border border-bordercolor rounded-xl p-4 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Instrumen Analisis</p>
+                <h1 id="marketTitle" class="text-xl font-bold text-slate-100 mt-1">BTC/USDT · 15 menit</h1>
+                <p id="marketStatus" class="text-xs text-slate-500 mt-1">Memuat data pasar...</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
+                <label class="text-xs text-slate-400 font-semibold">
+                    Pasangan
+                    <select id="pairSelect" class="mt-1 block w-full sm:w-48 bg-slate-900 border border-bordercolor rounded-lg px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-blue-500">
+                        <option value="BTCUSDT">BTC/USDT</option>
+                        <option value="ETHUSDT">ETH/USDT</option>
+                        <option value="BNBUSDT">BNB/USDT</option>
+                        <option value="SOLUSDT">SOL/USDT</option>
+                        <option value="XRPUSDT">XRP/USDT</option>
+                        <option value="ADAUSDT">ADA/USDT</option>
+                        <option value="DOGEUSDT">DOGE/USDT</option>
+                        <option value="AVAXUSDT">AVAX/USDT</option>
+                        <option value="LINKUSDT">LINK/USDT</option>
+                    </select>
+                </label>
+                <label class="text-xs text-slate-400 font-semibold">
+                    Timeframe
+                    <select id="intervalSelect" class="mt-1 block w-full sm:w-48 bg-slate-900 border border-bordercolor rounded-lg px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-blue-500">
+                        <option value="1m">1 menit</option>
+                        <option value="5m">5 menit</option>
+                        <option value="15m" selected>15 menit</option>
+                        <option value="30m">30 menit</option>
+                        <option value="1h">1 jam</option>
+                        <option value="4h">4 jam</option>
+                        <option value="1d">1 hari</option>
+                    </select>
+                </label>
+            </div>
+        </section>
 
         <!-- Metrics & Signals Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
@@ -257,7 +294,7 @@
 
                     <div class="flex flex-col gap-3">
                         <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Portal Eksternal</h4>
-                        <a href="https://kehidupanbumiofficial.my.id/astrophage" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors bg-blue-950/30 px-4 py-2 rounded-lg border border-blue-900/50 text-sm">
+                        <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors bg-blue-950/30 px-4 py-2 rounded-lg border border-blue-900/50 text-sm">
                             <i data-lucide="globe" class="w-4 h-4"></i>
                             Website Resmi
                         </a>
@@ -292,6 +329,7 @@
         let chartPrice, seriesCandle, seriesEMA200;
         let chartOBV, seriesOBV, seriesAD;
         let chartRSI, seriesRSI, seriesOverbought, seriesOversold;
+        let smcSeries = [];
 
         // Initialize Lucide Icons
         lucide.createIcons();
@@ -411,6 +449,93 @@
             if (lastShort > lastLong) return 'NAIK';
             if (lastShort < lastLong) return 'TURUN';
             return 'NETRAL';
+        }
+
+        function detectSMC(candles, swingSize = 3) {
+            const swingHighs = [];
+            const swingLows = [];
+
+            for (let index = swingSize; index < candles.length - swingSize; index++) {
+                const current = candles[index];
+                const left = candles.slice(index - swingSize, index);
+                const right = candles.slice(index + 1, index + swingSize + 1);
+                const isSwingHigh = left.every(candle => current.high > candle.high) && right.every(candle => current.high >= candle.high);
+                const isSwingLow = left.every(candle => current.low < candle.low) && right.every(candle => current.low <= candle.low);
+
+                if (isSwingHigh) swingHighs.push({ index, price: current.high, time: current.time });
+                if (isSwingLow) swingLows.push({ index, price: current.low, time: current.time });
+            }
+
+            const structureMarkers = [];
+            let lastHigh = null;
+            let lastLow = null;
+            let trend = 'NEUTRAL';
+
+            for (let index = swingSize + 1; index < candles.length; index++) {
+                const candle = candles[index];
+                const availableHigh = swingHighs.filter(swing => swing.index < index).at(-1);
+                const availableLow = swingLows.filter(swing => swing.index < index).at(-1);
+
+                if (availableHigh && (!lastHigh || availableHigh.index > lastHigh.index)) lastHigh = availableHigh;
+                if (availableLow && (!lastLow || availableLow.index > lastLow.index)) lastLow = availableLow;
+
+                if (lastHigh && candle.close > lastHigh.price && candles[index - 1].close <= lastHigh.price) {
+                    structureMarkers.push({ time: candle.time, position: 'belowBar', color: '#22c55e', shape: 'arrowUp', text: trend === 'BEARISH' ? 'CHOCH' : 'BOS' });
+                    trend = 'BULLISH';
+                } else if (lastLow && candle.close < lastLow.price && candles[index - 1].close >= lastLow.price) {
+                    structureMarkers.push({ time: candle.time, position: 'aboveBar', color: '#ef4444', shape: 'arrowDown', text: trend === 'BULLISH' ? 'CHOCH' : 'BOS' });
+                    trend = 'BEARISH';
+                }
+            }
+
+            const supplyZones = swingHighs.slice(-3).map(swing => ({
+                startIndex: swing.index,
+                top: swing.price,
+                bottom: Math.max(candles[swing.index].open, candles[swing.index].close)
+            }));
+            const demandZones = swingLows.slice(-3).map(swing => ({
+                startIndex: swing.index,
+                top: Math.min(candles[swing.index].open, candles[swing.index].close),
+                bottom: swing.price
+            }));
+
+            return { swingHighs, swingLows, supplyZones, demandZones, structureMarkers };
+        }
+
+        function addSMCLine(price, startTime, endTime, color, title) {
+            const lineSeries = chartPrice.addLineSeries({
+                color,
+                lineWidth: 1,
+                lineStyle: 2,
+                title,
+                priceLineVisible: false,
+                lastValueVisible: false,
+                crosshairMarkerVisible: false
+            });
+            lineSeries.setData([{ time: startTime, value: price }, { time: endTime, value: price }]);
+            smcSeries.push(lineSeries);
+        }
+
+        function renderSMC(candles) {
+            smcSeries.forEach(series => chartPrice.removeSeries(series));
+            smcSeries = [];
+            const smc = detectSMC(candles);
+            const endTime = candles[candles.length - 1].time;
+
+            smc.supplyZones.forEach((zone, index) => {
+                const startTime = candles[zone.startIndex].time;
+                addSMCLine(zone.top, startTime, endTime, 'rgba(239, 68, 68, 0.9)', index === smc.supplyZones.length - 1 ? 'Supply High' : '');
+                addSMCLine(zone.bottom, startTime, endTime, 'rgba(239, 68, 68, 0.45)', index === smc.supplyZones.length - 1 ? 'Supply Low' : '');
+            });
+            smc.demandZones.forEach((zone, index) => {
+                const startTime = candles[zone.startIndex].time;
+                addSMCLine(zone.top, startTime, endTime, 'rgba(34, 197, 94, 0.45)', index === smc.demandZones.length - 1 ? 'Demand High' : '');
+                addSMCLine(zone.bottom, startTime, endTime, 'rgba(34, 197, 94, 0.9)', index === smc.demandZones.length - 1 ? 'Demand Low' : '');
+            });
+
+            smc.swingHighs.slice(-3).forEach(swing => addSMCLine(swing.price, candles[swing.index].time, endTime, 'rgba(245, 158, 11, 0.65)', 'Swing High'));
+            smc.swingLows.slice(-3).forEach(swing => addSMCLine(swing.price, candles[swing.index].time, endTime, 'rgba(245, 158, 11, 0.65)', 'Swing Low'));
+            seriesCandle.setMarkers(smc.structureMarkers);
         }
 
         // --- CHART INITIALIZATION ---
@@ -575,6 +700,7 @@
             // Set Chart Series Data
             seriesCandle.setData(candleSeriesData);
             seriesEMA200.setData(ema200SeriesData);
+            renderSMC(candleData);
             seriesOBV.setData(obvSeriesData);
             seriesAD.setData(adSeriesData);
             seriesRSI.setData(rsiSeriesData);
@@ -784,9 +910,28 @@
             };
         }
 
+        function formatInterval(interval) {
+            const labels = {
+                '1m': '1 menit', '5m': '5 menit', '15m': '15 menit', '30m': '30 menit',
+                '1h': '1 jam', '4h': '4 jam', '1d': '1 hari'
+            };
+            return labels[interval] || interval;
+        }
+
+        function updateMarketHeader() {
+            const marketTitle = document.getElementById('marketTitle');
+            const marketStatus = document.getElementById('marketStatus');
+            const pairLabel = pairSelect.options[pairSelect.selectedIndex].text;
+            marketTitle.textContent = `${pairLabel} · ${formatInterval(currentInterval)}`;
+            marketStatus.textContent = `Data Binance · 300 candle · SMC aktif`;
+        }
+
         function updateWSStatus(status, text) {
             const dot = document.getElementById('wsStatusDot');
             const textElem = document.getElementById('wsStatusText');
+
+            if (!dot || !textElem) return;
+
             textElem.textContent = text;
 
             if (status === 'Live') {
@@ -799,22 +944,36 @@
         }
 
         // --- EVENT LISTENERS ---
-        document.getElementById('pairSelect').addEventListener('change', (e) => {
-            currentSymbol = e.target.value;
-            fetchHistoricalData();
-        });
+        const pairSelect = document.getElementById('pairSelect');
+        if (pairSelect) {
+            pairSelect.addEventListener('change', (e) => {
+                currentSymbol = e.target.value;
+                updateMarketHeader();
+                fetchHistoricalData();
+            });
+        }
 
-        document.getElementById('intervalSelect').addEventListener('change', (e) => {
-            currentInterval = e.target.value;
-            fetchHistoricalData();
-        });
+        const intervalSelect = document.getElementById('intervalSelect');
+        if (intervalSelect) {
+            intervalSelect.addEventListener('change', (e) => {
+                currentInterval = e.target.value;
+                updateMarketHeader();
+                fetchHistoricalData();
+            });
+        }
 
         // --- APPLICATION INIT ---
         window.onload = () => {
+            updateMarketHeader();
             initCharts();
             fetchHistoricalData();
         };
     </script>
+    <script type="text/javascript">
+var infolinks_pid = 3447906;
+var infolinks_wsid = 0;
+</script>
+<script type="text/javascript" src="https://resources.infolinks.com/js/infolinks_main.js"></script>
 </body>
 </html>
 
