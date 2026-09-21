@@ -62,6 +62,12 @@
             animation: drift-purple 22s ease-in-out infinite;
         }
 
+        .tradingview-widget-container > iframe {
+            display: block;
+            width: 100% !important;
+            height: 468px !important;
+        }
+
         .hero-stagger > * {
             opacity: 0;
             animation: hero-rise 0.8s ease-out forwards;
@@ -198,6 +204,72 @@
                 Mulai Lompatan Kuantum <i data-lucide="rocket" class="w-5 h-5"></i>
             </a>
         </section>
+
+                <!-- TradingView Market Overview -->
+                <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-24" aria-labelledby="market-overview-title">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
+                                <div>
+                                        <p class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">Market Overview</p>
+                                        <h2 id="market-overview-title" class="text-3xl md:text-4xl font-bold text-white">Pantauan Pasar</h2>
+                                        <p class="text-slate-400 mt-2">Pergerakan IHSG, Bitcoin, dan emas dalam satu tampilan.</p>
+                                </div>
+                        </div>
+
+                        <div class="tradingview-widget-container min-h-[500px] h-[600px] w-full overflow-hidden rounded-2xl border border-slate-800 bg-[#0F0F0F]">
+                                <div class="tradingview-widget-container__widget h-full"></div>
+                                <div class="tradingview-widget-copyright px-4 py-2 text-xs text-slate-500"><a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank"><span class="text-blue-400">World markets</span></a> by TradingView</div>
+                                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
+                                {
+                                    "lineWidth": 2,
+                                    "lineType": 0,
+                                    "chartType": "area",
+                                    "fontColor": "rgb(106, 109, 120)",
+                                    "gridLineColor": "rgba(242, 242, 242, 0.06)",
+                                    "volumeUpColor": "rgba(34, 171, 148, 0.5)",
+                                    "volumeDownColor": "rgba(247, 82, 95, 0.5)",
+                                    "backgroundColor": "#0F0F0F",
+                                    "widgetFontColor": "#DBDBDB",
+                                    "upColor": "#22ab94",
+                                    "downColor": "#f7525f",
+                                    "borderUpColor": "#22ab94",
+                                    "borderDownColor": "#f7525f",
+                                    "wickUpColor": "#22ab94",
+                                    "wickDownColor": "#f7525f",
+                                    "colorTheme": "dark",
+                                    "isTransparent": false,
+                                    "locale": "en",
+                                    "chartOnly": false,
+                                    "scalePosition": "right",
+                                    "scaleMode": "Normal",
+                                    "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+                                    "valuesTracking": "1",
+                                    "changeMode": "price-and-percent",
+                                    "symbols": [
+                                        ["FINRA:IHSG5309967|1D"],
+                                        ["BYBIT:BTCUSDT.P|1D"],
+                                        ["BINANCE:XAUUSDT.P|1D"]
+                                    ],
+                                    "dateRanges": [
+                                        "1d|1",
+                                        "1m|30",
+                                        "3m|60",
+                                        "12m|1D",
+                                        "60m|1W",
+                                        "all|1M"
+                                    ],
+                                    "fontSize": "10",
+                                    "headerFontSize": "medium",
+                                    "autosize": true,
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "noTimeScale": false,
+                                    "hideDateRanges": false,
+                                    "hideMarketStatus": false,
+                                    "hideSymbolLogo": false
+                                }
+                                </script>
+                        </div>
+                </section>
 
         <!-- Prediction Statistics -->
         <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-24" aria-labelledby="prediction-stats-title">
