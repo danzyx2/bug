@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekomendasi Produk - Akademi Trophage</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons via CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Config untuk Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .scroll-mt-32 {
+            scroll-margin-top: 8rem;
+        }
+
+        @keyframes drift-blue {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(7vw, 4vh, 0) scale(1.08); }
+        }
+
+        @keyframes drift-purple {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(-6vw, -5vh, 0) scale(1.1); }
+        }
+
+        @keyframes hero-rise {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .orb-blue {
+            animation: drift-blue 18s ease-in-out infinite;
+        }
+
+        .orb-purple {
+            animation: drift-purple 22s ease-in-out infinite;
+        }
+
+        .hero-stagger > * {
+            opacity: 0;
+            animation: hero-rise 0.8s ease-out forwards;
+        }
+
+        .hero-stagger > *:nth-child(1) { animation-delay: 0.1s; }
+        .hero-stagger > *:nth-child(2) { animation-delay: 0.22s; }
+        .hero-stagger > *:nth-child(3) { animation-delay: 0.34s; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.75s ease, transform 0.75s ease;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased">
+
+    <!-- Animated Background Orbs -->
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="orb-blue absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
+        <div class="orb-purple absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <a href="index.html#home" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <i data-lucide="activity" class="text-blue-400 w-8 h-8"></i>
+                <span class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">
+                    AKADEMI TROPHAGE
+                </span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center gap-5">
+                <div class="flex gap-4">
+                    <a href="index.html#home" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Beranda</a>
+                    <a href="monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Live Trade</a>
+                    <a href="predik.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prediksi Pasar</a>
+                    <a href="bilik_baca.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bilik Baca</a>
+                    <a href="bot-monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bot Monitor</a>
+                    <a href="produk.html" class="text-sm font-medium text-blue-400 font-semibold transition-colors">Rekomendasi</a>
+                </div>
+                <a 
+                    href="portal.html" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2"
+                >
+                    Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
+                <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
+            <a href="index.html#home" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
+            <a href="monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Live Trade</a>
+            <a href="predik.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prediksi Pasar</a>
+            <a href="bilik_baca.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bilik Baca</a>
+            <a href="bot-monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bot Monitor</a>
+            <a href="produk.html" class="mobile-link text-base font-medium text-blue-400 py-2 block">Rekomendasi</a>
+            <a 
+                href="portal.html" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2"
+            >
+                Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 pt-32 pb-16">
+        
+        <!-- Hero Section -->
+        <section class="hero-stagger max-w-7xl mx-auto px-6 md:px-12 pt-8 md:pt-12 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-950/50 border border-blue-900/50 text-blue-300 text-sm font-medium mb-6">
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-blue-400"></i>
+                Katalog Pilihan
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+                Rekomendasi <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500">Produk Terpilih</span>
+            </h1>
+            
+            <p class="text-base md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Kumpulan produk perlengkapan, gadget, aksesoris, hingga kebutuhan harian berkualitas pilihan kami.
+            </p>
+
+            <!-- Search Bar -->
+            <div class="max-w-md mx-auto relative mb-12">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500"></i>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Cari produk..." 
+                    class="w-full bg-slate-900/80 border border-slate-800 focus:border-blue-500 rounded-full py-3.5 pl-12 pr-4 text-slate-200 placeholder-slate-500 outline-none transition-all shadow-lg focus:shadow-blue-500/10"
+                >
+            </div>
+        </section>
+<!-- Disclaimer Banner Kecil -->
+<div class="max-w-xl mx-auto mb-10 p-3 rounded-xl bg-blue-950/30 border border-blue-900/40 text-slate-400 text-xs flex items-center justify-center gap-2">
+    <i data-lucide="info" class="w-4 h-4 text-blue-400 shrink-0"></i>
+    <span>Situs ini berpartisipasi dalam Shopee Program. Semua transaksi diproses aman oleh Shopee Indonesia.</span>
+</div>
+        <!-- Product Grid Section -->
+        <section class="reveal max-w-7xl mx-auto px-6 md:px-12">
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Data produk akan di-render otomatis oleh JavaScript -->
+            </div>
+
+            <!-- Empty state jika pencarian tidak ditemukan -->
+            <div id="empty-state" class="hidden text-center py-16">
+                <i data-lucide="package-search" class="w-12 h-12 text-slate-600 mx-auto mb-4"></i>
+                <h3 class="text-lg font-semibold text-slate-300">Produk tidak ditemukan</h3>
+                <p class="text-slate-500 text-sm mt-1">Coba kata kunci pencarian yang lain.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-12">
+                
+                <div class="max-w-xs">
+                    <a href="index.html#home" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+                        <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
+                        <span class="text-xl font-bold text-white">AKADEMI TROPHAGE</span>
+                    </a>
+                    <p class="text-slate-500 text-sm">
+                        Pusat komando finansial. Melipat dimensi pasar, menyerap energi kekayaan.
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-12 sm:gap-24">
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Navigasi Utama</h4>
+                        <a href="index.html#home" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
+                        <a href="monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Live Trade</a>
+                        <a href="predik.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prediksi Pasar</a>
+                        <a href="bilik_baca.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bilik Baca</a>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Dashboard</h4>
+                        <a href="bot-monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bot Monitor</a>
+                        <a href="produk.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Rekomendasi Produk</a>
+                        <a href="tentang-kami.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Tentang Kami</a>
+                        <a href="kebijakan-privasi.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Kebijakan Privasi</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="text-slate-500 text-sm flex items-center gap-2">
+                    Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">Astrophage_Sukses</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Utama & Pengelolaan Data Produk -->
+    <script>
+        // Inisialisasi Icon Lucide
+        lucide.createIcons();
+
+        // Data Produk
+        const ads = [
+            ['Casing HP transparan iPhone 13', 'https://s.shopee.co.id/1135VpsWsQ', 'Lindungi ponsel Anda dengan casing transparan yang tetap menampilkan desain asli iPhone 13.'],
+            ['Kabel data USB micro charger 1 meter', 'https://s.shopee.co.id/60RlT9jBfV', 'Butuh kabel cadangan untuk pengisian daya dan transfer data sehari-hari?'],
+            ['Tempered Glass Anti Spy Oppo Reno 5G Privacy', 'https://s.shopee.co.id/30o9tod6Rm', 'Jaga layar dan privasi Anda saat menggunakan Oppo Reno 5G di tempat umum.'],
+            ['XBOX PC Game Pass Sharing Original', 'https://s.shopee.co.id/7Kx93uSRu8', 'Nikmati pilihan game PC dengan akses Game Pass yang praktis dan terjangkau.'],
+            ['GOD OF WAR RAGNAROK Deluxe Edition PC', 'https://s.shopee.co.id/7ptPeyQthD', 'Lengkapi koleksi game Anda dengan pengalaman epik God of War Ragnarök.'],
+            ['Minecraft Bedrock Edition PC Original Microsoft', 'https://s.shopee.co.id/9fL3qPZQ5v', 'Bangun dunia dan berpetualang bersama Minecraft Bedrock Edition resmi.'],
+            ['Sepatu Safety Pria Kulit Asli Sol Karet Besi', 'https://s.shopee.co.id/9KiDRsYwcT', 'Dapatkan perlindungan kerja yang kokoh dengan sepatu safety berbahan kulit asli.'],
+            ['Sepatu Sneakers Full Kulit Asli', 'https://s.shopee.co.id/9AOnFe32Hn', 'Pilih sneakers kulit yang nyaman dan kuat untuk menemani aktivitas harian.'],
+            ['Sandal Outdoor Pro Stallion Jepit Ergonomis', 'https://s.shopee.co.id/5VVUt6trxV', 'Siapkan alas kaki ringan dan ergonomis untuk aktivitas outdoor Anda.'],
+            ['Beam 100 Watt RGB fullcolor gobo bisa berputar garansi 1 bulan dan Lampu ini versi terbaru', 'https://s.shopee.co.id/3LR1qId5Jz', 'Solusi pencahayaan panggung dan acara dengan Beam 100 Watt RGB fullcolor.'],
+            ['TCON - TICON - TEKON TIKON - T CON TV PANASONIC TH 50CX400G PANASONIC TH 50CX400 G', 'https://s.shopee.co.id/3B7bdzdiey', 'Sparepart T-Con board original untuk perbaikan TV Panasonic TH 50CX400G.'],
+            ['TCON LOGIC BOARD LED TV PANASONIC TH 49fx505k', 'https://s.shopee.co.id/30oBRgeLzx', 'T-Con logic board untuk unit LED TV Panasonic model TH 49fx505k.'],
+            ['FET FQPf7N65C 8N65C 9N65C 10N65C 11N65C 12N65C 13N65C 14N65C 15N65C 18N65C 19N65C 20N65C Original', 'https://s.shopee.co.id/2qUlFNezKw', 'Komponen MOSFET original tahan tegangan dan arus tinggi dengan desain kompak.'],
+            ['IC LNK6778K LNK6778 LNK 6778K 6778 K SOP 11 SMD ori', 'https://s.shopee.co.id/2gBL34fcfv', 'IC power switcher LNK6778K original kemasan SOP-11 SMD untuk modul elektronik.'],
+            ['ALUPLATINUM atau evap kulkas 50 cm dan pasta alumunium', 'https://s.shopee.co.id/5Asg1fW6bQ', 'Evaporator kulkas ukuran 50 cm beserta pasta aluminium penyambung.'],
+            ['Electrolux Oven EOT7024XFG 70L Hitam Black Bolu', 'https://s.shopee.co.id/50ZFpMWjwP', 'Oven listrik kapasitas besar 70 liter dari Electrolux untuk memanggang kue dan makanan.'],
+            ['Oven De Costa 150 Liter Signora', 'https://s.shopee.co.id/4qFpd3XNHO', 'Oven Signora De Costa kapasitas ekstra luas 150 liter untuk kebutuhan baking profesional.'],
+            ['ic cof lcd tv VHIL50327B6-2L rohs', 'https://s.shopee.co.id/4fwPQkY0cN', 'Komponen IC COF fleksibel panel layar LCD TV tipe VHIL50327B6-2L.'],
+            ['REGULATOR WINN GAS HIGHPRESURE TEKANAN TINGGI NON METER', 'https://s.shopee.co.id/4VczERYdxM', 'Regulator gas tekanan tinggi merek Winn Gas tanpa meteran untuk kompor komersial.'],
+            ['RINNAI KOMPOR GAS 2 TUNGKU RI-202S', 'https://s.shopee.co.id/4LJZ28ZHIL', 'Kompor gas Rinnai 2 tungku seri RI-202S yang hemat gas dan tahan lama.'],
+            ['Sanex Kompor Gas 1 Tungku K-808 S K808S', 'https://s.shopee.co.id/4B08ppZudK', 'Kompor gas 1 tungku Sanex K-808 S yang praktis dan ringkas untuk dapur minimalis.'],
+            ['Dianmod cutting Dicc 4 inch American tool gerinda potong', 'https://s.shopee.co.id/40gidWaXyJ', 'Mata gerinda potong Diamond Cutting 4 inci dari American Tool untuk pemotongan presisi.']
+        ];
+
+        // Render produk ke HTML
+        const productGrid = document.getElementById('product-grid');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('search-input');
+
+        function renderProducts(items) {
+            if (items.length === 0) {
+                productGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            productGrid.innerHTML = items.map(([title, link, desc]) => `
+                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 hover:border-blue-500/50 p-6 rounded-2xl transition-all duration-300 flex flex-col justify-between group hover:shadow-[0_0_25px_-5px_rgba(59,130,246,0.2)]">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full px-3 py-1">
+                                <i data-lucide="tag" class="w-3 h-3"></i> Shopee
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-blue-300 transition-colors line-clamp-2">
+                            ${title}
+                        </h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3">
+                            ${desc}
+                        </p>
+                    </div>
+                    <a 
+                        href="${link}" 
+                        target="_blank" 
+                        rel="noopener noreferrer sponsored" 
+                        class="inline-flex items-center justify-center gap-2 w-full bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all duration-200 border border-slate-700 hover:border-blue-500"
+                    >
+                        Lihat Produk <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Jalankan render awal
+        renderProducts(ads);
+
+        // Fitur Pencarian Real-time
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = ads.filter(([title, _, desc]) => 
+                title.toLowerCase().includes(query) || desc.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        });
+
+        // Intersection Observer untuk efek animasi scroll (reveal)
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.12 });
+
+        revealElements.forEach(element => revealObserver.observe(element));
+
+        // Logika Scroll Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+                navbar.classList.remove('bg-transparent', 'py-6');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-6');
+                navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            menuIcon.classList.toggle('hidden');
+            menuIcon.classList.toggle('block');
+            closeIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('block');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+    </script>
+</body>
+</html>

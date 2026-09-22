@@ -8,8 +8,22 @@
         ['Minecraft Bedrock Edition PC Original Microsoft', 'https://s.shopee.co.id/9fL3qPZQ5v', 'Bangun dunia dan berpetualang bersama Minecraft Bedrock Edition resmi.'],
         ['Sepatu Safety Pria Kulit Asli Sol Karet Besi', 'https://s.shopee.co.id/9KiDRsYwcT', 'Dapatkan perlindungan kerja yang kokoh dengan sepatu safety berbahan kulit asli.'],
         ['Sepatu Sneakers Full Kulit Asli', 'https://s.shopee.co.id/9AOnFe32Hn', 'Pilih sneakers kulit yang nyaman dan kuat untuk menemani aktivitas harian.'],
-        ['Sandal Outdoor Pro Stallion Jepit Ergonomis', 'https://s.shopee.co.id/5VVUt6trxV', 'Siapkan alas kaki ringan dan ergonomis untuk aktivitas outdoor Anda.']
-    ];
+        ['Sandal Outdoor Pro Stallion Jepit Ergonomis', 'https://s.shopee.co.id/5VVUt6trxV', 'Siapkan alas kaki ringan dan ergonomis untuk aktivitas outdoor Anda.'],
+        ['Beam 100 Watt RGB fullcolor gobo bisa berputar garansi 1 bulan dan Lampu ini versi terbaru', 'https://s.shopee.co.id/3LR1qId5Jz', 'Solusi pencahayaan panggung dan acara dengan Beam 100 Watt RGB fullcolor.'],
+        ['TCON - TICON - TEKON TIKON - T CON TV PANASONIC TH 50CX400G PANASONIC TH 50CX400 G', 'https://s.shopee.co.id/3B7bdzdiey', 'Sparepart T-Con board original untuk perbaikan TV Panasonic TH 50CX400G.'],
+        ['TCON LOGIC BOARD LED TV PANASONIC TH 49fx505k', 'https://s.shopee.co.id/30oBRgeLzx', 'T-Con logic board untuk unit LED TV Panasonic model TH 49fx505k.'],
+        ['FET FQPf7N65C 8N65C 9N65C 10N65C 11N65C 12N65C 13N65C 14N65C 15N65C 18N65C 19N65C 20N65C Original', 'https://s.shopee.co.id/2qUlFNezKw', 'Komponen MOSFET original tahan tegangan dan arus tinggi dengan desain kompak.'],
+        ['IC LNK6778K LNK6778 LNK 6778K 6778 K SOP 11 SMD ori', 'https://s.shopee.co.id/2gBL34fcfv', 'IC power switcher LNK6778K original kemasan SOP-11 SMD untuk modul elektronik.'],
+        ['ALUPLATINUM atau evap kulkas 50 cm dan pasta alumunium', 'https://s.shopee.co.id/5Asg1fW6bQ', 'Evaporator kulkas ukuran 50 cm beserta pasta aluminium penyambung.'],
+        ['Electrolux Oven EOT7024XFG 70L Hitam Black Bolu', 'https://s.shopee.co.id/50ZFpMWjwP', 'Oven listrik kapasitas besar 70 liter dari Electrolux untuk memanggang kue dan makanan.'],
+        ['Oven De Costa 150 Liter Signora', 'https://s.shopee.co.id/4qFpd3XNHO', 'Oven Signora De Costa kapasitas ekstra luas 150 liter untuk kebutuhan baking profesional.'],
+        ['ic cof lcd tv VHIL50327B6-2L rohs', 'https://s.shopee.co.id/4fwPQkY0cN', 'Komponen IC COF fleksibel panel layar LCD TV tipe VHIL50327B6-2L.'],
+        ['REGULATOR WINN GAS HIGHPRESURE TEKANAN TINGGI NON METER', 'https://s.shopee.co.id/4VczERYdxM', 'Regulator gas tekanan tinggi merek Winn Gas tanpa meteran untuk kompor komersial.'],
+        ['RINNAI KOMPOR GAS 2 TUNGKU RI-202S', 'https://s.shopee.co.id/4LJZ28ZHIL', 'Kompor gas Rinnai 2 tungku seri RI-202S yang hemat gas dan tahan lama.'],
+        ['Sanex Kompor Gas 1 Tungku K-808 S K808S', 'https://s.shopee.co.id/4B08ppZudK', 'Kompor gas 1 tungku Sanex K-808 S yang praktis dan ringkas untuk dapur minimalis.'],
+        ['Dianmod cutting Dicc 4 inch American tool gerinda potong', 'https://s.shopee.co.id/40gidWaXyJ', 'Mata gerinda potong Diamond Cutting 4 inci dari American Tool untuk pemotongan presisi.']
+];
+    
 
     const main = document.querySelector('main');
     if (!main || document.querySelector('[data-promo-links]')) return;
