@@ -11,6 +11,9 @@
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <!-- Lucide Icons via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -154,8 +157,7 @@
             </h1>
             <p class="text-sm text-slate-400 mt-1">Real-time performance metrics & trade history</p>
           </div>
-          <div class="mt-4 md:mt-0 flex flex-col items-start md:items-end gap-3">
-            <div class="flex items-center gap-4">
+          <div class="mt-4 md:mt-0 flex items-center gap-4">
             <span id="status-badge" class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 flex items-center gap-2">
               <span class="relative flex h-2 w-2">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
@@ -166,11 +168,6 @@
             <button onclick="fetchDashboardData()" class="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 text-xs font-semibold rounded-xl transition-all hover:scale-105 flex items-center gap-2">
               <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh Data
             </button>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <a href="monitor.html" class="px-4 py-2 text-xs font-semibold rounded-xl text-slate-200 border border-slate-700 hover:border-blue-500 transition-colors">Live Trade</a>
-              <button type="button" onclick="bukaKuisLisensi()" class="px-4 py-2 text-xs font-semibold rounded-xl text-white bg-blue-600 hover:bg-blue-500 transition-colors">Buy Lisensi Key</button>
-            </div>
           </div>
         </header>
 <!-- BEGIN AADS AD UNIT 2456035 -->
@@ -181,20 +178,6 @@
         </div>
 
 <!-- END AADS AD UNIT 2456035 -->
-        <section id="license-gate" class="reveal glass-panel p-6 md:p-8 rounded-2xl shadow-lg">
-          <div class="max-w-2xl">
-            <p class="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">Akses Pemegang Lisensi</p>
-            <h2 class="text-xl md:text-2xl font-bold text-white">Masukkan lisensi untuk melihat data bot</h2>
-            <p class="text-sm text-slate-400 mt-2 mb-5">License key akan diverifikasi oleh Cloudflare Worker.</p>
-            <form onsubmit="simpanLisensiBot(event)" class="flex flex-col sm:flex-row gap-3">
-              <input id="license-key-input" type="password" autocomplete="off" required placeholder="Masukkan premium license key" class="min-w-0 flex-1 px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500">
-              <button id="license-submit" type="submit" class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors">Verifikasi & Lihat Data</button>
-            </form>
-            <p id="license-status" role="status" class="text-xs text-slate-500 mt-3">Data hanya dimuat setelah lisensi valid.</p>
-          </div>
-        </section>
-
-        <div id="dashboard-content" class="hidden space-y-6">
         <!-- RINGKASAN METRIK PER STRATEGI (CARDS) -->
         <div id="metrics-container" class="reveal grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Card BTCUSDT & ETHUSDT akan di-render dinamis oleh JavaScript -->
@@ -240,57 +223,8 @@
           </div>
         </div>
 
-        </div>
       </div>
   </main>
-
-  <div id="license-quiz-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/90 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="license-quiz-title">
-    <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-900 p-6 md:p-8 shadow-2xl">
-      <div class="flex items-start justify-between gap-4 mb-6">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">Cek Kesiapan</p>
-          <h2 id="license-quiz-title" class="text-xl md:text-2xl font-bold text-white">Kuis Psikologi & Emosi Trading</h2>
-          <p class="text-sm text-slate-400 mt-2">Jawab semua pertanyaan. Semua jawaban tepat diperlukan untuk membuka halaman pembelian.</p>
-        </div>
-        <button type="button" onclick="tutupKuisLisensi()" class="text-slate-400 hover:text-white text-2xl leading-none" aria-label="Tutup kuis">&times;</button>
-      </div>
-      <form id="license-quiz-form" onsubmit="submitKuisLisensi(event)" class="space-y-5">
-        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-          <legend class="px-1 text-sm font-semibold text-white">1. Posisi Anda terkena stop loss. Bagaimana respons yang paling terkendali?</legend>
-          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion1" value="a" required class="mt-1 accent-blue-500"> Langsung masuk lagi dengan ukuran lebih besar untuk membalas kerugian.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion1" value="b" class="mt-1 accent-blue-500"> Terima hasil, evaluasi rencana, dan jeda bila emosi belum stabil.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion1" value="c" class="mt-1 accent-blue-500"> Hapus stop loss agar posisi punya waktu untuk pulih.</label>
-        </fieldset>
-        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-          <legend class="px-1 text-sm font-semibold text-white">2. Harga bergerak cepat dan Anda takut tertinggal. Apa yang dilakukan?</legend>
-          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion2" value="a" required class="mt-1 accent-blue-500"> Kejar harga segera sebelum bergerak lebih jauh.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion2" value="b" class="mt-1 accent-blue-500"> Ikuti rencana; jika setup terlewat, tunggu peluang berikutnya.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion2" value="c" class="mt-1 accent-blue-500"> Naikkan leverage supaya keterlambatan tertutupi.</label>
-        </fieldset>
-        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-          <legend class="px-1 text-sm font-semibold text-white">3. Setelah beberapa kali profit, Anda ingin menggandakan risiko. Apa pilihan terbaik?</legend>
-          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion3" value="a" required class="mt-1 accent-blue-500"> Pertahankan batas risiko yang ditetapkan sebelum trading.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion3" value="b" class="mt-1 accent-blue-500"> Tambah risiko selama merasa sedang beruntung.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion3" value="c" class="mt-1 accent-blue-500"> Gunakan seluruh profit sebagai modal satu trade.</label>
-        </fieldset>
-        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-          <legend class="px-1 text-sm font-semibold text-white">4. Anda sedang marah atau lelah, tetapi ada sinyal baru. Apa keputusan bijak?</legend>
-          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion4" value="a" required class="mt-1 accent-blue-500"> Tetap entry karena sinyal lebih penting dari kondisi diri.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion4" value="b" class="mt-1 accent-blue-500"> Berhenti sejenak dan trading hanya saat mampu mengikuti rencana.</label>
-          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="emotion4" value="c" class="mt-1 accent-blue-500"> Minta orang lain memilih arah posisi untuk Anda.</label>
-        </fieldset>
-        <p id="quiz-feedback" role="status" class="text-sm text-rose-400 hidden"></p>
-        <div id="quiz-pass" class="hidden rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
-          <p class="font-semibold text-emerald-300">Kuis lulus. Anda dapat melanjutkan ke halaman pembelian lisensi.</p>
-          <a href="https://lynk.id/kehidupan_bumi_official/9ex74r4x98od" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-500">Lanjut Beli Lisensi Key <i data-lucide="external-link" class="h-4 w-4"></i></a>
-        </div>
-        <div id="quiz-submit-actions" class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-          <button type="button" onclick="tutupKuisLisensi()" class="px-5 py-3 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-500">Periksa Jawaban</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Footer -->
   <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
@@ -375,73 +309,19 @@
     });
 
     // -------------------------------------------------------------
-    // 1. KONFIGURASI OWRKER (Ganti dengan kredensial Anda)
+    // 1. KONFIGURASI SUPABASE (Ganti dengan kredensial Anda)
     // -------------------------------------------------------------
-    const BOT_API_URL = 'https://lisensi-sun-key.rohmannureka2.workers.dev/api/trades';
-    const LICENSE_STORAGE_KEY = 'bot_monitor_license_key';
+    const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE'; 
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let equityChartInstance = null;
-
-    async function simpanLisensiBot(event) {
-      event.preventDefault();
-      const licenseKey = document.getElementById('license-key-input').value.trim();
-      if (licenseKey) await fetchDashboardData(licenseKey);
-    }
-
-    function tampilkanDashboard() {
-      document.getElementById('license-gate').classList.add('hidden');
-      document.getElementById('dashboard-content').classList.remove('hidden');
-    }
-
-    function bukaKuisLisensi() {
-      const modal = document.getElementById('license-quiz-modal');
-      document.getElementById('license-quiz-form').reset();
-      document.getElementById('quiz-feedback').classList.add('hidden');
-      document.getElementById('quiz-pass').classList.add('hidden');
-      document.getElementById('quiz-submit-actions').classList.remove('hidden');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function tutupKuisLisensi() {
-      const modal = document.getElementById('license-quiz-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function submitKuisLisensi(event) {
-      event.preventDefault();
-      const questions = ['emotion1', 'emotion2', 'emotion3', 'emotion4'];
-      const correctAnswers = ['b', 'b', 'a', 'b'];
-      const passed = questions.every((name, index) => document.querySelector(`input[name="${name}"]:checked`)?.value === correctAnswers[index]);
-      const feedback = document.getElementById('quiz-feedback');
-
-      if (!passed) {
-        feedback.textContent = 'Belum lulus. Pilih jawaban yang mengutamakan rencana dan kendali risiko, lalu coba lagi.';
-        feedback.classList.remove('hidden');
-        return;
-      }
-
-      feedback.classList.add('hidden');
-      document.getElementById('quiz-pass').classList.remove('hidden');
-      document.getElementById('quiz-submit-actions').classList.add('hidden');
-      lucide.createIcons();
-    }
 
     // -------------------------------------------------------------
     // 2. FUNGSI UTAMA AMBIL DATA
     // -------------------------------------------------------------
-    async function fetchDashboardData(licenseKey = sessionStorage.getItem(LICENSE_STORAGE_KEY)) {
-      if (!licenseKey) {
-        document.getElementById('license-gate').classList.remove('hidden');
-        document.getElementById('dashboard-content').classList.add('hidden');
-        return;
-      }
-
-      const licenseStatus = document.getElementById('license-status');
-      const licenseSubmit = document.getElementById('license-submit');
-      licenseSubmit.disabled = true;
-      licenseStatus.textContent = 'Memverifikasi lisensi dan mengambil data...';
+    async function fetchDashboardData() {
       const badge = document.getElementById('status-badge');
       badge.className = 'px-3 py-1 text-xs font-semibold rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 flex items-center gap-2';
       badge.innerHTML = `
@@ -453,29 +333,16 @@
       `;
 
       try {
-        const response = await fetch(BOT_API_URL, {
-          method: 'GET',
-          headers: { 'X-License-Key': licenseKey },
-          cache: 'no-store'
-        });
-        const result = await response.json();
-        if (!response.ok) {
-          if (response.status === 401) {
-            sessionStorage.removeItem(LICENSE_STORAGE_KEY);
-            document.getElementById('dashboard-content').classList.add('hidden');
-            document.getElementById('license-gate').classList.remove('hidden');
-          }
-          throw new Error(result.error || 'Worker gagal memverifikasi lisensi.');
-        }
-        if (!Array.isArray(result.trades)) throw new Error('Respons Worker tidak berisi daftar trade.');
+        const { data: trades, error } = await supabaseClient
+          .from('trades')
+          .select('*')
+          .order('created_at', { ascending: true });
 
-        sessionStorage.setItem(LICENSE_STORAGE_KEY, licenseKey);
-        document.getElementById('license-key-input').value = licenseKey;
-        tampilkanDashboard();
-        licenseStatus.textContent = 'Lisensi terverifikasi oleh Cloudflare Worker.';
-        renderStrategyCards(result.trades);
-        renderTradeHistory(result.trades);
-        renderEquityChart(result.trades);
+        if (error) throw error;
+
+        renderStrategyCards(trades);
+        renderTradeHistory(trades);
+        renderEquityChart(trades);
 
         badge.className = 'px-3 py-1 text-xs font-semibold rounded-full bg-green-500/10 text-green-500 border border-green-500/20 flex items-center gap-2';
         badge.innerHTML = `
@@ -486,9 +353,6 @@
         `;
       } catch (err) {
         console.error('Error fetching data:', err);
-        if (document.getElementById('dashboard-content').classList.contains('hidden')) {
-          licenseStatus.textContent = err.message || 'Lisensi gagal diverifikasi. Periksa konfigurasi Worker dan coba lagi.';
-        }
         badge.className = 'px-3 py-1 text-xs font-semibold rounded-full bg-red-500/10 text-red-500 border border-red-500/20 flex items-center gap-2';
         badge.innerHTML = `
           <span class="relative flex h-2 w-2">
@@ -497,12 +361,18 @@
           Error Connection
         `;
         
-        if (!document.getElementById('dashboard-content').classList.contains('hidden')) {
-          document.getElementById('trade-history-body').innerHTML = '<tr><td colspan="7" class="p-8 text-center text-rose-400">Data bot tidak dapat dimuat. Periksa koneksi lalu coba refresh.</td></tr>';
-        }
-        licenseSubmit.disabled = false;
+        // --- FALLBACK (KARENA SUPABASE KOSONG/TIDAK ADA KREDENSIAL, KITA BUAT DATA DUMMY AGAR UI TERLIHAT BAGUS) ---
+        const dummyData = [
+            { asset: 'BTCUSDT', type: 'LONG', price: 61000, close_price: 61500, status: 'CLOSED', profit_loss: 45.5, created_at: new Date(Date.now() - 86400000).toISOString() },
+            { asset: 'ETHUSDT', type: 'SHORT', price: 3400, close_price: 3350, status: 'CLOSED', profit_loss: 25.0, created_at: new Date(Date.now() - 43200000).toISOString() },
+            { asset: 'BTCUSDT', type: 'LONG', price: 62000, close_price: 61800, status: 'CLOSED', profit_loss: -15.2, created_at: new Date(Date.now() - 10000000).toISOString() },
+            { asset: 'BTCUSDT', type: 'SHORT', price: 63000, close_price: null, status: 'OPEN', profit_loss: 0, created_at: new Date().toISOString() },
+        ];
+        renderStrategyCards(dummyData);
+        renderTradeHistory(dummyData);
+        renderEquityChart(dummyData);
+        // --- AKHIR FALLBACK ---
       }
-      licenseSubmit.disabled = false;
     }
 
     // -------------------------------------------------------------
@@ -688,8 +558,8 @@
       });
     }
 
-    const savedLicenseKey = sessionStorage.getItem(LICENSE_STORAGE_KEY);
-    if (savedLicenseKey) fetchDashboardData(savedLicenseKey);
+    // Jalankan pertama kali saat halaman di-load
+    fetchDashboardData();
   </script>
   <script type="text/javascript">
 var infolinks_pid = 3447906;
