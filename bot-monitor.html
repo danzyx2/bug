@@ -11,9 +11,6 @@
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <!-- Supabase JS Client CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
   <!-- Lucide Icons via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -42,6 +39,8 @@
           backdrop-filter: blur(12px);
           border: 1px solid #1e293b;
       }
+
+        [hidden] { display: none !important; }
 
         @keyframes drift-blue {
           0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
@@ -148,6 +147,27 @@
   <!-- Main Content (Monitor Dashboard) -->
   <main class="relative z-10 pt-32 pb-16 min-h-screen">
       <div class="max-w-7xl mx-auto px-6 md:px-12 space-y-6">
+        <section id="supabase-connection-gate" class="glass-panel max-w-lg mx-auto p-8 rounded-2xl shadow-lg" aria-labelledby="supabase-connection-title">
+          <div class="text-center mb-6">
+            <i data-lucide="radio-tower" class="w-10 h-10 text-blue-400 mx-auto mb-4"></i>
+            <h1 id="supabase-connection-title" class="text-2xl font-bold text-white">Hubungkan Bot Monitor</h1>
+            <p class="text-sm text-slate-400 mt-2">Masukkan key akses sekali saja, lalu data akan terbuka otomatis.</p>
+          </div>
+          <form id="supabase-connection-form" class="space-y-4" onsubmit="event.preventDefault(); fetchDashboardData(true);">
+            <div>
+              <label for="supabase-anon-key-input" class="block text-sm font-medium text-slate-300 mb-2">Key Akses</label>
+              <input id="supabase-anon-key-input" type="password" autocomplete="off" required
+                class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+                placeholder="Masukkan key akses">
+            </div>
+            <p id="supabase-connection-error" class="hidden text-sm text-red-400" role="alert"></p>
+            <button id="supabase-connect-submit" type="submit" class="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-500/30 bg-blue-600/20 px-4 py-3 text-sm font-semibold text-blue-300 transition-colors hover:bg-blue-600/40">
+              <i data-lucide="plug-zap" class="w-4 h-4"></i> Masuk
+            </button>
+          </form>
+        </section>
+
+        <div id="dashboard-content" class="hidden space-y-6" hidden>
         
         <!-- HEADER KONTEN -->
         <header class="reveal flex flex-col md:flex-row justify-between items-start md:items-center glass-panel p-6 rounded-2xl shadow-lg">
@@ -167,6 +187,9 @@
             </span>
             <button onclick="fetchDashboardData()" class="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 text-xs font-semibold rounded-xl transition-all hover:scale-105 flex items-center gap-2">
               <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh Data
+            </button>
+            <button onclick="disconnectDashboard()" aria-label="Putuskan koneksi" title="Putuskan koneksi" class="p-2 text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 rounded-xl transition-colors">
+              <i data-lucide="unplug" class="w-4 h-4"></i>
             </button>
           </div>
         </header>
@@ -223,6 +246,7 @@
           </div>
         </div>
 
+        </div>
       </div>
   </main>
 
@@ -308,21 +332,63 @@
         closeIcon.classList.toggle('block');
     });
 
-    // -------------------------------------------------------------
-    // 1. KONFIGURASI SUPABASE (Ganti dengan kredensial Anda)
-    // -------------------------------------------------------------
-    const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE'; 
-
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+    const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co';
+    const STORAGE_KEY = 'bot-monitor-access-key';
+    const supabaseAnonKeyInput = document.getElementById('supabase-anon-key-input');
+    const supabaseConnectSubmit = document.getElementById('supabase-connect-submit');
+    const supabaseConnectionError = document.getElementById('supabase-connection-error');
+    const supabaseConnectionGate = document.getElementById('supabase-connection-gate');
+    const dashboardContent = document.getElementById('dashboard-content');
     let equityChartInstance = null;
 
+    function getAccessKey() {
+      return (supabaseAnonKeyInput?.value || '').trim();
+    }
+
+    function getSavedAccessKey() {
+      return localStorage.getItem(STORAGE_KEY) || '';
+    }
+
+    function saveAccessKey(key) {
+      if (!key) {
+        localStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, key);
+    }
+
+    function loadSavedAccessKey() {
+      const savedKey = getSavedAccessKey();
+      if (savedKey) {
+        supabaseAnonKeyInput.value = savedKey;
+      }
+      return savedKey;
+    }
+
+    function disconnectDashboard() {
+      saveAccessKey('');
+      supabaseAnonKeyInput.value = '';
+      dashboardContent.hidden = true;
+      dashboardContent.classList.add('hidden');
+      supabaseConnectionGate.classList.remove('hidden');
+      supabaseConnectionError.classList.add('hidden');
+      document.getElementById('metrics-container').innerHTML = '';
+      document.getElementById('trade-history-body').innerHTML = '';
+      document.getElementById('total-trades-count').innerText = 'Total: 0 Trades';
+      if (equityChartInstance) {
+        equityChartInstance.destroy();
+        equityChartInstance = null;
+      }
+    }
+
     // -------------------------------------------------------------
-    // 2. FUNGSI UTAMA AMBIL DATA
+    // 2. AMBIL DATA LANGSUNG DARI DATABASE
     // -------------------------------------------------------------
-    async function fetchDashboardData() {
+    async function fetchDashboardData(isConnecting = false) {
       const badge = document.getElementById('status-badge');
+      supabaseConnectSubmit.disabled = true;
+      supabaseConnectSubmit.textContent = 'Menghubungkan...';
+      supabaseConnectionError.classList.add('hidden');
       badge.className = 'px-3 py-1 text-xs font-semibold rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 flex items-center gap-2';
       badge.innerHTML = `
         <span class="relative flex h-2 w-2">
@@ -333,13 +399,32 @@
       `;
 
       try {
-        const { data: trades, error } = await supabaseClient
-          .from('trades')
-          .select('*')
-          .order('created_at', { ascending: true });
+        const anonKey = getAccessKey();
+        if (!anonKey) {
+          throw new Error('Key akses belum dimasukkan. Masukkan key di kolom di atas.');
+        }
 
-        if (error) throw error;
+        saveAccessKey(anonKey);
 
+        const baseUrl = SUPABASE_URL.replace(/\/+$/, '');
+        const response = await fetch(`${baseUrl}/rest/v1/trades?select=*&order=created_at.asc`, {
+          cache: 'no-store',
+          headers: {
+            apikey: anonKey,
+            Authorization: `Bearer ${anonKey}`
+          }
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || result.error || 'Data bot gagal dimuat.');
+        if (!Array.isArray(result)) throw new Error('Format data tidak valid.');
+
+        if (isConnecting) {
+          supabaseConnectionGate.classList.add('hidden');
+          dashboardContent.hidden = false;
+          dashboardContent.classList.remove('hidden');
+        }
+
+        const trades = result;
         renderStrategyCards(trades);
         renderTradeHistory(trades);
         renderEquityChart(trades);
@@ -353,6 +438,15 @@
         `;
       } catch (err) {
         console.error('Error fetching data:', err);
+        if (isConnecting) {
+          dashboardContent.hidden = true;
+          dashboardContent.classList.add('hidden');
+          supabaseConnectionGate.classList.remove('hidden');
+          supabaseConnectionError.textContent = err instanceof TypeError
+            ? 'Koneksi gagal. Periksa key akses, URL project, dan izin baca data.'
+            : err.message;
+          supabaseConnectionError.classList.remove('hidden');
+        }
         badge.className = 'px-3 py-1 text-xs font-semibold rounded-full bg-red-500/10 text-red-500 border border-red-500/20 flex items-center gap-2';
         badge.innerHTML = `
           <span class="relative flex h-2 w-2">
@@ -360,18 +454,10 @@
           </span>
           Error Connection
         `;
-        
-        // --- FALLBACK (KARENA SUPABASE KOSONG/TIDAK ADA KREDENSIAL, KITA BUAT DATA DUMMY AGAR UI TERLIHAT BAGUS) ---
-        const dummyData = [
-            { asset: 'BTCUSDT', type: 'LONG', price: 61000, close_price: 61500, status: 'CLOSED', profit_loss: 45.5, created_at: new Date(Date.now() - 86400000).toISOString() },
-            { asset: 'ETHUSDT', type: 'SHORT', price: 3400, close_price: 3350, status: 'CLOSED', profit_loss: 25.0, created_at: new Date(Date.now() - 43200000).toISOString() },
-            { asset: 'BTCUSDT', type: 'LONG', price: 62000, close_price: 61800, status: 'CLOSED', profit_loss: -15.2, created_at: new Date(Date.now() - 10000000).toISOString() },
-            { asset: 'BTCUSDT', type: 'SHORT', price: 63000, close_price: null, status: 'OPEN', profit_loss: 0, created_at: new Date().toISOString() },
-        ];
-        renderStrategyCards(dummyData);
-        renderTradeHistory(dummyData);
-        renderEquityChart(dummyData);
-        // --- AKHIR FALLBACK ---
+      } finally {
+        supabaseConnectSubmit.disabled = false;
+        supabaseConnectSubmit.innerHTML = '<i data-lucide="plug-zap" class="w-4 h-4"></i> Coba Hubungkan';
+        lucide.createIcons();
       }
     }
 
@@ -558,8 +644,10 @@
       });
     }
 
-    // Jalankan pertama kali saat halaman di-load
-    fetchDashboardData();
+    const savedKey = loadSavedAccessKey();
+    if (savedKey) {
+      fetchDashboardData(true);
+    }
   </script>
   <script type="text/javascript">
 var infolinks_pid = 3447906;

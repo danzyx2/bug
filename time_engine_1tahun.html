@@ -196,7 +196,7 @@
 
             <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div class="text-slate-500 text-sm flex items-center gap-2">
-                    Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">Astrophage_Sukses</span>
+                    Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">-</span>
                 </div>
             </div>
             
@@ -299,8 +299,35 @@
             }
         }
 
+        function getLocalDateKey(date = new Date()) {
+            const offset = date.getTimezoneOffset();
+            const localDate = new Date(date.getTime() - offset * 60000);
+            return localDate.toISOString().slice(0, 10);
+        }
+
+        function getDefaultIndex() {
+            const todayKey = getLocalDateKey();
+            const exactIndex = db.findIndex(item => item.date_key === todayKey);
+            if (exactIndex !== -1) return exactIndex;
+
+            const today = new Date();
+            let nearestIndex = 0;
+            let nearestDiff = Number.MAX_SAFE_INTEGER;
+
+            db.forEach((item, index) => {
+                const itemDate = new Date(`${item.date_key}T00:00:00`);
+                const diff = Math.abs(itemDate.getTime() - today.getTime());
+                if (diff < nearestDiff) {
+                    nearestDiff = diff;
+                    nearestIndex = index;
+                }
+            });
+
+            return nearestIndex;
+        }
+
         // Auto-load Hari Ini saat dibuka
-        renderTable(0);
+        renderTable(getDefaultIndex());
     </script>
 </body>
 </html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pembahasan arti planet dalam astrologi finansial dan kaitannya dengan psikologi pasar." />
+    <title>Arti Planet dalam Astrologi Finansial | Akademi Trophage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        night: '#020617',
+                        slate: { 900: '#0f172a', 950: '#020617' }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.13), transparent 28%),
+                #020617;
+            color: #e2e8f0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        .glass {
+            background: rgba(15, 23, 42, 0.68);
+            border: 1px solid rgba(51, 65, 85, 0.9);
+            backdrop-filter: blur(10px);
+        }
+        .planet-card:hover {
+            border-color: rgba(96, 165, 250, 0.52);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+        }
+        .planet-card {
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .prose p, .prose li {
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+        .prose strong {
+            color: #f8fafc;
+        }
+        .highlight {
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(168,85,247,0.12));
+            border: 1px solid rgba(96,165,250,0.28);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300 antialiased selection:bg-blue-500/30 overflow-x-hidden">
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            <a href="index.html#home" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <i data-lucide="activity" class="text-blue-400 w-8 h-8"></i>
+                <span class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">AKADEMI TROPHAGE</span>
+            </a>
+            <div class="hidden md:flex items-center gap-5">
+                <div class="flex gap-4">
+                    <a href="index.html#home" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Beranda</a>
+                    <a href="monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Live Trade</a>
+                    <a href="predik.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prediksi Pasar</a>
+                    <a href="bilik_baca.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bilik Baca</a>
+                    <a href="bot-monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bot Monitor</a>
+                    <a href="ilmu.html" class="text-sm font-medium text-blue-400 transition-colors">Ilmu Finansial</a>
+                    <a href="portal.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Portal</a>
+                </div>
+                <a href="portal.html" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none" aria-label="Buka menu navigasi">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
+                <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
+            <a href="index.html#home" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
+            <a href="monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Live Trade</a>
+            <a href="predik.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prediksi Pasar</a>
+            <a href="bilik_baca.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bilik Baca</a>
+            <a href="bot-monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bot Monitor</a>
+            <a href="ilmu.html" class="mobile-link text-base font-medium text-blue-400 transition-colors py-2 block">Ilmu Finansial</a>
+            <a href="portal.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Portal</a>
+            <a href="portal.html" class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 pt-32 pb-20">
+        <section class="max-w-6xl mx-auto px-6 md:px-12">
+            <div class="max-w-3xl">
+                <p class="text-blue-400 font-semibold tracking-[0.2em] text-xs uppercase mb-5">Financial astrology</p>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">Arti planet dalam astrologi finansial</h1>
+                <p class="mt-6 text-lg text-slate-400 leading-relaxed">Dalam pendekatan astrologi finansial, planet dipahami sebagai simbol energi pasar, sentimen investor, dan pola siklus yang bisa membantu mengarahkan interpretasi tentang timing, risiko, dan arah pergerakan modal.</p>
+                <div class="flex flex-wrap gap-3 mt-8">
+                    <a href="#planet" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-3 rounded-xl transition-colors">Lihat arti planet <i data-lucide="arrow-down" class="w-4 h-4"></i></a>
+                    <a href="ilmu.html" class="inline-flex items-center gap-2 border border-slate-700 hover:border-blue-500 text-slate-200 hover:text-white font-semibold px-5 py-3 rounded-xl transition-colors">Kembali ke Ilmu Finansial</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="planet" class="max-w-6xl mx-auto px-6 md:px-12 mt-20">
+            <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-300">
+                            <i data-lucide="sun" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-blue-300">Matahari</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Kepemimpinan & arah utama</h2>
+                    <p class="text-slate-400 leading-relaxed">Matahari melambangkan <strong class="text-slate-200">identitas, fokus, dan arah keputusan</strong>. Dalam konteks finansial, ia sering dikaitkan dengan kepercayaan diri, pengambilan inisiatif, dan momen ketika pasar menilai leadership, inovasi, atau aset unggulan.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center text-sky-300">
+                            <i data-lucide="moon" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-sky-300">Bulan</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Sentimen & likuiditas</h2>
+                    <p class="text-slate-400 leading-relaxed">Bulan mewakili <strong class="text-slate-200">emosi, persepsi massa, dan perubahan sentimen</strong>. Dalam pasar, ia sering dikaitkan dengan kecenderungan cepat berubah, reaksi trader, dan pergerakan yang dipicu oleh emosi jangka pendek.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-300">Merkurius</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Informasi & komunikasi</h2>
+                    <p class="text-slate-400 leading-relaxed">Merkurius terkait dengan <strong class="text-slate-200">data, berita, analisis, dan kecepatan pemahaman</strong>. Dalam trading, planet ini sering diasosiasikan dengan reaksi terhadap informasi, volume aktivitas, dan proses membaca pola sebelum keputusan besar.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-400/20 flex items-center justify-center text-pink-300">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-pink-300">Venus</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Nilai & konsumen</h2>
+                    <p class="text-slate-400 leading-relaxed">Venus melambangkan <strong class="text-slate-200">nilai aset, konsumen, dan preferensi pasar</strong>. Ia sering dikaitkan dengan sektor gaya hidup, retail, properti, dan kondisi di mana pasar menilai kenyamanan, preferensi, atau skala harga.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-400/20 flex items-center justify-center text-red-300">
+                            <i data-lucide="flame" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">Mars</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Aksi & volatilitas</h2>
+                    <p class="text-slate-400 leading-relaxed">Mars adalah energi <strong class="text-slate-200">dorongan, agresi, dan tindakan</strong>. Dalam analisis finansial, ia sering dikaitkan dengan momentum, breakout, volatility, dan aktivitas yang bergerak cepat karena keputusan impulsif atau tekanan pasar.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center text-amber-300">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-amber-300">Jupiter</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Pertumbuhan & optimisme</h2>
+                    <p class="text-slate-400 leading-relaxed">Jupiter mewakili <strong class="text-slate-200">ekspansi, harapan, dan peluang</strong>. Dalam pasar, ia sering dihubungkan dengan periode kenaikan, dorongan sentimen bullish, dan fase di mana aset tumbuh karena optimisme atau ekspansi ekonomi.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-400/20 flex items-center justify-center text-slate-200">
+                            <i data-lucide="shield" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-200">Saturnus</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Disiplin & koreksi</h2>
+                    <p class="text-slate-400 leading-relaxed">Saturnus mewakili <strong class="text-slate-200">struktur, batasan, dan pembelajaran keras</strong>. Dalam konteks finansial, planet ini sering dikaitkan dengan koreksi, keseimbangan, perencanaan jangka panjang, serta fase ketika pasar menguji disiplin dan kualitas aset.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-400/20 flex items-center justify-center text-violet-300">
+                            <i data-lucide="zap" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-violet-300">Uranus</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Inovasi & perubahan mendadak</h2>
+                    <p class="text-slate-400 leading-relaxed">Uranus membawa <strong class="text-slate-200">reaksi tak terduga, inovasi, dan perubahan tiba-tiba</strong>. Dalam pasar, ia sering diasosiasikan dengan breakout, perubahan sekto r, serta momen di mana tren lama rusak dan pola baru terbentuk.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-400/20 flex items-center justify-center text-indigo-300">
+                            <i data-lucide="waves" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-300">Neptunus</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Ilusi & bias pasar</h2>
+                    <p class="text-slate-400 leading-relaxed">Neptunus melambangkan <strong class="text-slate-200">imajinasi, spekulasi, dan kebingungan</strong>. Dalam analisis finansial, planet ini sering dikaitkan dengan bubble, hype, overvaluation, dan kondisi ketika emosi atau ekspektasi membesar melampaui fondasi.</p>
+                </article>
+
+                <article class="planet-card glass rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-fuchsia-500/10 border border-fuchsia-400/20 flex items-center justify-center text-fuchsia-300">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-[0.18em] text-fuchsia-300">Pluto</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Transformasi & kekuatan besar</h2>
+                    <p class="text-slate-400 leading-relaxed">Pluto berhubungan dengan <strong class="text-slate-200">transformasi, perubahan struktur, dan kekuatan yang sulit dihindari</strong>. Dalam pasar, ia sering dikaitkan dengan regime shift, reset besar, dan momen ketika tren lama jatuh dan struktur baru muncul.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="max-w-5xl mx-auto px-6 md:px-12 mt-20">
+            <div class="highlight rounded-3xl p-7 md:p-10">
+                <p class="text-blue-300 font-semibold uppercase tracking-[0.2em] text-xs mb-4">Interpretasi yang sehat</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-5">Bagaimana planet dipakai dalam analisis finansial?</h2>
+                <div class="prose space-y-4">
+                    <p>Interpretasi astrologi finansial lebih cocok dipahami sebagai <strong>alat refleksi, bukan ramalan otomatis</strong>. Planet dapat membantu melihat <strong>pola psikologis, timing, dan siklus sentimen</strong>, tetapi tetap harus diuji bersama data, manajemen risiko, dan pemahaman terhadap struktur pasar.</p>
+                    <p>Dalam praktik yang sehat, para analis akan mengkombinasikan:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-2">
+                        <li>struktur pasar dan trend pada timeframe utama</li>
+                        <li>sentimen investor dan kondisi likuiditas</li>
+                        <li>konteks siklus astronomi sebagai peta makna, bukan jaminan</li>
+                        <li>disiplin risk management dan kontrol emosi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-5xl mx-auto px-6 md:px-12 mt-20">
+            <div class="glass rounded-3xl p-7 md:p-10 border-yellow-500/30 bg-yellow-500/5">
+                <div class="flex items-start gap-4">
+                    <i data-lucide="triangle-alert" class="text-yellow-400 w-6 h-6 shrink-0 mt-1"></i>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Catatan penting</h3>
+                        <p class="text-slate-300 leading-relaxed">Astrologi finansial dapat menjadi alat edukasi dan refleksi, tetapi <strong class="text-white">bukan bukti ilmiah yang menjamin keuntungan</strong>. Keputusan finansial tetap harus didasari pada riset, disiplin, dan pengelolaan modal yang bertanggung jawab.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-12">
+                <div class="max-w-xs">
+                    <a href="index.html#home" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+                        <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
+                        <span class="text-xl font-bold text-white">AKADEMI TROPHAGE</span>
+                    </a>
+                    <p class="text-slate-500 text-sm">Pusat edukasi pasar, keuangan, dan pembacaan siklus finansial.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-12 sm:gap-24">
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Navigasi</h4>
+                        <a href="index.html#home" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
+                        <a href="monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Live Trade</a>
+                        <a href="predik.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prediksi Pasar</a>
+                        <a href="bilik_baca.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bilik Baca</a>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Belajar</h4>
+                        <a href="ilmu.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Ilmu Finansial</a>
+                        <a href="portal.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Portal</a>
+                        <a href="kamus-investasi.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Kamus Investasi</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 text-slate-500 text-sm">
+                <span>Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">-</span></span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+                navbar.classList.remove('bg-transparent', 'py-6');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-6');
+                navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+            }
+        });
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => {
+            if (!mobileMenu.classList.contains('hidden')) toggleMenu();
+        }));
+    </script>
+</body>
+</html>
