@@ -165,6 +165,14 @@
               <i data-lucide="plug-zap" class="w-4 h-4"></i> Masuk
             </button>
           </form>
+          <div class="my-5 flex items-center gap-3 text-xs uppercase tracking-wider text-slate-500">
+            <span class="h-px flex-1 bg-slate-800"></span>
+            <span>Belum punya key?</span>
+            <span class="h-px flex-1 bg-slate-800"></span>
+          </div>
+          <button type="button" onclick="openAccessKeyQuiz()" class="w-full flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-600/20 px-4 py-3 text-sm font-semibold text-emerald-300 transition-colors hover:bg-emerald-600/40">
+            <i data-lucide="key-round" class="w-4 h-4"></i> Beli Key Akses
+          </button>
         </section>
 
         <div id="dashboard-content" class="hidden space-y-6" hidden>
@@ -249,6 +257,54 @@
         </div>
       </div>
   </main>
+
+  <div id="access-key-quiz" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/90 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="access-key-quiz-title">
+    <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-900 p-6 md:p-8 shadow-2xl">
+      <div class="flex items-start justify-between gap-4 mb-6">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">Cek Kesiapan</p>
+          <h2 id="access-key-quiz-title" class="text-xl md:text-2xl font-bold text-white">Kuis Psikologi & Risiko Trading</h2>
+          <p class="text-sm text-slate-400 mt-2">Jawab semua pertanyaan dengan benar untuk membuka tautan pembelian. Kuis ini bersifat edukasi, bukan penilaian kelayakan finansial.</p>
+        </div>
+        <button type="button" onclick="closeAccessKeyQuiz()" class="text-slate-400 hover:text-white text-2xl leading-none" aria-label="Tutup kuis">&times;</button>
+      </div>
+      <form id="access-key-quiz-form" onsubmit="submitAccessKeyQuiz(event)" class="space-y-5">
+        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <legend class="px-1 text-sm font-semibold text-white">1. Posisi Anda terkena stop loss. Bagaimana respons yang terkendali?</legend>
+          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk1" value="a" required class="mt-1 accent-blue-500"> Langsung masuk lagi dengan ukuran lebih besar untuk membalas kerugian.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk1" value="b" class="mt-1 accent-blue-500"> Terima hasil, evaluasi rencana, dan jeda bila emosi belum stabil.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk1" value="c" class="mt-1 accent-blue-500"> Hapus stop loss agar posisi punya waktu untuk pulih.</label>
+        </fieldset>
+        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <legend class="px-1 text-sm font-semibold text-white">2. Harga bergerak cepat dan Anda takut tertinggal. Apa yang dilakukan?</legend>
+          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk2" value="a" required class="mt-1 accent-blue-500"> Kejar harga segera sebelum bergerak lebih jauh.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk2" value="b" class="mt-1 accent-blue-500"> Ikuti rencana; jika setup terlewat, tunggu peluang berikutnya.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk2" value="c" class="mt-1 accent-blue-500"> Naikkan leverage supaya keterlambatan tertutupi.</label>
+        </fieldset>
+        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <legend class="px-1 text-sm font-semibold text-white">3. Setelah beberapa kali profit, Anda ingin menggandakan risiko. Apa pilihan terbaik?</legend>
+          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk3" value="a" required class="mt-1 accent-blue-500"> Pertahankan batas risiko yang ditetapkan sebelum trading.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk3" value="b" class="mt-1 accent-blue-500"> Tambah risiko selama merasa sedang beruntung.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk3" value="c" class="mt-1 accent-blue-500"> Gunakan seluruh profit sebagai modal satu trade.</label>
+        </fieldset>
+        <fieldset class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <legend class="px-1 text-sm font-semibold text-white">4. Anda sedang marah atau lelah, tetapi ada sinyal baru. Apa keputusan bijak?</legend>
+          <label class="mt-3 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk4" value="a" required class="mt-1 accent-blue-500"> Tetap entry karena sinyal lebih penting dari kondisi diri.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk4" value="b" class="mt-1 accent-blue-500"> Berhenti sejenak dan trading hanya saat mampu mengikuti rencana.</label>
+          <label class="mt-2 flex gap-3 text-sm text-slate-300"><input type="radio" name="risk4" value="c" class="mt-1 accent-blue-500"> Minta orang lain memilih arah posisi untuk Anda.</label>
+        </fieldset>
+        <p id="access-key-quiz-feedback" role="status" class="hidden text-sm text-rose-400"></p>
+        <div id="access-key-quiz-pass" class="hidden rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+          <p class="font-semibold text-emerald-300">Kuis lulus. Anda dapat melanjutkan ke halaman pembelian key akses.</p>
+          <a href="https://lynk.id/kehidupan_bumi_official/k8ggdg71rry7" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-500">Lanjut Beli Key Akses <i data-lucide="external-link" class="h-4 w-4"></i></a>
+        </div>
+        <div id="access-key-quiz-actions" class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+          <button type="button" onclick="closeAccessKeyQuiz()" class="px-5 py-3 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800">Batal</button>
+          <button type="submit" class="px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-500">Periksa Jawaban</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
@@ -340,6 +396,45 @@
     const supabaseConnectionGate = document.getElementById('supabase-connection-gate');
     const dashboardContent = document.getElementById('dashboard-content');
     let equityChartInstance = null;
+
+    function openAccessKeyQuiz() {
+      const quiz = document.getElementById('access-key-quiz');
+      quiz.classList.remove('hidden');
+      quiz.classList.add('flex');
+      document.getElementById('access-key-quiz-form').reset();
+      document.getElementById('access-key-quiz-feedback').classList.add('hidden');
+      document.getElementById('access-key-quiz-pass').classList.add('hidden');
+      document.getElementById('access-key-quiz-actions').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeAccessKeyQuiz() {
+      const quiz = document.getElementById('access-key-quiz');
+      quiz.classList.add('hidden');
+      quiz.classList.remove('flex');
+    }
+
+    function submitAccessKeyQuiz(event) {
+      event.preventDefault();
+      const form = document.getElementById('access-key-quiz-form');
+      if (!form.reportValidity()) return;
+
+      const answers = new FormData(form);
+      const correctAnswers = { risk1: 'b', risk2: 'b', risk3: 'a', risk4: 'b' };
+      const passed = Object.entries(correctAnswers).every(([question, answer]) => answers.get(question) === answer);
+      const feedback = document.getElementById('access-key-quiz-feedback');
+
+      if (!passed) {
+        feedback.textContent = 'Masih ada jawaban yang belum tepat. Tinjau kembali prinsip pengelolaan risiko dan coba lagi.';
+        feedback.classList.remove('hidden');
+        return;
+      }
+
+      feedback.classList.add('hidden');
+      document.getElementById('access-key-quiz-pass').classList.remove('hidden');
+      document.getElementById('access-key-quiz-actions').classList.add('hidden');
+      lucide.createIcons();
+    }
 
     function getAccessKey() {
       return (supabaseAnonKeyInput?.value || '').trim();
