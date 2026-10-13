@@ -22,15 +22,12 @@
     }
   </script>
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { -webkit-tap-highlight-color: transparent; }
 
     @keyframes drift-blue {
       0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
       50% { transform: translate3d(7vw, 4vh, 0) scale(1.08); }
     }
-
     @keyframes drift-purple {
       0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
       50% { transform: translate3d(-6vw, -5vh, 0) scale(1.1); }
@@ -39,40 +36,33 @@
     .orb-blue { animation: drift-blue 18s ease-in-out infinite; }
     .orb-purple { animation: drift-purple 22s ease-in-out infinite; }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.75s ease, transform 0.75s ease;
-    }
+    /* Custom glow for traffic lights */
+    .glow-green { box-shadow: 0 0 20px 4px rgba(34, 197, 94, 0.6); }
+    .glow-yellow { box-shadow: 0 0 20px 4px rgba(234, 179, 8, 0.6); }
+    .glow-red { box-shadow: 0 0 20px 4px rgba(239, 68, 68, 0.6); }
 
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .bulb { transition: all 0.4s ease; }
+    
+    /* Scrollbar for horizontal calendar */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
-      }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased">
 
+  <!-- BACKGROUND ORBS -->
   <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
     <div class="orb-blue absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
     <div class="orb-purple absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
   </div>
 
-  <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6">
+  <nav id="navbar" class="fixed w-full z-40 transition-all duration-300 bg-transparent py-6">
     <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
       <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <i data-lucide="activity" class="text-blue-400 w-8 h-8"></i>
@@ -85,275 +75,265 @@
           <a href="predik.html" class="text-sm font-medium text-blue-400 transition-colors">Prediksi Pasar</a>
           <a href="bilik_baca.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bilik Baca</a>
           <a href="bot-monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bot Monitor</a>
-          <a href="index.html#prinsip" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prinsip Navigasi</a>
         </div>
-        <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2">
-          Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i>
-        </a>
       </div>
-      <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none" aria-label="Buka menu navigasi">
+      <button id="mobile-menu-btn" class="md:hidden text-slate-300 focus:outline-none">
         <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
         <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
       </button>
     </div>
-    <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
-      <a href="index.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
-      <a href="monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Live Trade</a>
-      <a href="predik.html" class="mobile-link text-base font-medium text-blue-400 transition-colors py-2 block">Prediksi Pasar</a>
-      <a href="bilik_baca.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bilik Baca</a>
-      <a href="bot-monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bot Monitor</a>
-      <a href="index.html#prinsip" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prinsip Navigasi</a>
-      <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">
-        Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i>
-      </a>
+    
+    <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
+      <a href="index.html" class="text-base font-medium text-slate-300 py-2">Beranda</a>
+      <a href="monitor.html" class="text-base font-medium text-slate-300 py-2">Live Trade</a>
+      <a href="predik.html" class="text-base font-medium text-blue-400 py-2">Prediksi Pasar</a>
     </div>
   </nav>
 
-  <main class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-16">
-    <div class="max-w-5xl mx-auto space-y-8">
-    <!-- HEADER -->
-    <header class="reveal flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-slate-800 pb-8">
+  <main class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-16 min-h-screen flex flex-col">
+    
+    <!-- HEADER & KONTROL ADMIN -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-slate-800 pb-8 mb-8">
       <div>
-        <p class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">Market Intelligence</p>
-        <h1 class="text-3xl md:text-4xl font-bold text-white">Daily Market Probabilities</h1>
-        <p class="text-slate-400 mt-2">Track record dan analisa harian dalam satu ruang kendali.</p>
+        <p class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-2">Proyeksi 7 Hari</p>
+        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">IHSG Traffic Light</h1>
+        <p class="text-slate-400 text-sm md:text-base">Pilih tanggal di bawah untuk melihat kecenderungan arah pasar.</p>
       </div>
       <div class="flex items-center gap-2">
-        <!-- TOMBOL SETTING URL WORKER -->
-        <button onclick="openSettingsModal()" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2.5 rounded-lg flex items-center gap-2 border border-slate-700 hover:border-blue-500 transition-colors">
-          <i data-lucide="settings" class="w-4 h-4"></i> Setting URL
+        <button onclick="openSettingsModal()" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2.5 rounded-lg flex items-center gap-2 border border-slate-700 transition-colors">
+          <i data-lucide="settings" class="w-4 h-4"></i> Setup Worker
         </button>
-        <!-- TOMBOL LOGIN ADMIN -->
-        <button onclick="promptAdminLogin()" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
-          <i data-lucide="lock-keyhole" class="w-4 h-4"></i> Login Admin
+        <button id="btn-login-admin" onclick="openLoginModal()" class="text-xs bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+          <i data-lucide="lock" class="w-4 h-4"></i> Admin
+        </button>
+        <button id="btn-logout-admin" onclick="logoutAdmin()" class="hidden text-xs bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 px-4 py-2.5 rounded-lg items-center gap-2 transition-colors">
+          <i data-lucide="unlock" class="w-4 h-4"></i> Logout
         </button>
       </div>
     </header>
 
-    <!-- METRIK WINRATE (PUBLIK) -->
-    <div class="reveal grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-      <div class="bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-800">
-        <p class="text-sm text-slate-400">Total Prediksi</p>
-        <p id="total-pred" class="text-2xl font-bold text-white">0</p>
-      </div>
-      <div class="bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-800">
-        <p class="text-sm text-slate-400">Winrate (Akurasi)</p>
-        <p id="winrate" class="text-2xl font-bold text-blue-400">0%</p>
-      </div>
-      <div class="bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-800">
-        <p class="text-sm text-slate-400">Benar / Salah</p>
-        <p class="text-2xl font-bold"><span id="benar-count" class="text-green-400">0</span> / <span id="salah-count" class="text-red-400">0</span></p>
-      </div>
-    </div>
-
-    <!-- PANEL ADMIN (TERSEMBUNYI SEBELUM LOGIN) -->
-    <div id="admin-panel" class="hidden bg-blue-950/30 border border-blue-900/60 p-6 rounded-2xl space-y-4">
-      <div class="flex justify-between items-center border-b border-blue-800 pb-2">
-        <h2 class="text-lg font-bold text-blue-400">Admin Panel: Buat Prediksi Baru</h2>
-        <button onclick="logoutAdmin()" class="text-xs bg-red-600/10 text-red-400 border border-red-600/40 px-3 py-1.5 rounded-lg">Logout</button>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm text-slate-400 mb-1">Tanggal Spesifik</label>
-          <input type="date" id="input-date" class="w-full bg-slate-900 text-white border border-slate-700 rounded-lg p-2.5 focus:outline-none focus:border-blue-500">
-        </div>
-        <div class="flex gap-4">
-          <div class="w-1/2">
-            <label class="block text-sm text-green-400 mb-1">Prob. Hijau (%)</label>
-            <input type="number" id="input-green" class="w-full bg-slate-900 text-green-400 font-bold border border-slate-700 rounded-lg p-2.5">
-          </div>
-          <div class="w-1/2">
-            <label class="block text-sm text-red-400 mb-1">Prob. Merah (%)</label>
-            <input type="number" id="input-red" class="w-full bg-slate-900 text-red-400 font-bold border border-slate-700 rounded-lg p-2.5">
-          </div>
-        </div>
-      </div>
+    <!-- HORIZONTAL CALENDAR SCROLLER -->
+    <div class="relative w-full mb-10">
+      <div class="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none"></div>
+      <div class="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none"></div>
       
-      <div>
-        <label class="block text-sm text-slate-400 mb-2">Alasan (Ceklis yang sesuai):</label>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm" id="reasons-container">
-          <label class="flex items-center gap-2"><input type="checkbox" value="Support Kuat" class="reason-cb"> Support Kuat</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Resistance Kuat" class="reason-cb"> Resistance Kuat</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Turning Point" class="reason-cb"> Turning Point</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Time Reversal" class="reason-cb"> Time Reversal</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Breakout Support/Resistance" class="reason-cb"> Breakout S/R</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Retest Level" class="reason-cb"> Retest Level</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="SMC / FVG Terisi" class="reason-cb"> SMC / FVG Terisi</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Liquidity Sweep" class="reason-cb"> Liquidity Sweep</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Order Block" class="reason-cb"> Order Block</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="BOS / CHOCH" class="reason-cb"> BOS / CHOCH</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="RSI Divergence" class="reason-cb"> RSI Divergence</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="MACD Confirmation" class="reason-cb"> MACD Confirmation</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Trend Crossover (EMA)" class="reason-cb"> Trend Crossover</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Moving Average Rejection" class="reason-cb"> MA Rejection</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Volume Spike" class="reason-cb"> Volume Spike</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Candlestick Reversal" class="reason-cb"> Candlestick Reversal</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="News / Data Ekonomi" class="reason-cb"> News / Data Ekonomi</label>
-          <label class="flex items-center gap-2"><input type="checkbox" value="Sentimen Pasar" class="reason-cb"> Sentimen Pasar</label>
-        </div>
+      <div id="weekly-calendar" class="flex gap-4 overflow-x-auto hide-scrollbar pb-4 snap-x snap-mandatory px-4 md:px-0">
+        <!-- Rendered via JS -->
       </div>
-      <button onclick="submitPrediction()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg transition-colors">Simpan Prediksi</button>
     </div>
 
-    <!-- DAFTAR PREDIKSI & KONFIRMASI -->
-    <div class="reveal bg-slate-900/60 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-800 overflow-hidden">
-      <div class="p-5 border-b border-slate-800">
-        <h2 class="font-bold text-white">📋 Riwayat Prediksi Harian</h2>
+    <!-- DAY DETAIL CONTAINER -->
+    <div id="day-detail-container" class="hidden flex-col md:flex-row gap-8 bg-slate-900/40 border border-slate-800 rounded-2xl p-6 md:p-10 backdrop-blur-sm flex-1">
+      
+      <!-- LEFT: VISUAL TRAFFIC LIGHT -->
+      <div class="flex flex-col items-center justify-center shrink-0">
+        <div class="bg-slate-950 border-4 border-slate-800 p-4 rounded-full flex flex-col gap-4 shadow-2xl">
+          <div id="detail-light-red" class="bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-950/40 border border-red-900/50"></div>
+          <div id="detail-light-yellow" class="bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-950/40 border border-yellow-900/50"></div>
+          <div id="detail-light-green" class="bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-950/40 border border-green-900/50"></div>
+        </div>
       </div>
-      <div class="p-5 space-y-4" id="predictions-list">
-        <p class="text-center text-slate-500">Memuat data...</p>
+
+      <!-- RIGHT: INFORMASI & ADMIN PANEL -->
+      <div class="flex-1 flex flex-col justify-center">
+        <div class="mb-6 border-b border-slate-800 pb-4">
+          <h2 id="detail-date" class="text-2xl md:text-3xl font-bold text-white mb-2">Tanggal</h2>
+          <p id="detail-status-text" class="text-slate-400 text-lg">Pilih hari untuk melihat status pasar.</p>
+        </div>
+
+        <!-- PUBLIC VIEW -->
+        <div id="public-detail-view" class="space-y-6">
+          <div class="flex flex-wrap gap-8">
+            <div>
+              <p class="text-xs text-slate-500 uppercase tracking-widest mb-1">Prob. Hijau (Bullish)</p>
+              <p id="detail-prob-green" class="text-3xl font-bold text-green-400">0%</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 uppercase tracking-widest mb-1">Prob. Merah (Bearish)</p>
+              <p id="detail-prob-red" class="text-3xl font-bold text-red-400">0%</p>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 uppercase tracking-widest mb-2">Faktor Teknis & Sentimen</p>
+            <div id="detail-reasons" class="flex flex-wrap gap-2">
+              <!-- Reasons Badge -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ADMIN EDITOR (HIDDEN BY DEFAULT) -->
+        <div id="admin-editor-view" class="hidden mt-6 bg-slate-950/60 p-6 rounded-xl border border-blue-900/50 relative overflow-hidden">
+          <div class="absolute top-0 right-0 bg-blue-600 text-[10px] uppercase font-bold px-3 py-1 rounded-bl-lg text-white">Mode Edit Admin</div>
+          
+          <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+            <i data-lucide="settings-2" class="w-5 h-5 text-blue-400"></i> Konfigurasi Sinyal
+          </h3>
+          
+          <div class="space-y-4">
+            <!-- Lamp Selector -->
+            <div>
+              <label class="block text-xs text-slate-400 mb-2">Warna Lampu Utama</label>
+              <div class="grid grid-cols-3 gap-3">
+                <button onclick="adminSelectColor('green')" id="btn-set-green" class="py-2.5 rounded-lg border border-slate-700 text-slate-400 hover:border-green-500 transition-colors flex flex-col items-center gap-1">
+                  <div class="w-3 h-3 rounded-full bg-green-500"></div> <span class="text-xs">Hijau</span>
+                </button>
+                <button onclick="adminSelectColor('yellow')" id="btn-set-yellow" class="py-2.5 rounded-lg border border-slate-700 text-slate-400 hover:border-yellow-400 transition-colors flex flex-col items-center gap-1">
+                  <div class="w-3 h-3 rounded-full bg-yellow-400"></div> <span class="text-xs">Kuning</span>
+                </button>
+                <button onclick="adminSelectColor('red')" id="btn-set-red" class="py-2.5 rounded-lg border border-slate-700 text-slate-400 hover:border-red-500 transition-colors flex flex-col items-center gap-1">
+                  <div class="w-3 h-3 rounded-full bg-red-500"></div> <span class="text-xs">Merah</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="w-1/2">
+                <label class="block text-xs text-slate-400 mb-1">Probabilitas Hijau (%)</label>
+                <input type="number" id="admin-prob-green" class="w-full bg-slate-900 text-white border border-slate-700 rounded-lg p-2.5">
+              </div>
+              <div class="w-1/2">
+                <label class="block text-xs text-slate-400 mb-1">Probabilitas Merah (%)</label>
+                <input type="number" id="admin-prob-red" class="w-full bg-slate-900 text-white border border-slate-700 rounded-lg p-2.5">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-400 mb-2">Faktor Analisa</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs" id="admin-reasons">
+                <label class="flex items-center gap-2"><input type="checkbox" value="Support Kuat" class="admin-cb"> Support Kuat</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="Resistance Kuat" class="admin-cb"> Resistance Kuat</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="Breakout" class="admin-cb"> Breakout</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="Oversold (RSI)" class="admin-cb"> Oversold (RSI)</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="Overbought (RSI)" class="admin-cb"> Overbought</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="News Positif" class="admin-cb"> News Positif</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="News Negatif" class="admin-cb"> News Negatif</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="Rejeksi MA" class="admin-cb"> Rejeksi MA</label>
+                <label class="flex items-center gap-2"><input type="checkbox" value="Volume Spike" class="admin-cb"> Volume Spike</label>
+              </div>
+            </div>
+            
+            <button onclick="savePredictionToDatabase()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors mt-2">Simpan ke Database</button>
+          </div>
+        </div>
+
       </div>
     </div>
+    
+    <!-- Empty State Prompt -->
+    <div id="empty-state" class="flex-1 flex items-center justify-center text-slate-500 text-center py-20">
+      <div class="flex flex-col items-center gap-4">
+        <i data-lucide="calendar-days" class="w-12 h-12 opacity-50"></i>
+        <p>Silakan klik salah satu tanggal di atas<br>untuk melihat proyeksi lampu pasar.</p>
+      </div>
     </div>
   </main>
 
-  <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
-    <div class="max-w-7xl mx-auto px-6 md:px-12">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-12">
-        <div class="max-w-xs">
-          <a href="index.html" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
-            <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
-            <span class="text-xl font-bold text-white">AKADEMI TROPHAGE</span>
-          </a>
-          <p class="text-slate-500 text-sm">Pusat komando finansial. Melipat dimensi pasar, menyerap energi kekayaan.</p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-12 sm:gap-24">
-          <div class="flex flex-col gap-3">
-            <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Navigasi Utama</h4>
-            <a href="index.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
-            <a href="monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Live Trade</a>
-            <a href="predik.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prediksi Pasar</a>
-            <a href="bilik_baca.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bilik Baca</a>
-          </div>
-          <div class="flex flex-col gap-3">
-            <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Dashboard</h4>
-            <a href="bot-monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bot Monitor</a>
-            <a href="index.html#konsep" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Konsep Kosmis</a>
-            <a href="index.html#prinsip" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prinsip Navigasi</a>
-          </div>
-        </div>
-      </div>
-      <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div class="text-slate-500 text-sm flex items-center gap-2">Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">-</span></div>
-      </div>
-      <div class="mt-12 bg-slate-900/50 border border-slate-800 rounded-xl p-6 flex gap-4 items-start">
-        <i data-lucide="shield-alert" class="text-yellow-600 w-6 h-6 flex-shrink-0 mt-1"></i>
-        <p class="text-sm text-slate-500 leading-relaxed font-mono"><strong class="text-yellow-600/80">Disclaimer:</strong> Semua konten di website dan saluran ini bersifat edukasi dan berbagi informasi futuristik. Bukan ajakan atau penasihat keuangan legal. Lakukan riset Anda sendiri (DYOR - Do Your Own Research) sebelum melakukan lompatan kuantum di pasar modal.</p>
-      </div>
-    </div>
-  </footer>
+  <!-- TOASTS & MODALS -->
+  <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- MODAL SETTING URL WORKER -->
-  <div id="settings-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+  <div id="settings-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 opacity-0 transition-opacity">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 transform scale-95 transition-transform">
       <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-        <h3 class="font-bold text-white text-lg">⚙️ Konfigurasi URL Worker</h3>
-        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white">&times;</button>
+        <h3 class="font-bold text-white text-lg">⚙️ URL Cloudflare Worker</h3>
+        <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-white">&times;</button>
       </div>
-      <div>
-         <label class="block text-xs text-slate-400 mb-2">Masukkan URL Endpoint Cloudflare Worker Anda:</label>
-         <input type="text" id="modal-worker-url" placeholder="https://nama-worker.subdomain.workers.dev" 
-           class="w-full bg-slate-950 text-white border border-slate-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500">
+      <input type="text" id="modal-worker-url" placeholder="https://..." class="w-full bg-slate-950 text-white border border-slate-700 rounded-lg p-2.5 text-sm">
+      <div class="flex justify-end gap-2"><button onclick="saveWorkerUrl()" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Simpan</button></div>
+    </div>
+  </div>
+
+  <div id="login-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 opacity-0 transition-opacity">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xs w-full p-6 space-y-4 transform scale-95 transition-transform">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h3 class="font-bold text-white text-lg">Akses Admin</h3>
+        <button onclick="closeModal('login-modal')" class="text-slate-400 hover:text-white">&times;</button>
       </div>
-      <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeSettingsModal()" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300">Batal</button>
-        <button onclick="saveWorkerUrlFromModal()" class="px-4 py-2 text-xs bg-blue-600 hover:bg-blue-500 rounded-lg text-white font-bold">Simpan URL</button>
-      </div>
+      <input type="password" id="admin-pwd" placeholder="Password..." class="w-full bg-slate-950 text-white border border-slate-700 rounded-lg p-2.5 text-sm">
+      <div class="flex justify-end gap-2"><button onclick="processLogin()" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Login</button></div>
     </div>
   </div>
 
   <script>
     lucide.createIcons();
 
-    const revealElements = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.12 });
+    const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE';
 
-    revealElements.forEach(element => revealObserver.observe(element));
-
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 20) {
-        navbar.classList.add('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
-        navbar.classList.remove('bg-transparent', 'py-6');
-      } else {
-        navbar.classList.add('bg-transparent', 'py-6');
-        navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
-      }
-    });
-
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    const closeIcon = document.getElementById('close-icon');
-    const mobileLinks = document.querySelectorAll('.mobile-link');
-
-    function toggleMenu() {
-      mobileMenu.classList.toggle('hidden');
-      mobileMenu.classList.toggle('flex');
-      menuIcon.classList.toggle('hidden');
-      menuIcon.classList.toggle('block');
-      closeIcon.classList.toggle('hidden');
-      closeIcon.classList.toggle('block');
-    }
-
-    mobileMenuBtn.addEventListener('click', toggleMenu);
-    mobileLinks.forEach(link => link.addEventListener('click', () => {
-      if (!mobileMenu.classList.contains('hidden')) toggleMenu();
-    }));
-
-    // ==========================================
-    // KONFIGURASI SUPABASE
-    // ==========================================
-    const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co'; // Ganti dengan URL Supabase Anda
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE'; // Ganti dengan Anon Key Supabase Anda
-
+    let weeklyData = {}; // Format: { "YYYY-MM-DD": { color, green_prob, red_prob, reasons } }
+    let selectedDateStr = null;
     let adminPassword = null;
+    let selectedAdminColor = null;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      loadData();
-    });
-
-    // Kontrol Modal Setting
-    function openSettingsModal() {
-      const savedUrl = localStorage.getItem('workerUrl') || '';
-      document.getElementById('modal-worker-url').value = savedUrl;
-      document.getElementById('settings-modal').classList.remove('hidden');
+    // UI Utilities
+    function showToast(msg, type='info') {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      const bg = type==='error'?'bg-red-600':type==='success'?'bg-green-600':'bg-blue-600';
+      t.className = `px-4 py-3 rounded-xl shadow-lg text-sm text-white transform translate-x-full opacity-0 transition-all duration-300 ${bg}`;
+      t.innerText = msg;
+      c.appendChild(t);
+      requestAnimationFrame(() => t.classList.remove('translate-x-full', 'opacity-0'));
+      setTimeout(() => {
+        t.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => t.remove(), 300);
+      }, 3000);
+    }
+    function openModal(id) {
+      const m = document.getElementById(id), i = m.querySelector('div');
+      m.classList.remove('hidden'); requestAnimationFrame(() => { m.classList.remove('opacity-0'); i.classList.remove('scale-95'); });
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id), i = m.querySelector('div');
+      m.classList.add('opacity-0'); i.classList.add('scale-95');
+      setTimeout(() => m.classList.add('hidden'), 300);
     }
 
-    function closeSettingsModal() {
-      document.getElementById('settings-modal').classList.add('hidden');
-    }
+    // Initialize 7 Days Calendar
+    const daysArr = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const monthsArr = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
 
-    function saveWorkerUrlFromModal() {
-      const url = document.getElementById('modal-worker-url').value.trim();
-      if (!url) {
-        alert("URL tidak boleh kosong!");
-        return;
+    function generateCalendar() {
+      const cal = document.getElementById('weekly-calendar');
+      cal.innerHTML = '';
+      const today = new Date();
+      
+      for(let i=0; i<7; i++) {
+        const d = new Date();
+        d.setDate(today.getDate() + i);
+        const dateStr = d.toISOString().split('T')[0]; // YYYY-MM-DD
+        
+        const dayName = i === 0 ? 'Hari Ini' : daysArr[d.getDay()];
+        const displayDate = `${d.getDate()} ${monthsArr[d.getMonth()]}`;
+
+        // Create Card
+        const card = document.createElement('div');
+        card.id = `card-${dateStr}`;
+        card.className = "snap-center shrink-0 w-28 md:w-32 bg-slate-900 border border-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-800 transition-colors flex flex-col items-center gap-3";
+        card.onclick = () => selectDay(dateStr, dayName, displayDate);
+
+        card.innerHTML = `
+          <div class="text-center">
+            <p class="text-xs text-slate-400 font-medium">${dayName}</p>
+            <p class="text-sm font-bold text-white">${displayDate}</p>
+          </div>
+          <div class="flex gap-1 bg-slate-950 p-1.5 rounded-full border border-slate-800">
+            <div id="mini-red-${dateStr}" class="w-3 h-3 rounded-full bg-slate-800 transition-colors"></div>
+            <div id="mini-yellow-${dateStr}" class="w-3 h-3 rounded-full bg-slate-800 transition-colors"></div>
+            <div id="mini-green-${dateStr}" class="w-3 h-3 rounded-full bg-slate-800 transition-colors"></div>
+          </div>
+        `;
+        cal.appendChild(card);
       }
-      localStorage.setItem('workerUrl', url);
-      alert("URL Cloudflare Worker berhasil disimpan!");
-      closeSettingsModal();
     }
 
-    function getCleanWorkerUrl() {
-      let url = localStorage.getItem('workerUrl');
-      if (!url) return null;
-      return url.trim().replace(/\/+$/, '');
-    }
-
-    // 2. Fetch Data LANGSUNG dari Supabase (Publik)
-    async function loadData() {
+    // Fetch Data from Supabase
+    async function loadDatabaseData() {
       try {
-        const baseUrl = SUPABASE_URL.replace(/\/+$/, '');
-        const res = await fetch(`${baseUrl}/rest/v1/predictions?order=target_date.desc`, {
-          method: 'GET',
+        const todayStr = new Date().toISOString().split('T')[0];
+        
+        // Asumsi tabel bernama `daily_traffic_lights` sesuai skema baru.
+        // Jika nama tabel berbeda, sesuaikan nama endpoint ini.
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/daily_traffic_lights?target_date=gte.${todayStr}`, {
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -361,175 +341,215 @@
           }
         });
         
-        if (!res.ok) throw new Error("Gagal mengambil data dari database.");
+        if(!res.ok) {
+          // Fallback if table doesn't exist yet, just don't crash
+          throw new Error("Tabel tidak ditemukan atau data kosong.");
+        }
+
         const data = await res.json();
-        
-        let total = 0, benar = 0, salah = 0;
-        let htmlList = '';
-
+        weeklyData = {};
         data.forEach(item => {
-          if (item.status === 'BENAR') benar++;
-          if (item.status === 'SALAH') salah++;
-          if (item.status !== 'PENDING') total++;
-
-          const reasonsHtml = item.reasons.map(r => `<span class="bg-slate-800 px-2 py-0.5 rounded text-[10px] text-slate-300">${r}</span>`).join(' ');
+          weeklyData[item.target_date] = item;
+          // Update mini lights in calendar
+          const mr = document.getElementById(`mini-red-${item.target_date}`);
+          const my = document.getElementById(`mini-yellow-${item.target_date}`);
+          const mg = document.getElementById(`mini-green-${item.target_date}`);
           
-          let statusBadge = `<span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs font-bold">MENUNGGU HASIL</span>`;
-          if (item.status === 'BENAR') statusBadge = `<span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-bold">✅ PREDIKSI BENAR</span>`;
-          if (item.status === 'SALAH') statusBadge = `<span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs font-bold">❌ PREDIKSI SALAH</span>`;
-
-          let actionButtons = '';
-          if (adminPassword && item.status === 'PENDING') {
-            actionButtons = `
-              <div class="mt-3 flex gap-2">
-                <button onclick="updateStatus('${item.id}', 'BENAR')" class="text-xs bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded">Set Benar</button>
-                <button onclick="updateStatus('${item.id}', 'SALAH')" class="text-xs bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded">Set Salah</button>
-              </div>
-            `;
+          if(mr && my && mg) {
+            if(item.light_color === 'red') mr.className = "w-3 h-3 rounded-full bg-red-500 glow-red";
+            if(item.light_color === 'yellow') my.className = "w-3 h-3 rounded-full bg-yellow-400 glow-yellow";
+            if(item.light_color === 'green') mg.className = "w-3 h-3 rounded-full bg-green-500 glow-green";
           }
-
-          htmlList += `
-            <div class="border border-slate-800 bg-slate-950/40 p-5 rounded-xl">
-              <div class="flex justify-between items-start mb-2">
-                <div>
-                  <p class="font-bold text-white text-sm">📅 ${item.target_date}</p>
-                  <div class="flex gap-4 mt-2">
-                    <p class="text-sm font-bold text-green-400">Hijau: ${item.green_prob}%</p>
-                    <p class="text-sm font-bold text-red-400">Merah: ${item.red_prob}%</p>
-                  </div>
-                </div>
-                <div>${statusBadge}</div>
-              </div>
-              <div class="mt-2 flex flex-wrap gap-1">${reasonsHtml}</div>
-              ${actionButtons}
-            </div>
-          `;
         });
 
-        const winrate = total > 0 ? ((benar / total) * 100).toFixed(1) : 0;
-        document.getElementById('total-pred').innerText = data.length;
-        document.getElementById('winrate').innerText = `${winrate}%`;
-        document.getElementById('benar-count').innerText = benar;
-        document.getElementById('salah-count').innerText = salah;
-        document.getElementById('predictions-list').innerHTML = htmlList || '<p class="text-center text-slate-500">Belum ada data prediksi.</p>';
+        // Re-render selection if a date is already selected
+        if(selectedDateStr) selectDay(selectedDateStr, null, null, true);
 
       } catch (err) {
-        document.getElementById('predictions-list').innerHTML = `<p class="text-center text-red-400">${err.message}</p>`;
+        console.warn("DB Load Error:", err.message);
       }
     }
 
-    // 3. Login Admin
-    // 3. Login Admin (Tervalidasi oleh Worker)
-    async function promptAdminLogin() {
-      const workerUrl = getCleanWorkerUrl();
-      if (!workerUrl) {
-        alert("Silakan atur URL Cloudflare Worker terlebih dahulu melalui tombol '⚙️ Setting URL' di pojok kanan atas!");
-        openSettingsModal();
-        return;
+    function selectDay(dateStr, dayName, displayDate, isRefresh = false) {
+      selectedDateStr = dateStr;
+      document.getElementById('empty-state').classList.add('hidden');
+      const detailContainer = document.getElementById('day-detail-container');
+      detailContainer.classList.remove('hidden');
+      
+      if(!isRefresh) detailContainer.classList.add('fade-in');
+      setTimeout(() => detailContainer.classList.remove('fade-in'), 400);
+
+      // Highlight Card
+      document.querySelectorAll('[id^="card-"]').forEach(c => c.classList.remove('ring-2', 'ring-blue-500', 'bg-slate-800'));
+      const activeCard = document.getElementById(`card-${dateStr}`);
+      if(activeCard) activeCard.classList.add('ring-2', 'ring-blue-500', 'bg-slate-800');
+
+      // Set Text (Keep old text if refresh)
+      if(dayName) document.getElementById('detail-date').innerText = `${dayName}, ${displayDate}`;
+
+      const data = weeklyData[dateStr];
+
+      // Reset Lights
+      const lRed = document.getElementById('detail-light-red');
+      const lYel = document.getElementById('detail-light-yellow');
+      const lGrn = document.getElementById('detail-light-green');
+      
+      lRed.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-950/40 border border-red-900/50";
+      lYel.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-950/40 border border-yellow-900/50";
+      lGrn.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-950/40 border border-green-900/50";
+
+      const publicView = document.getElementById('public-detail-view');
+
+      if (data) {
+        // Data Exists
+        document.getElementById('detail-status-text').innerText = "Prediksi pasar telah dianalisa.";
+        document.getElementById('detail-prob-green').innerText = `${data.green_prob}%`;
+        document.getElementById('detail-prob-red').innerText = `${data.red_prob}%`;
+        
+        if (data.light_color === 'red') lRed.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-500 glow-red border-transparent";
+        if (data.light_color === 'yellow') lYel.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-400 glow-yellow border-transparent";
+        if (data.light_color === 'green') lGrn.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-500 glow-green border-transparent";
+
+        const reasonsHtml = data.reasons && data.reasons.length > 0 
+          ? data.reasons.map(r => `<span class="bg-slate-800/80 px-3 py-1 rounded text-xs text-slate-300 border border-slate-700/50">${r}</span>`).join('')
+          : '<span class="text-sm text-slate-600">Tidak ada catatan teknis.</span>';
+        document.getElementById('detail-reasons').innerHTML = reasonsHtml;
+        publicView.classList.remove('hidden');
+      } else {
+        // No Data
+        document.getElementById('detail-status-text').innerText = "Belum ada prediksi untuk tanggal ini.";
+        publicView.classList.add('hidden');
       }
 
-      const pwd = prompt("Masukkan Password Admin:");
-      if (!pwd) return;
+      // Handle Admin Mode Sync
+      syncAdminEditor(data);
+    }
 
+    function syncAdminEditor(data) {
+      if (!adminPassword) return;
+      
+      document.getElementById('admin-editor-view').classList.remove('hidden');
+      
+      // Reset Editor
+      document.querySelectorAll('[id^="btn-set-"]').forEach(btn => btn.classList.remove('bg-slate-800', 'border-slate-500'));
+      document.getElementById('admin-prob-green').value = data ? data.green_prob : '';
+      document.getElementById('admin-prob-red').value = data ? data.red_prob : '';
+      
+      document.querySelectorAll('.admin-cb').forEach(cb => cb.checked = false);
+
+      if (data) {
+        adminSelectColor(data.light_color, false);
+        data.reasons.forEach(r => {
+          const cb = document.querySelector(`.admin-cb[value="${r}"]`);
+          if(cb) cb.checked = true;
+        });
+      } else {
+        selectedAdminColor = null;
+      }
+    }
+
+    function adminSelectColor(color, autoFill = true) {
+      selectedAdminColor = color;
+      document.querySelectorAll('[id^="btn-set-"]').forEach(btn => btn.classList.remove('bg-slate-800', 'border-slate-500'));
+      document.getElementById(`btn-set-${color}`).classList.add('bg-slate-800', 'border-slate-500');
+
+      if (autoFill) {
+        if(color === 'green') { document.getElementById('admin-prob-green').value = 75; document.getElementById('admin-prob-red').value = 25; }
+        if(color === 'yellow') { document.getElementById('admin-prob-green').value = 50; document.getElementById('admin-prob-red').value = 50; }
+        if(color === 'red') { document.getElementById('admin-prob-green').value = 25; document.getElementById('admin-prob-red').value = 75; }
+      }
+    }
+
+    // Worker Integrations
+    function getCleanWorkerUrl() {
+      let url = localStorage.getItem('workerUrl');
+      return url ? url.trim().replace(/\/+$/, '') : null;
+    }
+    function openSettingsModal() { 
+      document.getElementById('modal-worker-url').value = getCleanWorkerUrl() || '';
+      openModal('settings-modal'); 
+    }
+    function saveWorkerUrl() {
+      const url = document.getElementById('modal-worker-url').value;
+      if(!url) return showToast("URL Kosong!", "error");
+      localStorage.setItem('workerUrl', url);
+      showToast("URL Worker Tersimpan!", "success");
+      closeModal('settings-modal');
+    }
+
+    function openLoginModal() {
+      if(!getCleanWorkerUrl()) return showToast("Set URL Worker terlebih dahulu!", "error");
+      document.getElementById('admin-pwd').value = '';
+      openModal('login-modal');
+    }
+    async function processLogin() {
+      const pwd = document.getElementById('admin-pwd').value;
+      if(!pwd) return;
       try {
-        // Cek password ke endpoint khusus verifikasi
-        const res = await fetch(`${workerUrl}/api/verify`, {
-          method: 'GET',
-          headers: { 
-            'X-Admin-Password': pwd 
-          }
-        });
-
-        if (res.status === 401) {
-          alert("❌ Password Admin Salah!");
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error("Terjadi kesalahan pada server worker.");
-        }
-
-        // Jika berhasil (status 200)
+        const res = await fetch(`${getCleanWorkerUrl()}/api/verify`, { headers: { 'X-Admin-Password': pwd } });
+        if (res.status === 401) return showToast("Password Salah!", "error");
+        
         adminPassword = pwd;
-        document.getElementById('admin-panel').classList.remove('hidden');
-        loadData(); 
-        alert("✅ Mode Admin Aktif.");
-
-      } catch (err) {
-        alert("Gagal terhubung ke Cloudflare Worker: " + err.message);
+        showToast("Login Admin Berhasil", "success");
+        document.getElementById('btn-login-admin').classList.add('hidden');
+        document.getElementById('btn-logout-admin').classList.remove('hidden');
+        closeModal('login-modal');
+        if(selectedDateStr) selectDay(selectedDateStr, null, null, true); // refresh view
+      } catch (e) {
+        showToast("Error koneksi ke worker", "error");
       }
     }
-
     function logoutAdmin() {
       adminPassword = null;
-      document.getElementById('admin-panel').classList.add('hidden');
-      loadData();
-      alert("Berhasil Logout dari Admin.");
+      document.getElementById('btn-login-admin').classList.remove('hidden');
+      document.getElementById('btn-logout-admin').classList.add('hidden');
+      document.getElementById('admin-editor-view').classList.add('hidden');
+      showToast("Logout Berhasil");
     }
 
-    // 4. Submit Prediksi Baru
-    async function submitPrediction() {
-      const workerUrl = getCleanWorkerUrl();
-      if (!workerUrl) return alert("URL Worker belum diatur!");
-
-      const date = document.getElementById('input-date').value;
-      const green = parseInt(document.getElementById('input-green').value);
-      const red = parseInt(document.getElementById('input-red').value);
+    async function savePredictionToDatabase() {
+      if(!selectedDateStr || !selectedAdminColor) return showToast("Pilih tanggal & warna lampu!", "error");
       
-      const checkedBoxes = document.querySelectorAll('.reason-cb:checked');
-      const reasons = Array.from(checkedBoxes).map(cb => cb.value);
+      const gProb = parseInt(document.getElementById('admin-prob-green').value);
+      const rProb = parseInt(document.getElementById('admin-prob-red').value);
+      const reasons = Array.from(document.querySelectorAll('.admin-cb:checked')).map(cb => cb.value);
 
-      if (!date || isNaN(green) || isNaN(red) || reasons.length === 0) {
-        return alert("Harap lengkapi tanggal, probabilitas, dan minimal 1 alasan.");
-      }
+      if(isNaN(gProb) || isNaN(rProb)) return showToast("Probabilitas tidak valid", "error");
+
+      const payload = {
+        target_date: selectedDateStr,
+        light_color: selectedAdminColor,
+        green_prob: gProb,
+        red_prob: rProb,
+        reasons: reasons
+      };
 
       try {
-        const res = await fetch(`${workerUrl}/api/predictions`, {
+        // Asumsi worker Anda memodifikasi endpoint ke tabel baru, gunakan PUT/POST untuk Upsert
+        const res = await fetch(`${getCleanWorkerUrl()}/api/daily_lights`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
-          body: JSON.stringify([{ target_date: date, green_prob: green, red_prob: red, reasons: reasons }])
+          body: JSON.stringify(payload)
         });
 
         if (res.ok) {
-          alert("Prediksi berhasil disimpan!");
-          loadData(); 
+          showToast("Data lampu berhasil disimpan!", "success");
+          // Refresh Calendar UI instantly
+          generateCalendar();
+          await loadDatabaseData();
         } else {
-          alert("Gagal: " + await res.text());
+          showToast("Gagal menyimpan data", "error");
         }
-      } catch (err) {
-        alert("Error Koneksi ke Worker: " + err.message);
+      } catch(e) {
+        showToast("Network Error: " + e.message, "error");
       }
     }
 
-    // 5. Konfirmasi Status
-    async function updateStatus(id, newStatus) {
-      const workerUrl = getCleanWorkerUrl();
-      if (!workerUrl) return alert("URL Worker belum diatur!");
-
-      if (!confirm(`Tandai prediksi ini sebagai ${newStatus}?`)) return;
-
-      try {
-        const res = await fetch(`${workerUrl}/api/predictions/${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPassword },
-          body: JSON.stringify({ status: newStatus })
-        });
-
-        if (res.ok) {
-          loadData(); 
-        } else {
-          alert("Gagal update: " + await res.text());
-        }
-      } catch (err) {
-        alert("Error Koneksi ke Worker: " + err.message);
-      }
-    }
+    // Init
+    window.onload = () => {
+      generateCalendar();
+      loadDatabaseData();
+    };
   </script>
-  <script type="text/javascript">
-var infolinks_pid = 3447906;
-var infolinks_wsid = 0;
-</script>
-<script type="text/javascript" src="https://resources.infolinks.com/js/infolinks_main.js"></script>
-  <script src="promosi.js"></script>
 </body>
 </html>
