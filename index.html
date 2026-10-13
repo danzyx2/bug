@@ -54,6 +54,15 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes signalBlink {
+            0%, 100% { opacity: 0.5; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .ihsg-light-active {
+            animation: signalBlink 1s ease-in-out infinite;
+        }
+
         .orb-blue {
             animation: drift-blue 18s ease-in-out infinite;
         }
@@ -205,13 +214,77 @@
             </a>
         </section>
 
+        <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-24" aria-labelledby="why-us-title">
+            <div class="mb-10">
+                <p class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">Visi & Metodologi</p>
+                <h2 id="why-us-title" class="text-3xl md:text-4xl font-bold text-white">Menyusun keputusan investasi dengan sudut pandang yang lebih luas</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8">
+                <div class="space-y-6 text-slate-300 leading-relaxed text-lg">
+                    <p>
+                        Pasar keuangan bukan sekadar kumpulan angka yang bergerak naik dan turun. Di balik setiap candle, terdapat struktur makro, sentimen investor, dinamika likuiditas, dan psikologi massa yang membentuk arah pergerakan jangka pendek maupun jangka panjang.
+                    </p>
+                    <p>
+                        Tesseract Astrophage hadir untuk membantu Anda melihat hubungan antara data teknis, kondisi makro, serta momentum pasar secara lebih utuh. Kami tidak berfokus pada satu sinyal saja, melainkan menggabungkan analisis tren, manajemen risiko, serta persepsi terhadap peluang yang muncul dari perubahan struktur pasar.
+                    </p>
+                    <p>
+                        Dalam dunia investasi modern, keputusan yang bagus lahir dari pemahaman yang kontekstual. Artinya, Anda tidak cukup melihat apakah aset sedang naik atau turun, tetapi juga perlu memahami mengapa ia bergerak demikian, seberapa kuat dorongan di baliknya, dan kapan probabilitas perubahan arah menjadi lebih besar dari peluang lanjutan tren.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 md:p-8">
+                    <h3 class="text-xl font-bold text-white mb-5">Apa yang kami prioritaskan</h3>
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex gap-3">
+                            <span class="mt-1 text-blue-400">●</span>
+                            <span>Memahami arah makro dan sentimen pasar sebelum mengambil posisi.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 text-blue-400">●</span>
+                            <span>Menyederhanakan informasi kompleks menjadi keputusan yang lebih terukur.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 text-blue-400">●</span>
+                            <span>Menyeimbangkan antara peluang tumbuh dan disiplin dalam pengelolaan risiko.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 text-blue-400">●</span>
+                            <span>Mengembangkan pola pikir investasi yang tahan terhadap volatilitas dan noise pasar.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-300">
+                <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6">
+                    <p class="text-sm uppercase tracking-[0.2em] text-blue-400 mb-3">1. Fokus</p>
+                    <p class="leading-relaxed">
+                        Kami menilai bukan hanya aset, tetapi juga konteks di balik pergerakannya. Tren yang valid biasanya muncul saat pembentukan struktur, likuiditas, dan momentum bergerak selaras.
+                    </p>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6">
+                    <p class="text-sm uppercase tracking-[0.2em] text-blue-400 mb-3">2. Disiplin</p>
+                    <p class="leading-relaxed">
+                        Investasi yang sehat tidak dibangun dari euforia sesaat. Ia dibangun dari proses yang konsisten: menilai peluang, mengukur risiko, dan menerima bahwa tidak semua sesi harus dipaksakan untuk masuk pasar.
+                    </p>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6">
+                    <p class="text-sm uppercase tracking-[0.2em] text-blue-400 mb-3">3. Adaptasi</p>
+                    <p class="leading-relaxed">
+                        Kondisi pasar selalu berubah, dan strategi yang bagus adalah strategi yang mampu beradaptasi. Semakin cepat Anda menyesuaikan diri dengan perubahan struktur, semakin besar peluang untuk bertahan dan berkembang.
+                    </p>
+                </div>
+            </div>
+        </section>
+
                 <!-- TradingView Market Overview -->
                 <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-24" aria-labelledby="market-overview-title">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
                                 <div>
                                         <p class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">Market Overview</p>
                                         <h2 id="market-overview-title" class="text-3xl md:text-4xl font-bold text-white">Pantauan Pasar</h2>
-                                        <p class="text-slate-400 mt-2">Pergerakan IHSG, Bitcoin, dan emas dalam satu tampilan.</p>
+                                        <p class="text-slate-400 mt-2">Pergerakan Bitcoin dan emas dalam satu tampilan.</p>
                                 </div>
                         </div>
 
@@ -245,7 +318,6 @@
                                     "valuesTracking": "1",
                                     "changeMode": "price-and-percent",
                                     "symbols": [
-                                        ["FINRA:IHSG5309967|1D"],
                                         ["BYBIT:BTCUSDT.P|1D"],
                                         ["BINANCE:XAUUSDT.P|1D"]
                                     ],
@@ -271,11 +343,10 @@
                         </div>
                 </section>
 
-        <!-- Prediction Statistics -->
+        <!-- Prediction Statistics --
         <section class="reveal max-w-7xl mx-auto px-6 md:px-12 mt-24" aria-labelledby="prediction-stats-title">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
                 <div>
-                    <p class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">Market Intelligence</p>
                     <h2 id="prediction-stats-title" class="text-3xl md:text-4xl font-bold text-white">Statistik Prediksi</h2>
                     <p class="text-slate-400 mt-2">Ringkasan akurasi prediksi pasar terbaru.</p>
                 </div>
@@ -284,36 +355,57 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-blue-500/50 transition-colors">
-                    <div class="flex items-center justify-between mb-5">
-                        <span class="text-slate-400 text-sm">Jumlah Prediksi</span>
-                        <i data-lucide="layers-3" class="text-blue-400 w-5 h-5"></i>
+            <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-5 mb-6">
+                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-5 md:p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="text-slate-400 text-sm">Jumlah Prediksi</span>
+                                <i data-lucide="layers-3" class="text-blue-400 w-5 h-5"></i>
+                            </div>
+                            <p id="home-total-pred" class="text-4xl font-bold text-white">--</p>
+                            <p class="text-slate-500 text-sm mt-2">Total catatan analisa</p>
+                        </div>
+
+                        <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="text-slate-400 text-sm">Winrate</span>
+                                <i data-lucide="target" class="text-green-400 w-5 h-5"></i>
+                            </div>
+                            <p id="home-winrate" class="text-4xl font-bold text-green-400">--</p>
+                            <p class="text-slate-500 text-sm mt-2">Akurasi hasil selesai</p>
+                        </div>
+
+                        <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="text-slate-400 text-sm">Benar / Salah</span>
+                                <i data-lucide="bar-chart-3" class="text-purple-400 w-5 h-5"></i>
+                            </div>
+                            <p class="text-4xl font-bold"><span id="home-correct" class="text-green-400">--</span><span class="text-slate-600"> / </span><span id="home-wrong" class="text-red-400">--</span></p>
+                            <p class="text-slate-500 text-sm mt-2">Hasil prediksi terkonfirmasi</p>
+                        </div>
                     </div>
-                    <p id="home-total-pred" class="text-4xl font-bold text-white">--</p>
-                    <p class="text-slate-500 text-sm mt-2">Total catatan analisa</p>
                 </div>
 
-                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-green-500/50 transition-colors">
-                    <div class="flex items-center justify-between mb-5">
-                        <span class="text-slate-400 text-sm">Winrate</span>
-                        <i data-lucide="target" class="text-green-400 w-5 h-5"></i>
+                <div class="bg-gradient-to-br from-slate-900/80 to-slate-950/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-[0_0_35px_-18px_rgba(59,130,246,0.8)]">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-[10px] uppercase tracking-[0.25em] text-slate-400">IHSG Hari Ini</p>
+                        <span class="inline-flex items-center gap-2 text-[10px] font-semibold text-blue-300 bg-blue-500/10 border border-blue-500/20 rounded-full px-2 py-1">Live</span>
                     </div>
-                    <p id="home-winrate" class="text-4xl font-bold text-green-400">--</p>
-                    <p class="text-slate-500 text-sm mt-2">Akurasi hasil selesai</p>
-                </div>
-
-                <div class="bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-purple-500/50 transition-colors">
-                    <div class="flex items-center justify-between mb-5">
-                        <span class="text-slate-400 text-sm">Benar / Salah</span>
-                        <i data-lucide="bar-chart-3" class="text-purple-400 w-5 h-5"></i>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="flex items-center gap-2">
+                            <span id="ihsg-light-red" class="w-4 h-4 rounded-full bg-red-950 border border-red-900/60"></span>
+                            <span id="ihsg-light-yellow" class="w-4 h-4 rounded-full bg-yellow-950 border border-yellow-900/60"></span>
+                            <span id="ihsg-light-green" class="w-4 h-4 rounded-full bg-green-950 border border-green-900/60"></span>
+                        </div>
+                        <div class="h-px flex-1 bg-slate-800"></div>
                     </div>
-                    <p class="text-4xl font-bold"><span id="home-correct" class="text-green-400">--</span><span class="text-slate-600"> / </span><span id="home-wrong" class="text-red-400">--</span></p>
-                    <p class="text-slate-500 text-sm mt-2">Hasil prediksi terkonfirmasi</p>
+                    <p id="ihsg-light-status" class="text-lg font-semibold text-white">Menunggu sinyal</p>
+                    <p class="text-sm text-slate-400 mt-2">Status sentimen pasar hari ini berdasarkan rekomendasi prediksi.</p>
                 </div>
             </div>
         </section>
-<!-- BEGIN AADS AD UNIT 2456035 -->
+ BEGIN AADS AD UNIT 2456035 -->
 
 <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
           <iframe data-aa='2456035' src='//acceptable.a-ads.com/2456035/?size=Adaptive'
@@ -506,6 +598,32 @@
         const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE';
 
+        function setTodayIhsgSignal(color = 'green') {
+            const signalMap = {
+                red: { label: 'Merah', node: 'ihsg-light-red' },
+                yellow: { label: 'Kuning', node: 'ihsg-light-yellow' },
+                green: { label: 'Hijau', node: 'ihsg-light-green' }
+            };
+
+            const statuses = ['red', 'yellow', 'green'];
+            statuses.forEach(status => {
+                const node = document.getElementById(`ihsg-light-${status}`);
+                if (!node) return;
+                const base = status === 'red' ? 'bg-red-950 border-red-900/60' : status === 'yellow' ? 'bg-yellow-950 border-yellow-900/60' : 'bg-green-950 border-green-900/60';
+                node.className = `w-4 h-4 rounded-full border ${base}`;
+            });
+
+            const active = signalMap[color] || signalMap.green;
+            const activeNode = document.getElementById(active.node);
+            if (activeNode) {
+                const glow = color === 'red' ? 'bg-red-500 border-red-200 shadow-[0_0_18px_rgba(239,68,68,0.8)]' : color === 'yellow' ? 'bg-yellow-400 border-yellow-100 shadow-[0_0_18px_rgba(250,204,21,0.85)]' : 'bg-green-500 border-green-200 shadow-[0_0_18px_rgba(34,197,94,0.8)]';
+                activeNode.className = `w-4 h-4 rounded-full border ${glow} ihsg-light-active`;
+            }
+
+            const statusText = document.getElementById('ihsg-light-status');
+            if (statusText) statusText.textContent = `Sinyal ${active.label}`;
+        }
+
         async function loadPredictionStats() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/predictions?select=status` , {
@@ -533,6 +651,8 @@
                 document.getElementById('home-correct').textContent = '0';
                 document.getElementById('home-wrong').textContent = '0';
             }
+
+            setTodayIhsgSignal(localStorage.getItem('ihsgTodaySignal') || 'green');
         }
 
         async function loadBtcBotPerformance() {

@@ -42,6 +42,11 @@
     .glow-red { box-shadow: 0 0 20px 4px rgba(239, 68, 68, 0.6); }
 
     .bulb { transition: all 0.4s ease; }
+    @keyframes lampBlink {
+      0%, 100% { opacity: 0.55; transform: scale(0.96); filter: brightness(0.85); }
+      50% { opacity: 1; transform: scale(1.06); filter: brightness(1.35); }
+    }
+    .bulb.active-light { animation: lampBlink 1s ease-in-out infinite; }
     
     /* Scrollbar for horizontal calendar */
     .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -211,6 +216,11 @@
                 <label class="flex items-center gap-2"><input type="checkbox" value="Volume Spike" class="admin-cb"> Volume Spike</label>
               </div>
             </div>
+
+            <div>
+              <label for="admin-technical-note" class="block text-xs text-slate-400 mb-2">Catatan Teknis Tambahan</label>
+              <textarea id="admin-technical-note" rows="5" placeholder="Ketik keterangan analisis secara bebas..." class="w-full bg-slate-900 text-white border border-slate-700 rounded-lg p-3 text-sm resize-y focus:outline-none focus:border-blue-500"></textarea>
+            </div>
             
             <button onclick="savePredictionToDatabase()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors mt-2">Simpan ke Database</button>
           </div>
@@ -260,6 +270,7 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE';
 
     let weeklyData = {}; // Format: { "YYYY-MM-DD": { color, green_prob, red_prob, reasons } }
+    const TECHNICAL_NOTE_PREFIX = 'Catatan tambahan: ';
     let selectedDateStr = null;
     let adminPassword = null;
     let selectedAdminColor = null;
@@ -406,14 +417,33 @@
         document.getElementById('detail-prob-green').innerText = `${data.green_prob}%`;
         document.getElementById('detail-prob-red').innerText = `${data.red_prob}%`;
         
-        if (data.light_color === 'red') lRed.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-500 glow-red border-transparent";
-        if (data.light_color === 'yellow') lYel.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-400 glow-yellow border-transparent";
-        if (data.light_color === 'green') lGrn.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-500 glow-green border-transparent";
+        if (data.light_color === 'red') lRed.className = "bulb active-light w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-500 glow-red border-transparent";
+        if (data.light_color === 'yellow') lYel.className = "bulb active-light w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-400 glow-yellow border-transparent";
+        if (data.light_color === 'green') lGrn.className = "bulb active-light w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-500 glow-green border-transparent";
 
-        const reasonsHtml = data.reasons && data.reasons.length > 0 
-          ? data.reasons.map(r => `<span class="bg-slate-800/80 px-3 py-1 rounded text-xs text-slate-300 border border-slate-700/50">${r}</span>`).join('')
-          : '<span class="text-sm text-slate-600">Tidak ada catatan teknis.</span>';
-        document.getElementById('detail-reasons').innerHTML = reasonsHtml;
+        const reasonsContainer = document.getElementById('detail-reasons');
+        reasonsContainer.replaceChildren();
+        const reasons = Array.isArray(data.reasons) ? data.reasons : [];
+        reasons.forEach(reason => {
+          const reasonText = String(reason);
+          if (reasonText.startsWith(TECHNICAL_NOTE_PREFIX)) {
+            const note = document.createElement('p');
+            note.className = 'w-full rounded-lg border border-slate-700/50 bg-slate-800/50 px-4 py-3 text-sm text-slate-300 whitespace-pre-wrap break-words';
+            note.textContent = reasonText.slice(TECHNICAL_NOTE_PREFIX.length);
+            reasonsContainer.appendChild(note);
+          } else {
+            const badge = document.createElement('span');
+            badge.className = 'bg-slate-800/80 px-3 py-1 rounded text-xs text-slate-300 border border-slate-700/50';
+            badge.textContent = reasonText;
+            reasonsContainer.appendChild(badge);
+          }
+        });
+        if (reasons.length === 0) {
+          const emptyNote = document.createElement('span');
+          emptyNote.className = 'text-sm text-slate-600';
+          emptyNote.textContent = 'Tidak ada catatan teknis.';
+          reasonsContainer.appendChild(emptyNote);
+        }
         publicView.classList.remove('hidden');
       } else {
         // No Data
@@ -434,14 +464,20 @@
       document.querySelectorAll('[id^="btn-set-"]').forEach(btn => btn.classList.remove('bg-slate-800', 'border-slate-500'));
       document.getElementById('admin-prob-green').value = data ? data.green_prob : '';
       document.getElementById('admin-prob-red').value = data ? data.red_prob : '';
+      document.getElementById('admin-technical-note').value = '';
       
       document.querySelectorAll('.admin-cb').forEach(cb => cb.checked = false);
 
       if (data) {
         adminSelectColor(data.light_color, false);
-        data.reasons.forEach(r => {
-          const cb = document.querySelector(`.admin-cb[value="${r}"]`);
-          if(cb) cb.checked = true;
+        (Array.isArray(data.reasons) ? data.reasons : []).forEach(reason => {
+          const reasonText = String(reason);
+          if (reasonText.startsWith(TECHNICAL_NOTE_PREFIX)) {
+            document.getElementById('admin-technical-note').value = reasonText.slice(TECHNICAL_NOTE_PREFIX.length);
+            return;
+          }
+          const checkbox = Array.from(document.querySelectorAll('.admin-cb')).find(cb => cb.value === reasonText);
+          if (checkbox) checkbox.checked = true;
         });
       } else {
         selectedAdminColor = null;
@@ -513,6 +549,8 @@
       const gProb = parseInt(document.getElementById('admin-prob-green').value);
       const rProb = parseInt(document.getElementById('admin-prob-red').value);
       const reasons = Array.from(document.querySelectorAll('.admin-cb:checked')).map(cb => cb.value);
+      const technicalNote = document.getElementById('admin-technical-note').value.trim();
+      if (technicalNote) reasons.push(`${TECHNICAL_NOTE_PREFIX}${technicalNote}`);
 
       if(isNaN(gProb) || isNaN(rProb)) return showToast("Probabilitas tidak valid", "error");
 
