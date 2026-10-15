@@ -57,6 +57,28 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    .watermark {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-auto-rows: 130px;
+      overflow: hidden;
+      pointer-events: none;
+      user-select: none;
+    }
+    .watermark span {
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.16);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+      transform: rotate(-25deg);
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased">
@@ -65,6 +87,17 @@
   <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
     <div class="orb-blue absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
     <div class="orb-purple absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
+  </div>
+
+  <div class="watermark" aria-hidden="true">
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
+    <span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span><span>astrotess.my.id</span>
   </div>
 
   <nav id="navbar" class="fixed w-full z-40 transition-all duration-300 bg-transparent py-6">
