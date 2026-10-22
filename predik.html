@@ -24,6 +24,150 @@
   <style>
     * { -webkit-tap-highlight-color: transparent; }
 
+    :root {
+      --neon-cyan: 34, 211, 238;
+      --neon-violet: 168, 85, 247;
+      --neon-pink: 236, 72, 153;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 15% 20%, rgba(34, 197, 94, 0.18), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(71, 85, 105, 0.18), transparent 30%),
+        radial-gradient(circle at 65% 75%, rgba(120, 53, 15, 0.22), transparent 26%),
+        linear-gradient(180deg, #030712 0%, #07130f 24%, #0b1117 50%, #120d0a 100%);
+      background-attachment: fixed;
+      animation: body-rgb-shift 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes body-rgb-shift {
+      0% { filter: hue-rotate(0deg) saturate(1); }
+      50% { filter: hue-rotate(18deg) saturate(1.15); }
+      100% { filter: hue-rotate(-10deg) saturate(1.08); }
+    }
+
+    .market-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0.2;
+      background-image:
+        linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, transparent, #000 20%, #000 75%, transparent);
+      animation: grid-drift 30s linear infinite;
+    }
+
+    .market-grid::after {
+      content: "";
+      position: absolute;
+      inset: -100% 0 auto;
+      height: 55%;
+      background: linear-gradient(180deg, transparent, rgba(34, 211, 238, 0.08), transparent);
+      animation: scanline 12s linear infinite;
+    }
+
+    @keyframes grid-drift {
+      to { background-position: 64px 64px; }
+    }
+    @keyframes scanline {
+      to { transform: translateY(260vh); }
+    }
+    @keyframes meteor-streak {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) rotate(135deg) scaleX(0);
+      }
+      6% { opacity: 0.85; }
+      18% {
+        opacity: 0;
+        transform: translate3d(-38vw, 52vh, 0) rotate(135deg) scaleX(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(-38vw, 52vh, 0) rotate(135deg) scaleX(1);
+      }
+    }
+    .meteor-shower {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .meteor {
+      position: absolute;
+      top: var(--meteor-top);
+      left: var(--meteor-left);
+      width: var(--meteor-length);
+      height: 2px;
+      border-radius: 999px;
+      opacity: 0;
+      transform: rotate(135deg) scaleX(0);
+      transform-origin: left center;
+      background: linear-gradient(90deg, transparent, rgba(134, 239, 172, 0.55) 58%, rgba(226, 232, 240, 0.95));
+      box-shadow: 0 0 8px rgba(134, 239, 172, 0.5), 0 0 18px rgba(148, 163, 184, 0.3);
+      animation: meteor-streak var(--meteor-duration) linear var(--meteor-delay) infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes aurora-pulse {
+      0%, 100% { opacity: 0.55; filter: hue-rotate(0deg) blur(120px); }
+      50% { opacity: 0.9; filter: hue-rotate(35deg) blur(135px); }
+    }
+    @keyframes hero-enter {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes title-spectrum {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes signal-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(var(--neon-cyan), 0.28); }
+      50% { box-shadow: 0 0 22px 3px rgba(var(--neon-cyan), 0.18); }
+    }
+    @keyframes rgb-border {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes rgb-glow-cycle {
+      0%, 100% {
+        border-color: rgba(34, 211, 238, 0.55);
+        box-shadow: 0 0 22px rgba(34, 211, 238, 0.16), inset 0 0 18px rgba(34, 211, 238, 0.04);
+      }
+      33% {
+        border-color: rgba(168, 85, 247, 0.65);
+        box-shadow: 0 0 26px rgba(168, 85, 247, 0.2), inset 0 0 20px rgba(168, 85, 247, 0.05);
+      }
+      66% {
+        border-color: rgba(236, 72, 153, 0.6);
+        box-shadow: 0 0 26px rgba(236, 72, 153, 0.18), inset 0 0 20px rgba(236, 72, 153, 0.04);
+      }
+    }
+    @keyframes probability-scan {
+      0% { transform: translateX(-130%) skewX(-18deg); opacity: 0; }
+      15% { opacity: 0.65; }
+      55% { opacity: 0.35; }
+      100% { transform: translateX(240%) skewX(-18deg); opacity: 0; }
+    }
+    @keyframes probability-orbit {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes probability-pulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.08); filter: brightness(1.3); }
+    }
+    @keyframes footer-sweep {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(350%); }
+    }
+    @keyframes card-enter {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     @keyframes drift-blue {
       0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
       50% { transform: translate3d(7vw, 4vh, 0) scale(1.08); }
@@ -34,7 +178,288 @@
     }
 
     .orb-blue { animation: drift-blue 18s ease-in-out infinite; }
-    .orb-purple { animation: drift-purple 22s ease-in-out infinite; }
+    .orb-purple { animation: drift-purple 22s ease-in-out infinite, aurora-pulse 14s ease-in-out infinite; }
+    .orb-forest {
+      animation: drift-forest 27s ease-in-out infinite, aurora-pulse 19s ease-in-out infinite;
+    }
+    .orb-ash {
+      animation: drift-ash 31s ease-in-out infinite, aurora-pulse 23s ease-in-out infinite;
+    }
+    .orb-earth {
+      animation: drift-earth 35s ease-in-out infinite, aurora-pulse 21s ease-in-out infinite;
+    }
+
+    @keyframes drift-forest {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(9vw, 8vh, 0) scale(1.18); }
+    }
+    @keyframes drift-ash {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+      50% { transform: translate3d(-8vw, 10vh, 0) scale(0.92); }
+    }
+    @keyframes drift-earth {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(0.95); }
+      50% { transform: translate3d(-10vw, -7vh, 0) scale(1.14); }
+    }
+
+    #navbar {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    #navbar > div:first-child a i { filter: drop-shadow(0 0 9px rgba(var(--neon-cyan), 0.7)); }
+    #navbar a, #navbar button { transition: color 180ms ease, opacity 180ms ease, transform 180ms ease; }
+    #navbar a:hover { transform: translateY(-2px); }
+
+    main > header {
+      position: relative;
+      animation: hero-enter 700ms cubic-bezier(.2,.75,.25,1) both;
+    }
+    main > header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: min(42%, 340px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgb(var(--neon-cyan)), rgb(var(--neon-violet)), transparent);
+      background-size: 200% 100%;
+      animation: title-spectrum 6s ease-in-out infinite;
+      box-shadow: 0 0 14px rgba(var(--neon-cyan), 0.5);
+    }
+    main > header h1 {
+      background: linear-gradient(100deg, #fff 8%, #a5f3fc 38%, #c4b5fd 68%, #fff 92%);
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: title-spectrum 9s ease-in-out infinite;
+    }
+
+    #today-views-count {
+      display: inline-block;
+      color: #a5f3fc;
+      text-shadow: 0 0 12px rgba(var(--neon-cyan), 0.75);
+      animation: signal-pulse 3s ease-in-out infinite;
+    }
+
+    .prediction-day-card {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      animation: card-enter 600ms cubic-bezier(.2,.75,.25,1) both;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+    }
+    .prediction-day-card::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: conic-gradient(from 0deg, transparent 0 68%, rgba(var(--neon-cyan), 0.8) 78%, rgba(var(--neon-violet), 0.65) 88%, transparent 100%);
+      opacity: 0;
+      transition: opacity 220ms ease;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: rgb-border 5s linear infinite;
+    }
+    .prediction-day-card::after {
+      content: "";
+      position: absolute;
+      top: -80%;
+      left: -65%;
+      width: 42%;
+      height: 260%;
+      transform: rotate(25deg);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+      transition: left 550ms ease;
+      pointer-events: none;
+    }
+    .prediction-day-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(var(--neon-cyan), 0.55);
+      box-shadow: 0 12px 35px rgba(2, 6, 23, 0.55), 0 0 20px rgba(var(--neon-cyan), 0.1);
+    }
+    .prediction-day-card:hover::before,
+    .prediction-day-card:focus-visible::before { opacity: 1; }
+    .prediction-day-card:hover::after { left: 125%; }
+    .prediction-day-card:focus-visible {
+      outline: 2px solid rgb(var(--neon-cyan));
+      outline-offset: 3px;
+    }
+
+    #day-detail-container {
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2), 0 0 35px rgba(var(--neon-violet), 0.06);
+    }
+    @media (min-width: 1024px) {
+      #day-detail-container {
+        grid-template-columns: minmax(150px, 0.62fr) minmax(290px, 0.92fr) minmax(0, 1.5fr);
+        column-gap: clamp(2.5rem, 4vw, 4rem);
+        padding: clamp(2rem, 3vw, 3rem);
+      }
+    }
+    #day-detail-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(var(--neon-violet), 0.75), rgba(var(--neon-cyan), 0.75), transparent);
+      box-shadow: 0 0 16px rgba(var(--neon-violet), 0.45);
+    }
+    .probability-panel {
+      position: relative;
+      isolation: isolate;
+      width: 100%;
+      max-width: 380px;
+      min-width: 0;
+      align-self: center;
+      justify-self: center;
+      padding: clamp(1.4rem, 2vw, 1.9rem);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(22, 163, 74, 0.1), transparent 50%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(7, 10, 15, 0.94));
+      box-shadow: 0 18px 40px rgba(2, 6, 23, 0.34), inset 0 0 0 1px rgba(148, 163, 184, 0.08);
+      animation: rgb-glow-cycle 7s linear infinite;
+    }
+    .probability-panel::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 160%;
+      aspect-ratio: 1;
+      left: -30%;
+      top: -75%;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 0 70%, rgba(var(--neon-cyan), 0.2), rgba(var(--neon-violet), 0.28), rgba(var(--neon-pink), 0.2), transparent);
+      animation: probability-orbit 12s linear infinite;
+      pointer-events: none;
+    }
+    .probability-panel::after {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 28%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.09), transparent);
+      animation: probability-scan 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .probability-title,
+    .probability-row,
+    .probability-track,
+    .probability-bias {
+      position: relative;
+      z-index: 1;
+    }
+    .probability-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      color: #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .probability-title span:last-child {
+      color: #67e8f9;
+      text-shadow: 0 0 12px rgba(var(--neon-cyan), 0.65);
+      animation: signal-pulse 2.6s ease-in-out infinite;
+    }
+    .probability-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .probability-row strong {
+      font-size: 20px;
+      animation: probability-pulse 3.4s ease-in-out infinite;
+    }
+    .probability-track {
+      height: 12px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(2, 6, 23, 0.9);
+    }
+    .probability-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      transition: width 850ms cubic-bezier(.2,.8,.2,1);
+      background-size: 200% 100%;
+      animation: title-spectrum 3s linear infinite;
+    }
+    .probability-fill-green {
+      background-image: linear-gradient(90deg, #047857, #22c55e, #a3e635, #22c55e);
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.55);
+    }
+    .probability-fill-red {
+      background-image: linear-gradient(90deg, #b91c1c, #ef4444, #fb7185, #ef4444);
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+    }
+    .probability-bias {
+      padding-top: 12px;
+      border-top: 1px solid rgba(148, 163, 184, 0.18);
+      color: #94a3b8;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .probability-bias strong {
+      margin-left: 5px;
+      color: #e2e8f0;
+    }
+    @media (max-width: 767px) {
+      .probability-panel {
+        width: 100%;
+        max-width: 420px;
+      }
+    }
+    @media (min-width: 768px) and (max-width: 1023px) {
+      #day-detail-container {
+        display: grid;
+        grid-template-columns: minmax(150px, 0.7fr) minmax(260px, 1.3fr);
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .probability-panel {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      #day-detail-container > div:last-child {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+      }
+    }
+    #empty-state { animation: hero-enter 800ms 180ms both; }
+    footer { position: relative; overflow: hidden; }
+    footer::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgb(var(--neon-cyan)), rgb(var(--neon-violet)), transparent);
+      animation: footer-sweep 8s ease-in-out infinite;
+    }
 
     /* Custom glow for traffic lights */
     .glow-green { box-shadow: 0 0 20px 4px rgba(34, 197, 94, 0.6); }
@@ -79,6 +504,15 @@
       white-space: nowrap;
       transform: rotate(-25deg);
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased">
@@ -87,6 +521,20 @@
   <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
     <div class="orb-blue absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
     <div class="orb-purple absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
+    <div class="orb-forest absolute top-[28%] left-[16%] w-[42%] h-[38%] rounded-full bg-green-950/35 blur-[130px] mix-blend-screen"></div>
+    <div class="orb-ash absolute top-[38%] right-[8%] w-[38%] h-[34%] rounded-full bg-slate-500/20 blur-[145px] mix-blend-screen"></div>
+    <div class="orb-earth absolute bottom-[4%] left-[38%] w-[40%] h-[36%] rounded-full bg-amber-950/30 blur-[140px] mix-blend-screen"></div>
+  </div>
+  <div class="market-grid" aria-hidden="true"></div>
+  <div class="meteor-shower" aria-hidden="true">
+    <span class="meteor" style="--meteor-top: 8%; --meteor-left: 18%; --meteor-length: 125px; --meteor-duration: 8s; --meteor-delay: -1s"></span>
+    <span class="meteor" style="--meteor-top: 16%; --meteor-left: 72%; --meteor-length: 100px; --meteor-duration: 10s; --meteor-delay: -6s"></span>
+    <span class="meteor" style="--meteor-top: 32%; --meteor-left: 48%; --meteor-length: 145px; --meteor-duration: 9s; --meteor-delay: -3s"></span>
+    <span class="meteor" style="--meteor-top: 46%; --meteor-left: 92%; --meteor-length: 115px; --meteor-duration: 11s; --meteor-delay: -8s"></span>
+    <span class="meteor" style="--meteor-top: 62%; --meteor-left: 28%; --meteor-length: 90px; --meteor-duration: 8.5s; --meteor-delay: -4s"></span>
+    <span class="meteor" style="--meteor-top: 74%; --meteor-left: 82%; --meteor-length: 135px; --meteor-duration: 10.5s; --meteor-delay: -2s"></span>
+    <span class="meteor" style="--meteor-top: 24%; --meteor-left: 6%; --meteor-length: 105px; --meteor-duration: 9.5s; --meteor-delay: -7s"></span>
+    <span class="meteor" style="--meteor-top: 88%; --meteor-left: 58%; --meteor-length: 120px; --meteor-duration: 12s; --meteor-delay: -5s"></span>
   </div>
 
   <div class="watermark" aria-hidden="true">
@@ -137,7 +585,11 @@
         <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">IHSG Traffic Light</h1>
         <p class="text-slate-400 text-sm md:text-base">Pilih tanggal di bawah untuk melihat kecenderungan arah pasar.</p>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-2.5 rounded-lg text-xs text-slate-400 shadow-sm">
+          <i data-lucide="eye" class="w-4 h-4 text-blue-400"></i>
+          <span>Penonton Hari Ini: <strong id="today-views-count" class="text-white font-bold">...</strong></span>
+        </div>
         <button onclick="openSettingsModal()" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2.5 rounded-lg flex items-center gap-2 border border-slate-700 transition-colors">
           <i data-lucide="settings" class="w-4 h-4"></i> Setup Worker
         </button>
@@ -161,16 +613,41 @@
     </div>
 
     <!-- DAY DETAIL CONTAINER -->
-    <div id="day-detail-container" class="hidden flex-col md:flex-row gap-8 bg-slate-900/40 border border-slate-800 rounded-2xl p-6 md:p-10 backdrop-blur-sm flex-1">
+    <div id="day-detail-container" class="hidden grid grid-cols-1 gap-10 md:gap-12 bg-slate-900/40 border border-slate-800 rounded-2xl p-6 md:p-10 backdrop-blur-sm flex-1 items-center">
       
       <!-- LEFT: VISUAL TRAFFIC LIGHT -->
-      <div class="flex flex-col items-center justify-center shrink-0">
+      <div class="flex flex-col items-center justify-center">
         <div class="bg-slate-950 border-4 border-slate-800 p-4 rounded-full flex flex-col gap-4 shadow-2xl">
           <div id="detail-light-red" class="bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-950/40 border border-red-900/50"></div>
           <div id="detail-light-yellow" class="bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-950/40 border border-yellow-900/50"></div>
           <div id="detail-light-green" class="bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-950/40 border border-green-900/50"></div>
         </div>
       </div>
+
+      <section class="probability-panel" aria-label="Perbandingan probabilitas pasar">
+        <div class="probability-title">
+          <span>Probabilitas</span>
+          <span>LIVE • 7D</span>
+        </div>
+
+        <div class="probability-row">
+          <span class="text-green-300">Hijau / Bullish</span>
+          <strong id="compare-green-value" class="text-green-300">0%</strong>
+        </div>
+        <div id="compare-green-track" class="probability-track" role="progressbar" aria-label="Probabilitas hijau" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="compare-green-bar" class="probability-fill probability-fill-green"></div>
+        </div>
+
+        <div class="probability-row">
+          <span class="text-red-300">Merah / Bearish</span>
+          <strong id="compare-red-value" class="text-red-300">0%</strong>
+        </div>
+        <div id="compare-red-track" class="probability-track" role="progressbar" aria-label="Probabilitas merah" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="compare-red-bar" class="probability-fill probability-fill-red"></div>
+        </div>
+
+        <div class="probability-bias">Arah dominan: <strong id="probability-bias">Netral</strong></div>
+      </section>
 
       <!-- RIGHT: INFORMASI & ADMIN PANEL -->
       <div class="flex-1 flex flex-col justify-center">
@@ -181,16 +658,6 @@
 
         <!-- PUBLIC VIEW -->
         <div id="public-detail-view" class="space-y-6">
-          <div class="flex flex-wrap gap-8">
-            <div>
-              <p class="text-xs text-slate-500 uppercase tracking-widest mb-1">Prob. Hijau (Bullish)</p>
-              <p id="detail-prob-green" class="text-3xl font-bold text-green-400">0%</p>
-            </div>
-            <div>
-              <p class="text-xs text-slate-500 uppercase tracking-widest mb-1">Prob. Merah (Bearish)</p>
-              <p id="detail-prob-red" class="text-3xl font-bold text-red-400">0%</p>
-            </div>
-          </div>
           <div>
             <p class="text-xs text-slate-500 uppercase tracking-widest mb-2">Faktor Teknis & Sentimen</p>
             <div id="detail-reasons" class="flex flex-wrap gap-2">
@@ -270,6 +737,59 @@
       </div>
     </div>
   </main>
+
+  <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-12 pb-8">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+        <div>
+          <a href="index.html" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+            <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
+            <span class="text-lg font-bold text-white">AKADEMI TROPHAGE</span>
+          </a>
+          <p class="text-slate-500 text-sm">Pusat edukasi pasar, keuangan, dan interpretasi siklus finansial.</p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h2 class="text-white font-semibold text-sm tracking-wider uppercase mb-1">Navigasi Utama</h2>
+          <a href="index.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
+          <a href="monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Live Trade</a>
+          <a href="predik.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prediksi Pasar</a>
+          <a href="bilik_baca.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bilik Baca</a>
+          <a href="bot-monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bot Monitor</a>
+          <!--<a href="trade.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Trade</a>-->
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h2 class="text-white font-semibold text-sm tracking-wider uppercase mb-1">Belajar & Analisis</h2>
+          <a href="ilmu.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Ilmu Finansial</a>
+          <a href="astrologi-finansial.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Astrologi Finansial</a>
+          <a href="glosarium-astrologi-finansial.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Glosarium Astrologi Finansial</a>
+          <a href="kamus-investasi.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Kamus Investasi</a>
+          <a href="analis.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Analisis</a>
+          <a href="data.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Data</a>
+          <a href="ceritadunia.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Cerita Dunia</a>
+          <a href="planet-finansial.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Planet Finansial</a>
+          <a href="struktur-market.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Struktur Market</a>
+          <!--<a href="time_engine_1tahun.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Time Engine 1 Tahun</a>-->
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h2 class="text-white font-semibold text-sm tracking-wider uppercase mb-1">Informasi</h2>
+          <a href="portal.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Portal</a>
+          <a href="produk.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Produk</a>
+          <a href="tentang-kami.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Tentang Kami</a>
+          <a href="kontak.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Kontak</a>
+          <a href="kebijakan-privasi.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Kebijakan Privasi</a>
+          <a href="disclaimer.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Disclaimer</a>
+          <a href="register.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Registrasi</a>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-6 text-slate-500 text-sm">
+        <p>&copy; Akademi Trophage. Semua hak dilindungi.</p>
+      </div>
+    </div>
+  </footer>
 
   <!-- TOASTS & MODALS -->
   <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
@@ -352,8 +872,18 @@
         // Create Card
         const card = document.createElement('div');
         card.id = `card-${dateStr}`;
-        card.className = "snap-center shrink-0 w-28 md:w-32 bg-slate-900 border border-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-800 transition-colors flex flex-col items-center gap-3";
+        card.className = "prediction-day-card snap-center shrink-0 w-28 md:w-32 bg-slate-900 border border-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-800 transition-colors flex flex-col items-center gap-3";
+        card.style.animationDelay = `${i * 70}ms`;
+        card.setAttribute('role', 'button');
+        card.tabIndex = 0;
+        card.setAttribute('aria-label', `Lihat prediksi ${dayName}, ${displayDate}`);
         card.onclick = () => selectDay(dateStr, dayName, displayDate);
+        card.onkeydown = event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            selectDay(dateStr, dayName, displayDate);
+          }
+        };
 
         card.innerHTML = `
           <div class="text-center">
@@ -414,6 +944,32 @@
       }
     }
 
+    function updateProbabilityComparison(greenValue, redValue) {
+      const greenProbability = Number(greenValue) || 0;
+      const redProbability = Number(redValue) || 0;
+      const greenPercent = Math.min(100, Math.max(0, greenProbability));
+      const redPercent = Math.min(100, Math.max(0, redProbability));
+
+      document.getElementById('compare-green-value').innerText = `${greenProbability}%`;
+      document.getElementById('compare-red-value').innerText = `${redProbability}%`;
+      document.getElementById('compare-green-bar').style.width = `${greenPercent}%`;
+      document.getElementById('compare-red-bar').style.width = `${redPercent}%`;
+      document.getElementById('compare-green-track').setAttribute('aria-valuenow', String(greenPercent));
+      document.getElementById('compare-red-track').setAttribute('aria-valuenow', String(redPercent));
+
+      const bias = document.getElementById('probability-bias');
+      if (greenProbability > redProbability) {
+        bias.innerText = 'Bullish';
+        bias.style.color = '#86efac';
+      } else if (redProbability > greenProbability) {
+        bias.innerText = 'Bearish';
+        bias.style.color = '#fca5a5';
+      } else {
+        bias.innerText = 'Netral';
+        bias.style.color = '#e2e8f0';
+      }
+    }
+
     function selectDay(dateStr, dayName, displayDate, isRefresh = false) {
       selectedDateStr = dateStr;
       document.getElementById('empty-state').classList.add('hidden');
@@ -441,14 +997,16 @@
       lRed.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-950/40 border border-red-900/50";
       lYel.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-950/40 border border-yellow-900/50";
       lGrn.className = "bulb w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-950/40 border border-green-900/50";
+      updateProbabilityComparison(0, 0);
 
       const publicView = document.getElementById('public-detail-view');
 
       if (data) {
         // Data Exists
+        const greenProbability = Number(data.green_prob) || 0;
+        const redProbability = Number(data.red_prob) || 0;
         document.getElementById('detail-status-text').innerText = "Prediksi pasar telah dianalisa.";
-        document.getElementById('detail-prob-green').innerText = `${data.green_prob}%`;
-        document.getElementById('detail-prob-red').innerText = `${data.red_prob}%`;
+        updateProbabilityComparison(greenProbability, redProbability);
         
         if (data.light_color === 'red') lRed.className = "bulb active-light w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-500 glow-red border-transparent";
         if (data.light_color === 'yellow') lYel.className = "bulb active-light w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-400 glow-yellow border-transparent";
@@ -616,10 +1174,53 @@
       }
     }
 
+    async function trackDailyView() {
+      const viewsElement = document.getElementById('today-views-count');
+      if (!viewsElement) return;
+
+      const headers = {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      };
+
+      try {
+        const incrementResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_page_views`, {
+          method: 'POST',
+          headers
+        });
+
+        if (incrementResponse.ok) {
+          const count = await incrementResponse.json();
+          if (typeof count !== 'number' || !Number.isFinite(count)) {
+            throw new Error('Respons increment_page_views tidak valid.');
+          }
+          viewsElement.innerText = count.toLocaleString('id-ID');
+          return;
+        }
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        const countResponse = await fetch(
+          `${SUPABASE_URL}/rest/v1/page_views?visit_date=eq.${todayStr}&select=view_count`,
+          { headers }
+        );
+        if (!countResponse.ok) {
+          throw new Error(`Gagal mengambil jumlah penonton (${countResponse.status}).`);
+        }
+
+        const data = await countResponse.json();
+        viewsElement.innerText = data[0]?.view_count?.toLocaleString('id-ID') ?? '0';
+      } catch (err) {
+        console.warn('Gagal memperbarui jumlah penonton:', err);
+        viewsElement.innerText = '-';
+      }
+    }
+
     // Init
     window.onload = () => {
       generateCalendar();
       loadDatabaseData();
+      trackDailyView();
     };
   </script>
 </body>
