@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 <head>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prediksi Pasar | Akademi Trophage</title>
@@ -22,6 +23,12 @@
     }
   </script>
   <style>
+    @property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
     * { -webkit-tap-highlight-color: transparent; }
 
     :root {
@@ -250,21 +257,30 @@
       animation: card-enter 600ms cubic-bezier(.2,.75,.25,1) both;
       transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
     }
-    .prediction-day-card::before {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      inset: -1px;
-      border-radius: inherit;
-      padding: 1px;
-      background: conic-gradient(from 0deg, transparent 0 68%, rgba(var(--neon-cyan), 0.8) 78%, rgba(var(--neon-violet), 0.65) 88%, transparent 100%);
-      opacity: 0;
-      transition: opacity 220ms ease;
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      animation: rgb-border 5s linear infinite;
-    }
+    /* Ganti blok .prediction-day-card::before lama dengan ini */
+.prediction-day-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle), transparent 0 68%, rgba(var(--neon-cyan), 0.8) 78%, rgba(var(--neon-violet), 0.65) 88%, transparent 100%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: spin-border 5s linear infinite;
+}
+
+/* Tambahkan keyframes baru ini */
+@keyframes spin-border {
+  to {
+    --angle: 360deg;
+  }
+}
     .prediction-day-card::after {
       content: "";
       position: absolute;

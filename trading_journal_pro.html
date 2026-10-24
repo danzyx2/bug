@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Trading Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        slate: {
+                            750: '#263346',
+                            850: '#151e2e',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans bg-slate-950 text-slate-300 selection:bg-blue-500/30 overflow-x-hidden antialiased">
+
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <i data-lucide="activity" class="text-blue-400 w-8 h-8"></i>
+                <span class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide">AKADEMI TROPHAGE</span>
+            </a>
+            <div class="hidden xl:flex items-center gap-5">
+                <div class="flex gap-4">
+                    <a href="index.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Beranda</a>
+                    <a href="monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Live Trade</a>
+                    <a href="predik.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Prediksi Pasar</a>
+                    <a href="bilik_baca.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bilik Baca</a>
+                    <a href="bot-monitor.html" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors">Bot Monitor</a>
+                    <a href="trading_journal_pro.html" aria-current="page" class="text-sm font-medium text-blue-400">Jurnal</a>
+                </div>
+                <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2">
+                    Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+                <span id="storageStatus" class="text-xs bg-slate-800/80 text-slate-400 px-3 py-1.5 rounded-full border border-slate-700">Mode Demo</span>
+                <button type="button" onclick="openSettingsModal()" class="text-sm bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg border border-slate-700 transition-colors">Supabase</button>
+            </div>
+            <button id="mobile-menu-btn" class="xl:hidden text-slate-300 hover:text-white focus:outline-none" aria-label="Buka menu">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6 block"></i>
+                <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden xl:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex-col gap-4 shadow-xl">
+            <a href="index.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Beranda</a>
+            <a href="monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Live Trade</a>
+            <a href="predik.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Prediksi Pasar</a>
+            <a href="bilik_baca.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bilik Baca</a>
+            <a href="bot-monitor.html" class="mobile-link text-base font-medium text-slate-300 hover:text-blue-400 transition-colors py-2 block">Bot Monitor</a>
+            <a href="trading_journal_pro.html" class="mobile-link text-base font-medium text-blue-400 py-2 block">Jurnal</a>
+            <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-sm font-medium text-white border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                <span id="storageStatusMobile" class="text-xs text-slate-400">Mode Demo</span>
+                <button type="button" onclick="openSettingsModal()" class="text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg border border-slate-700">Pengaturan Supabase</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 pb-12 space-y-8">
+        <p id="connectionNotice" class="hidden rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300" role="alert"></p>
+        
+        <!-- KPI Dashboard -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="glass-panel p-5 rounded-2xl">
+                <p class="text-slate-400 text-sm font-medium mb-1">Total PnL</p>
+                <h2 id="kpi-pnl" class="text-3xl font-bold text-slate-100">0.00 USDT</h2>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl">
+                <p class="text-slate-400 text-sm font-medium mb-1">Win Rate</p>
+                <h2 id="kpi-winrate" class="text-3xl font-bold text-emerald-400">0.0%</h2>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl">
+                <p class="text-slate-400 text-sm font-medium mb-1">Profit Factor</p>
+                <h2 id="kpi-pf" class="text-3xl font-bold text-blue-400">0.00</h2>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl">
+                <p class="text-slate-400 text-sm font-medium mb-1">Total Trades</p>
+                <h2 id="kpi-trades" class="text-3xl font-bold text-slate-100">0</h2>
+            </div>
+        </div>
+
+        <section class="space-y-4" aria-labelledby="statsHeading">
+            <div>
+                <h2 id="statsHeading" class="text-xl font-semibold text-white">Statistik Performa</h2>
+                <p class="text-sm text-slate-500 mt-1">Ringkasan dihitung dari seluruh trade yang tersimpan.</p>
+            </div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Drawdown Maksimum</p><h3 id="stat-max-drawdown" class="text-2xl font-bold text-red-400">0.00 USDT</h3><p class="text-xs text-slate-500 mt-1">Penurunan puncak ke titik terendah</p></div>
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Trade Terbaik</p><h3 id="stat-best-trade" class="text-2xl font-bold text-emerald-400">0.00 USDT</h3></div>
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Trade Terburuk</p><h3 id="stat-worst-trade" class="text-2xl font-bold text-red-400">0.00 USDT</h3></div>
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Ekspektasi / Trade</p><h3 id="stat-expectancy" class="text-2xl font-bold text-blue-300">0.00 USDT</h3><p class="text-xs text-slate-500 mt-1">Rata-rata PnL per trade</p></div>
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Rata-rata Profit</p><h3 id="stat-avg-win" class="text-xl font-bold text-emerald-400">0.00 USDT</h3><p id="stat-win-count" class="text-xs text-slate-500 mt-1">0 trade profit</p></div>
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Rata-rata Kerugian</p><h3 id="stat-avg-loss" class="text-xl font-bold text-red-400">0.00 USDT</h3><p id="stat-loss-count" class="text-xs text-slate-500 mt-1">0 trade rugi</p></div>
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Rasio Risiko / Hasil</p><h3 id="stat-payoff" class="text-2xl font-bold text-violet-300">—</h3><p class="text-xs text-slate-500 mt-1">Rata-rata profit ÷ rata-rata rugi</p></div>
+                <div class="glass-panel p-5 rounded-2xl"><p class="text-slate-400 text-sm mb-1">Rentetan Rugi Terpanjang</p><h3 id="stat-loss-streak" class="text-2xl font-bold text-amber-300">0 trade</h3></div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Col: Form Input -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+                    <h3 class="text-lg font-semibold mb-5 text-slate-100 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Log Trade Baru
+                    </h3>
+                    
+                    <form id="tradeForm" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1.5">Simbol (Koin/Saham)</label>
+                                <input type="text" id="symbol" placeholder="BTCUSDT" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-2.5 text-sm uppercase text-slate-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1.5">Aksi / Posisi</label>
+                                <select id="action" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition-all">
+                                    <option value="LONG">LONG (Buy)</option>
+                                    <option value="SHORT">SHORT (Sell)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1.5">Status Akhir</label>
+                                <select id="status" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+                                    <option value="WIN">WIN (Profit)</option>
+                                    <option value="LOSS">LOSS (Rugi)</option>
+                                    <option value="BEP">BEP (Break Even)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1.5">PnL Realized (USDT)</label>
+                                <input type="number" step="any" id="pnl_usd" placeholder="-50.00" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1.5">Catatan / Setup (Opsional)</label>
+                            <textarea id="notes" rows="2" placeholder="Alasan entry, emosi saat trading..." class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-medium py-3 rounded-xl text-sm transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]">
+                            Simpan Jurnal Trade
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Col: Charts & Table -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Charts Area -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="glass-panel p-5 rounded-2xl h-64">
+                        <h4 class="text-sm font-medium text-slate-400 mb-2">Pertumbuhan Equity (USDT)</h4>
+                        <div class="relative h-[180px] w-full">
+                            <canvas id="pnlChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl h-64">
+                        <h4 class="text-sm font-medium text-slate-400 mb-2">Rasio Kemenangan</h4>
+                        <div class="relative h-[180px] w-full flex justify-center">
+                            <canvas id="winChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30">
+                        <h3 class="font-semibold text-slate-100">Histori Transaksi</h3>
+                    </div>
+                    <div class="overflow-x-auto flex-1 max-h-[400px]">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-slate-900/80 text-slate-400 text-xs uppercase sticky top-0 backdrop-blur-sm z-10">
+                                <tr>
+                                    <th class="p-4 font-medium tracking-wider">Tgl</th>
+                                    <th class="p-4 font-medium tracking-wider">Simbol</th>
+                                    <th class="p-4 font-medium tracking-wider">Aksi</th>
+                                    <th class="p-4 font-medium tracking-wider">PnL (USDT)</th>
+                                    <th class="p-4 font-medium tracking-wider text-center">Status</th>
+                                    <th class="p-4 font-medium tracking-wider text-right">Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="journalTableBody" class="divide-y divide-slate-800">
+                                <!-- Data akan dirender ke sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section id="supabaseGuide" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-10">
+        <details class="glass-panel rounded-2xl overflow-hidden">
+            <summary class="cursor-pointer p-5 font-semibold text-slate-100">Panduan: Simpan jurnal di Supabase milik sendiri</summary>
+            <div class="px-5 pb-5 space-y-4 text-sm text-slate-300">
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Buat proyek baru di <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline">Supabase Dashboard</a> khusus untuk jurnal ini.</li>
+                    <li>Buka <strong>SQL Editor</strong>, buat query baru, lalu jalankan SQL di bawah untuk membuat tabel jurnal dan izinnya.</li>
+                    <li>Di <strong>Project Settings → API</strong>, salin <strong>Project URL</strong> dan <strong>anon / publishable key</strong>. Jangan gunakan atau membagikan <code>service_role</code> key.</li>
+                    <li>Klik tombol <strong>Supabase</strong> di atas, masukkan URL dan key tersebut, lalu simpan. Pengaturan disimpan di browser ini dan tidak ditanam di kode halaman. Data contoh demo tidak akan diunggah; setelah tersambung, halaman menampilkan isi tabel Anda.</li>
+                </ol>
+                <div class="relative">
+                    <button type="button" onclick="copySupabaseSql()" class="absolute top-2 right-2 px-3 py-1.5 text-xs rounded-lg bg-slate-700 hover:bg-slate-600 text-white">Salin SQL</button>
+                    <pre class="overflow-x-auto rounded-xl border border-slate-700 bg-slate-950 p-4 pr-24 text-xs text-emerald-200"><code id="supabaseSql">create table if not exists public.trading_journal (
+    id bigint generated by default as identity primary key,
+    trade_date timestamptz not null default now(),
+    symbol text not null,
+    action text not null check (action in ('LONG', 'SHORT')),
+    status text not null check (status in ('WIN', 'LOSS', 'BEP')),
+    pnl_usd numeric not null,
+    notes text not null default ''
+);
+
+alter table public.trading_journal enable row level security;
+
+drop policy if exists "Allow anon journal access" on public.trading_journal;
+create policy "Allow anon journal access"
+    on public.trading_journal
+    for all
+    to anon
+    using (true)
+    with check (true);
+
+grant select, insert, delete on public.trading_journal to anon;
+grant usage, select on sequence public.trading_journal_id_seq to anon;</code></pre>
+                </div>
+                <p class="text-amber-300"><strong>Catatan privasi:</strong> kebijakan SQL ini mengizinkan akses anon ke tabel pada proyek tersebut. Gunakan proyek khusus jurnal, jangan masukkan data rahasia, dan jangan pernah memakai <code>service_role</code> key di browser. Siapa pun yang memperoleh URL dan anon key proyek dapat mengakses tabel ini.</p>
+                <p id="sqlCopyStatus" class="text-xs text-slate-400" aria-live="polite"></p>
+            </div>
+        </details>
+    </section>
+
+    <footer class="relative z-10 border-t border-slate-800 bg-slate-950 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-12">
+                <div class="max-w-xs">
+                    <a href="index.html" class="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+                        <i data-lucide="activity" class="text-blue-500 w-6 h-6"></i>
+                        <span class="text-xl font-bold text-white">AKADEMI TROPHAGE</span>
+                    </a>
+                    <p class="text-slate-500 text-sm">Pusat komando finansial. Melipat dimensi pasar, menyerap energi kekayaan.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-12 sm:gap-24">
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Navigasi Utama</h4>
+                        <a href="index.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Beranda</a>
+                        <a href="monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Live Trade</a>
+                        <a href="predik.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Prediksi Pasar</a>
+                        <a href="bilik_baca.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bilik Baca</a>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Dashboard & Informasi</h4>
+                        <a href="bot-monitor.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Bot Monitor</a>
+                        <a href="trading_journal_pro.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Jurnal Trading</a>
+                        <a href="portal.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Portal</a>
+                        <a href="tentang-kami.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Tentang Kami</a>
+                        <a href="kebijakan-privasi.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Kebijakan Privasi</a>
+                        <a href="disclaimer.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Disclaimer</a>
+                        <a href="kontak.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Hubungi Kami</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="text-slate-500 text-sm flex items-center gap-2">Lisensi Resmi: <span class="text-slate-300 font-mono bg-slate-900 px-2 py-1 rounded">-</span></div>
+            </div>
+            <div class="mt-12 bg-slate-900/50 border border-slate-800 rounded-xl p-6 flex gap-4 items-start">
+                <i data-lucide="shield-alert" class="text-yellow-600 w-6 h-6 flex-shrink-0 mt-1"></i>
+                <p class="text-sm text-slate-500 leading-relaxed font-mono"><strong class="text-yellow-600/80">Disclaimer:</strong> Semua konten di website dan saluran ini bersifat edukasi dan berbagi informasi. Bukan ajakan atau penasihat keuangan. Lakukan riset Anda sendiri (DYOR) sebelum melakukan transaksi di pasar modal.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="settingsModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300" id="settingsModalPanel">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-100">Koneksi Supabase pribadi</h3>
+                <button type="button" onclick="closeSettingsModal()" class="text-slate-400 hover:text-white text-2xl" aria-label="Tutup">&times;</button>
+            </div>
+            <p class="text-sm text-slate-400 mb-4">URL dan anon key disimpan di localStorage browser ini. Gunakan kredensial dari proyek Supabase Anda sendiri.</p>
+            <label for="supabaseUrl" class="block text-xs text-slate-400 mb-1">Project URL</label>
+            <input type="url" id="supabaseUrl" placeholder="https://proyek-anda.supabase.co" autocomplete="url" class="w-full mb-3 bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+            <label for="supabaseKey" class="block text-xs text-slate-400 mb-1">Anon / publishable key</label>
+            <input type="password" id="supabaseKey" placeholder="Tempel anon atau publishable key" autocomplete="off" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+            <p id="settingsError" class="hidden text-sm text-red-400 mt-3" role="alert"></p>
+            <div class="flex justify-between items-center gap-3 mt-5">
+                <button type="button" onclick="disconnectSupabase()" class="text-sm text-red-300 hover:text-red-200">Putuskan koneksi</button>
+                <button id="saveSupabaseButton" type="button" onclick="saveSupabaseSettings()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg">Uji koneksi &amp; simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal Confirm Delete -->
+    <div id="deleteModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300" id="deleteModalPanel">
+            <div class="flex items-center gap-3 text-red-400 mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <h3 class="text-lg font-bold text-slate-100">Hapus Trade?</h3>
+            </div>
+            <p class="text-sm text-slate-400 mb-6">Tindakan ini tidak bisa dibatalkan. Catatan trade akan dihapus permanen dari jurnal.</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors">Batal</button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-500 rounded-lg transition-colors">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data contoh hanya digunakan saat Supabase belum dikonfigurasi.
+        let trades = [
+            { id: 1, date: new Date(Date.now() - 86400000 * 4), symbol: 'BTCUSDT', action: 'LONG', status: 'WIN', pnl_usd: 120.50, notes: 'Breakout trendline H1' },
+            { id: 2, date: new Date(Date.now() - 86400000 * 3), symbol: 'ETHUSDT', action: 'SHORT', status: 'LOSS', pnl_usd: -45.00, notes: 'Fakeout resistance' },
+            { id: 3, date: new Date(Date.now() - 86400000 * 2), symbol: 'SOLUSDT', action: 'LONG', status: 'WIN', pnl_usd: 85.00, notes: 'Bounce from demand zone' },
+            { id: 4, date: new Date(Date.now() - 86400000 * 1), symbol: 'LINKUSDT', action: 'LONG', status: 'BEP', pnl_usd: 0.00, notes: 'Hit trailing stop entry' },
+        ];
+        
+        let pnlChartInstance = null;
+        let winChartInstance = null;
+        let deleteTargetId = null;
+        const SUPABASE_SETTINGS_KEY = 'proTradeJournalSupabase';
+        let supabaseSettings = null;
+
+        // --- Core Application Logic ---
+
+        async function initApp() {
+            try {
+                const savedSettings = localStorage.getItem(SUPABASE_SETTINGS_KEY);
+                if (savedSettings) {
+                    supabaseSettings = validateSupabaseSettings(JSON.parse(savedSettings));
+                    setStorageStatus('Menghubungkan...', 'bg-amber-500/10 text-amber-300 border-amber-500/30');
+                    trades = await fetchSupabaseTrades(supabaseSettings);
+                    setStorageStatus('Supabase tersambung', 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30');
+                }
+            } catch (error) {
+                trades = [];
+                setStorageStatus('Koneksi gagal', 'bg-red-500/10 text-red-300 border-red-500/30');
+                showConnectionNotice(`Koneksi Supabase jurnal gagal: ${error.message}`);
+            }
+            renderDashboard();
+        }
+
+        function setStorageStatus(text, classes) {
+            const status = document.getElementById('storageStatus');
+            status.textContent = text;
+            status.className = `text-xs px-3 py-1.5 rounded-full border ${classes}`;
+            document.getElementById('storageStatusMobile').textContent = text;
+        }
+
+        function validateSupabaseSettings(settings) {
+            if (!settings || typeof settings.url !== 'string' || typeof settings.key !== 'string') {
+                throw new Error('Pengaturan Supabase tersimpan tidak valid. Masukkan ulang URL dan anon key.');
+            }
+
+            let parsedUrl;
+            try {
+                parsedUrl = new URL(settings.url.trim());
+            } catch {
+                throw new Error('Project URL Supabase tidak valid.');
+            }
+            if (parsedUrl.protocol !== 'https:' || !parsedUrl.hostname.endsWith('.supabase.co')) {
+                throw new Error('Masukkan Project URL Supabase yang valid (https://...supabase.co).');
+            }
+            if (!settings.key.trim()) {
+                throw new Error('Anon / publishable key tidak boleh kosong.');
+            }
+            return { url: parsedUrl.origin, key: settings.key.trim() };
+        }
+
+        function showConnectionNotice(message) {
+            const notice = document.getElementById('connectionNotice');
+            notice.textContent = message;
+            notice.classList.remove('hidden');
+            console.error(message);
+        }
+
+        function getSupabaseHeaders(settings, additionalHeaders = {}) {
+            const headers = { apikey: settings.key, ...additionalHeaders };
+            if (!settings.key.startsWith('sb_publishable_')) {
+                headers.Authorization = `Bearer ${settings.key}`;
+            }
+            return headers;
+        }
+
+        async function fetchSupabaseTrades(settings) {
+            const response = await fetch(
+                `${settings.url}/rest/v1/trading_journal?select=id,trade_date,symbol,action,status,pnl_usd,notes&order=trade_date.desc`,
+                { headers: getSupabaseHeaders(settings) }
+            );
+            if (!response.ok) {
+                const details = await response.text();
+                throw new Error(`Gagal membaca tabel trading_journal (${response.status}). Pastikan SQL tutorial dan key sudah benar. ${details}`);
+            }
+            const rows = await response.json();
+            if (!Array.isArray(rows)) {
+                throw new Error('Respons tabel trading_journal tidak valid.');
+            }
+            return rows.map(row => ({
+                id: Number(row.id),
+                date: new Date(row.trade_date),
+                symbol: row.symbol,
+                action: row.action,
+                status: row.status,
+                pnl_usd: Number(row.pnl_usd),
+                notes: row.notes || ''
+            }));
+        }
+
+        function openSettingsModal() {
+            document.getElementById('supabaseUrl').value = supabaseSettings?.url || '';
+            document.getElementById('supabaseKey').value = supabaseSettings?.key || '';
+            document.getElementById('settingsError').classList.add('hidden');
+            const modal = document.getElementById('settingsModal');
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            document.getElementById('settingsModalPanel').classList.remove('scale-95');
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.add('opacity-0');
+            document.getElementById('settingsModalPanel').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        async function saveSupabaseSettings() {
+            const button = document.getElementById('saveSupabaseButton');
+            const errorElement = document.getElementById('settingsError');
+            errorElement.classList.add('hidden');
+            button.disabled = true;
+            button.textContent = 'Menguji koneksi...';
+            try {
+                const settings = validateSupabaseSettings({
+                    url: document.getElementById('supabaseUrl').value,
+                    key: document.getElementById('supabaseKey').value
+                });
+                const connectedTrades = await fetchSupabaseTrades(settings);
+                localStorage.setItem(SUPABASE_SETTINGS_KEY, JSON.stringify(settings));
+                supabaseSettings = settings;
+                trades = connectedTrades;
+                setStorageStatus('Supabase tersambung', 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30');
+                document.getElementById('connectionNotice').classList.add('hidden');
+                renderDashboard();
+                closeSettingsModal();
+            } catch (error) {
+                errorElement.textContent = error.message || 'Tidak dapat menyimpan pengaturan Supabase.';
+                errorElement.classList.remove('hidden');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Uji koneksi & simpan';
+            }
+        }
+
+        function disconnectSupabase() {
+            try {
+                localStorage.removeItem(SUPABASE_SETTINGS_KEY);
+            } catch (error) {
+                document.getElementById('settingsError').textContent = `Tidak dapat menghapus pengaturan browser: ${error.message}`;
+                document.getElementById('settingsError').classList.remove('hidden');
+                return;
+            }
+            supabaseSettings = null;
+            trades = [];
+            renderDashboard();
+            setStorageStatus('Mode Demo', 'bg-slate-800 text-slate-400 border-slate-700');
+            document.getElementById('connectionNotice').classList.add('hidden');
+            closeSettingsModal();
+        }
+
+        async function copySupabaseSql() {
+            const sql = document.getElementById('supabaseSql').textContent;
+            const status = document.getElementById('sqlCopyStatus');
+            try {
+                await navigator.clipboard.writeText(sql);
+                status.textContent = 'SQL berhasil disalin.';
+            } catch (error) {
+                status.textContent = `Gagal menyalin SQL: ${error.message}. Silakan salin teks SQL secara manual.`;
+            }
+        }
+
+        // Render Keseluruhan Dashboard (Tabel, Angka, Chart)
+        function renderDashboard() {
+            // Urutkan terbaru di atas untuk tabel
+            const sortedTrades = [...trades].sort((a, b) => b.date - a.date);
+            
+            updateKPIs();
+            renderTable(sortedTrades);
+            updateCharts();
+        }
+
+        function updateKPIs() {
+            const totalTrades = trades.length;
+            let wins = 0;
+            let grossProfit = 0, grossLoss = 0;
+            let totalPnl = 0;
+            let winningPnl = 0, losingPnl = 0;
+            let bestTrade = 0, worstTrade = 0;
+            let currentLossStreak = 0, maxLossStreak = 0;
+            const chronologicalTrades = [...trades].sort((a, b) => a.date - b.date || Number(a.id) - Number(b.id));
+
+            chronologicalTrades.forEach(t => {
+                totalPnl += t.pnl_usd;
+                if (t.status === 'WIN') {
+                    wins++;
+                    currentLossStreak = 0;
+                } else if (t.status === 'LOSS') {
+                    currentLossStreak++;
+                    maxLossStreak = Math.max(maxLossStreak, currentLossStreak);
+                } else {
+                    currentLossStreak = 0;
+                }
+
+                if (t.pnl_usd > 0) {
+                    grossProfit += t.pnl_usd;
+                    winningPnl += t.pnl_usd;
+                    bestTrade = Math.max(bestTrade, t.pnl_usd);
+                } else if (t.pnl_usd < 0) {
+                    grossLoss += Math.abs(t.pnl_usd);
+                    losingPnl += Math.abs(t.pnl_usd);
+                    worstTrade = Math.min(worstTrade, t.pnl_usd);
+                }
+            });
+
+            const winRate = totalTrades > 0 ? ((wins / totalTrades) * 100).toFixed(1) : 0;
+            const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss).toFixed(2) : (grossProfit > 0 ? '∞' : '0.00');
+            let runningPnl = 0;
+            let peakPnl = 0;
+            let maxDrawdown = 0;
+            chronologicalTrades.forEach(trade => {
+                runningPnl += trade.pnl_usd;
+                peakPnl = Math.max(peakPnl, runningPnl);
+                maxDrawdown = Math.max(maxDrawdown, peakPnl - runningPnl);
+            });
+            const profitCount = chronologicalTrades.filter(t => t.pnl_usd > 0).length;
+            const averageWin = profitCount > 0 ? winningPnl / profitCount : 0;
+            const lossCount = chronologicalTrades.filter(t => t.pnl_usd < 0).length;
+            const averageLoss = lossCount > 0 ? losingPnl / lossCount : 0;
+            const payoffRatio = averageLoss > 0 ? (averageWin / averageLoss).toFixed(2) : (averageWin > 0 ? '∞' : '—');
+
+            document.getElementById('kpi-trades').innerText = totalTrades;
+            document.getElementById('kpi-pnl').innerText = `${totalPnl >= 0 ? '+' : ''}${totalPnl.toFixed(2)} USDT`;
+            document.getElementById('kpi-pnl').className = `text-3xl font-bold ${totalPnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+            document.getElementById('kpi-winrate').innerText = `${winRate}%`;
+            document.getElementById('kpi-pf').innerText = profitFactor;
+            document.getElementById('stat-max-drawdown').innerText = `${maxDrawdown.toFixed(2)} USDT`;
+            document.getElementById('stat-best-trade').innerText = `+${bestTrade.toFixed(2)} USDT`;
+            document.getElementById('stat-worst-trade').innerText = `${worstTrade.toFixed(2)} USDT`;
+            document.getElementById('stat-expectancy').innerText = `${(totalTrades ? totalPnl / totalTrades : 0).toFixed(2)} USDT`;
+            document.getElementById('stat-avg-win').innerText = `${averageWin.toFixed(2)} USDT`;
+            document.getElementById('stat-win-count').innerText = `${profitCount} trade profit`;
+            document.getElementById('stat-avg-loss').innerText = `-${averageLoss.toFixed(2)} USDT`;
+            document.getElementById('stat-loss-count').innerText = `${lossCount} trade rugi`;
+            document.getElementById('stat-payoff').innerText = payoffRatio;
+            document.getElementById('stat-loss-streak').innerText = `${maxLossStreak} trade`;
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('journalTableBody');
+            tbody.innerHTML = '';
+
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-500">Belum ada catatan trading.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/50 transition-colors group';
+                
+                const dateStr = item.date.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                const isLong = item.action === 'LONG';
+                const pnlColor = item.pnl_usd > 0 ? 'text-emerald-400' : (item.pnl_usd < 0 ? 'text-red-400' : 'text-slate-400');
+                
+                let badgeClass = 'bg-slate-800 text-slate-400 border-slate-700';
+                if (item.status === 'WIN') badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+                else if (item.status === 'LOSS') badgeClass = 'bg-red-500/10 text-red-400 border-red-500/20';
+
+                tr.innerHTML = `
+                    <td class="p-4 text-slate-400 text-xs whitespace-nowrap">${dateStr}</td>
+                    <td class="p-4 font-bold text-slate-200">${item.symbol}</td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 rounded text-xs font-semibold ${isLong ? 'text-emerald-400 bg-emerald-400/10' : 'text-red-400 bg-red-400/10'}">
+                            ${item.action}
+                        </span>
+                    </td>
+                    <td class="p-4 font-bold ${pnlColor}">${item.pnl_usd > 0 ? '+' : ''}${item.pnl_usd.toFixed(2)} USDT</td>
+                    <td class="p-4 text-center">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium border ${badgeClass}">${item.status}</span>
+                    </td>
+                    <td class="p-4 text-right">
+                        <button onclick="confirmDelete(${item.id})" class="text-slate-500 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800 transition-colors tooltip" title="Hapus">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Chart.js Integrations ---
+        function updateCharts() {
+            // Urutkan kronologis untuk chart (terlama ke terbaru)
+            const chronoTrades = [...trades].sort((a, b) => a.date - b.date);
+            
+            // Siapkan data PnL Kumulatif
+            let labels = [];
+            let pnlData = [];
+            let cumulative = 0;
+
+            let wins = 0, losses = 0, bep = 0;
+
+            chronoTrades.forEach((t, i) => {
+                cumulative += t.pnl_usd;
+                labels.push(`T${i+1}`);
+                pnlData.push(cumulative);
+
+                if (t.status === 'WIN') wins++;
+                else if (t.status === 'LOSS') losses++;
+                else bep++;
+            });
+
+            // Re-render PnL Line Chart
+            const ctxPnl = document.getElementById('pnlChart').getContext('2d');
+            if (pnlChartInstance) pnlChartInstance.destroy();
+
+            // Gradient fill untuk line chart
+            const gradient = ctxPnl.createLinearGradient(0, 0, 0, 180);
+            gradient.addColorStop(0, 'rgba(52, 211, 153, 0.4)'); // emerald
+            gradient.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
+
+            pnlChartInstance = new Chart(ctxPnl, {
+                type: 'line',
+                data: {
+                    labels: labels.length ? labels : ['-'],
+                    datasets: [{
+                        label: 'Kumulatif PnL (USDT)',
+                        data: pnlData.length ? pnlData : [0],
+                        borderColor: '#34d399',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#0f172a',
+                        pointBorderColor: '#34d399',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+                            ticks: { color: '#64748b', font: {size: 10} }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#64748b', font: {size: 10} }
+                        }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+
+            // Re-render Win/Loss Doughnut Chart
+            const ctxWin = document.getElementById('winChart').getContext('2d');
+            if (winChartInstance) winChartInstance.destroy();
+
+            winChartInstance = new Chart(ctxWin, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Win', 'Loss', 'BEP'],
+                    datasets: [{
+                        data: totalTradesCount() === 0 ? [1] : [wins, losses, bep],
+                        backgroundColor: totalTradesCount() === 0 ? ['#1e293b'] : ['#10b981', '#ef4444', '#64748b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#cbd5e1', usePointStyle: true, boxWidth: 8, font: {size: 11} } }
+                    }
+                }
+            });
+        }
+
+        function totalTradesCount() {
+            return trades.length;
+        }
+
+        // --- Form Submission ---
+        document.getElementById('tradeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newTrade = {
+                date: new Date(),
+                symbol: document.getElementById('symbol').value.toUpperCase(),
+                action: document.getElementById('action').value,
+                status: document.getElementById('status').value,
+                pnl_usd: parseFloat(document.getElementById('pnl_usd').value) || 0,
+                notes: document.getElementById('notes').value
+            };
+
+            if (supabaseSettings) {
+                try {
+                    const response = await fetch(`${supabaseSettings.url}/rest/v1/trading_journal`, {
+                        method: 'POST',
+                        headers: getSupabaseHeaders(supabaseSettings, {
+                            'Content-Type': 'application/json',
+                            Prefer: 'return=representation'
+                        }),
+                        body: JSON.stringify({
+                            trade_date: newTrade.date.toISOString(),
+                            symbol: newTrade.symbol,
+                            action: newTrade.action,
+                            status: newTrade.status,
+                            pnl_usd: newTrade.pnl_usd,
+                            notes: newTrade.notes
+                        })
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Gagal menyimpan trade (${response.status}): ${await response.text()}`);
+                    }
+                    const [savedTrade] = await response.json();
+                    newTrade.id = Number(savedTrade.id);
+                } catch (error) {
+                    showConnectionNotice(`Trade belum tersimpan di Supabase. ${error.message}`);
+                    return;
+                }
+            } else {
+                newTrade.id = Date.now();
+            }
+
+            trades.push(newTrade);
+            document.getElementById('tradeForm').reset();
+            
+            renderDashboard();
+
+            // Beri feedback visual kecil pada tombol
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Berhasil Disimpan! ✓";
+            btn.classList.add('from-emerald-500', 'to-emerald-400');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('from-emerald-500', 'to-emerald-400');
+            }, 1500);
+        });
+
+        // --- Custom Modal Deletion (No alerts) ---
+        function confirmDelete(id) {
+            deleteTargetId = id;
+            const modal = document.getElementById('deleteModal');
+            const panel = document.getElementById('deleteModalPanel');
+            
+            modal.classList.remove('hidden');
+            // Trigger reflow for transition
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            panel.classList.remove('scale-95');
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            const panel = document.getElementById('deleteModalPanel');
+            
+            modal.classList.add('opacity-0');
+            panel.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                deleteTargetId = null;
+            }, 300); // match transition duration
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            if (deleteTargetId !== null) {
+                if (supabaseSettings) {
+                    try {
+                        const response = await fetch(
+                            `${supabaseSettings.url}/rest/v1/trading_journal?id=eq.${encodeURIComponent(deleteTargetId)}`,
+                            { method: 'DELETE', headers: getSupabaseHeaders(supabaseSettings) }
+                        );
+                        if (!response.ok) {
+                            throw new Error(`Gagal menghapus trade (${response.status}): ${await response.text()}`);
+                        }
+                    } catch (error) {
+                        showConnectionNotice(`Trade tidak dihapus dari Supabase. ${error.message}`);
+                        closeDeleteModal();
+                        return;
+                    }
+                }
+                trades = trades.filter(t => t.id !== deleteTargetId);
+                renderDashboard();
+                closeDeleteModal();
+            }
+        });
+
+        lucide.createIcons();
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+                navbar.classList.remove('bg-transparent', 'py-6');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-6');
+                navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-4');
+            }
+        });
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            menuIcon.classList.toggle('hidden');
+            menuIcon.classList.toggle('block');
+            closeIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('block');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) toggleMenu();
+            });
+        });
+
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>
