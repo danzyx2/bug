@@ -76,9 +76,299 @@
 
             .reveal { opacity: 1; transform: none; }
         }
+
+        .vault-page {
+            color-scheme: dark;
+            background:
+                radial-gradient(ellipse at 12% 8%, rgba(127, 29, 29, 0.19), transparent 36rem),
+                radial-gradient(ellipse at 92% 42%, rgba(120, 53, 15, 0.12), transparent 34rem),
+                #090b0d;
+        }
+
+        .vault-page::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: linear-gradient(to bottom, black, transparent 82%);
+        }
+
+        .vault-page .orb-blue,
+        .vault-page .orb-purple {
+            opacity: 0.2;
+            filter: blur(140px);
+        }
+
+        .vault-page #navbar {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            background: rgba(9, 11, 13, 0.84);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            backdrop-filter: blur(18px);
+        }
+
+        .vault-page #navbar a,
+        .vault-page #navbar button {
+            transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+        }
+
+        .vault-page #navbar [data-lucide="activity"],
+        .vault-page #navbar a[href="data.html"] {
+            color: #f87171;
+        }
+
+        .vault-page #mobile-menu {
+            background: #111416;
+            border-color: rgba(148, 163, 184, 0.16);
+        }
+
+        .vault-page .vault-hero {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 2rem;
+            margin: 0.5rem 0 2rem;
+            padding: 2rem 2.25rem;
+            overflow: hidden;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            border-radius: 1.5rem;
+            background:
+                radial-gradient(ellipse at 88% 50%, rgba(127, 29, 29, 0.24), transparent 20rem),
+                linear-gradient(115deg, rgba(23, 25, 26, 0.98), rgba(16, 18, 19, 0.94));
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26), inset 0 1px rgba(255, 255, 255, 0.035);
+        }
+
+        .vault-page .vault-hero::after {
+            content: "";
+            position: absolute;
+            top: -4rem;
+            right: 7rem;
+            width: 15rem;
+            height: 15rem;
+            border: 1px solid rgba(248, 113, 113, 0.1);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2rem rgba(248, 113, 113, 0.025), 0 0 0 4rem rgba(248, 113, 113, 0.018);
+            pointer-events: none;
+        }
+
+        .vault-page .vault-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-bottom: 0.8rem;
+            color: #fca5a5;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .vault-page .vault-kicker::before {
+            content: "";
+            width: 0.45rem;
+            height: 0.45rem;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.9);
+        }
+
+        .vault-page .vault-hero h1 {
+            max-width: 40rem;
+            margin: 0;
+            color: #f5f2ed;
+            font-size: clamp(2rem, 4.5vw, 3.35rem);
+            font-weight: 750;
+            letter-spacing: -0.055em;
+            line-height: 1.04;
+        }
+
+        .vault-page .vault-hero h1 span {
+            color: #ef7770;
+        }
+
+        .vault-page .vault-hero p {
+            max-width: 34rem;
+            margin: 1rem 0 0;
+            color: #a7a9a7;
+            font-size: 0.92rem;
+            line-height: 1.75;
+        }
+
+        .vault-page .vault-stamp {
+            position: relative;
+            z-index: 1;
+            flex: 0 0 auto;
+            padding: 0.7rem 0.9rem;
+            transform: rotate(-7deg);
+            border: 1px solid rgba(248, 113, 113, 0.55);
+            color: #fca5a5;
+            font-size: 0.64rem;
+            font-weight: 900;
+            letter-spacing: 0.18em;
+            text-align: center;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 0 3px rgba(248, 113, 113, 0.07);
+        }
+
+        .vault-page #loginSection,
+        .vault-page #mainSection > .reveal {
+            border-color: rgba(148, 163, 184, 0.16) !important;
+            background: linear-gradient(145deg, rgba(24, 27, 28, 0.97), rgba(16, 18, 19, 0.97)) !important;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.035) !important;
+        }
+
+        .vault-page #loginSection {
+            margin-top: 0;
+            margin-bottom: 2rem;
+        }
+
+        .vault-page #loginSection h2,
+        .vault-page #mainSection h3,
+        .vault-page #mainSection h4,
+        .vault-page #settingsModal h3,
+        .vault-page #deleteModal h3 {
+            color: #f1efea !important;
+        }
+
+        .vault-page #loginSection p,
+        .vault-page #mainSection .text-slate-400,
+        .vault-page #mainSection .text-slate-500,
+        .vault-page #settingsModal p,
+        .vault-page #settingsModal label,
+        .vault-page #deleteModal p {
+            color: #a6aaa8 !important;
+        }
+
+        .vault-page #loginSection .fa-user-lock {
+            color: #fca5a5;
+        }
+
+        .vault-page #loginSection .w-16 {
+            background: rgba(127, 29, 29, 0.28);
+        }
+
+        .vault-page input:not([type="checkbox"]),
+        .vault-page select,
+        .vault-page textarea {
+            border-color: rgba(148, 163, 184, 0.2) !important;
+            background-color: #101314 !important;
+            color: #e7e5e0 !important;
+        }
+
+        .vault-page input:not([type="checkbox"])::placeholder,
+        .vault-page textarea::placeholder {
+            color: #737977;
+        }
+
+        .vault-page input:not([type="checkbox"]):focus,
+        .vault-page select:focus,
+        .vault-page textarea:focus {
+            border-color: rgba(248, 113, 113, 0.65) !important;
+            --tw-ring-color: rgba(248, 113, 113, 0.24) !important;
+        }
+
+        .vault-page input[type="checkbox"] {
+            accent-color: #dc4c49;
+        }
+
+        .vault-page .bg-emerald-600 {
+            background-color: #b83b38 !important;
+        }
+
+        .vault-page .hover\:bg-emerald-700:hover {
+            background-color: #96312f !important;
+        }
+
+        .vault-page .text-emerald-500,
+        .vault-page .text-emerald-600,
+        .vault-page .dark\:text-emerald-400 {
+            color: #f08078 !important;
+        }
+
+        .vault-page .bg-emerald-100,
+        .vault-page .dark\:bg-emerald-900\/40,
+        .vault-page .bg-emerald-50,
+        .vault-page .dark\:bg-emerald-950\/50 {
+            background-color: rgba(127, 29, 29, 0.22) !important;
+        }
+
+        .vault-page #mainSection > .reveal:nth-child(2) {
+            border-top: 2px solid rgba(248, 113, 113, 0.45) !important;
+        }
+
+        .vault-page #daftarLink > div {
+            border-color: rgba(148, 163, 184, 0.16) !important;
+            background: linear-gradient(145deg, rgba(24, 27, 28, 0.98), rgba(16, 18, 19, 0.98)) !important;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18) !important;
+        }
+
+        .vault-page #daftarLink h4 {
+            color: #efede8 !important;
+        }
+
+        .vault-page #daftarLink .bg-slate-50,
+        .vault-page #daftarLink .dark\:bg-slate-900 {
+            border-color: rgba(148, 163, 184, 0.12) !important;
+            background: #0c0f10 !important;
+            color: #c8cbc8 !important;
+        }
+
+        .vault-page #searchInput,
+        .vault-page #searchInput + div button,
+        .vault-page #mainSection > .reveal button:not(.bg-emerald-600) {
+            border-color: rgba(148, 163, 184, 0.18);
+        }
+
+        .vault-page #filter-all {
+            background: #b83b38 !important;
+        }
+
+        .vault-page .filter-pill:not(.active) {
+            background: #151819 !important;
+            color: #c1c5c2 !important;
+            border-color: rgba(148, 163, 184, 0.18) !important;
+        }
+
+        .vault-page #settingsModal,
+        .vault-page #deleteModal {
+            background-color: rgba(3, 5, 6, 0.78);
+        }
+
+        .vault-page #settingsModal > div,
+        .vault-page #deleteModal > div {
+            border-color: rgba(148, 163, 184, 0.18) !important;
+            background: #151819 !important;
+        }
+
+        .vault-page footer {
+            border-color: rgba(148, 163, 184, 0.12);
+            background: #080a0b;
+        }
+
+        @media (max-width: 640px) {
+            .vault-page .vault-hero {
+                align-items: flex-start;
+                margin-bottom: 1.25rem;
+                padding: 1.5rem;
+            }
+
+            .vault-page .vault-stamp {
+                display: none;
+            }
+
+            .vault-page #loginSection {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased min-h-screen flex flex-col">
+<body class="vault-page bg-slate-950 text-slate-300 font-sans selection:bg-blue-500/30 overflow-x-hidden antialiased min-h-screen flex flex-col">
 
     <!-- Animated Background Orbs -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -90,7 +380,7 @@
     <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
     <!-- MAIN APP WRAPPER -->
-    <div class="relative z-10 max-w-4xl mx-auto w-full px-4 pt-32 pb-16 flex-1 flex flex-col">
+    <div class="relative z-10 max-w-5xl mx-auto w-full px-4 pt-32 pb-16 flex-1 flex flex-col">
 
         <div class="flex justify-end mb-6">
             <button onclick="openSettingsModal()" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors border border-slate-700 hover:border-blue-500 rounded-full px-5 py-2" title="Pengaturan API Worker">
@@ -134,6 +424,15 @@
                 <a href="portal.html" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-sm font-medium text-white transition-colors border border-blue-500 bg-blue-600/20 rounded-full px-5 py-3 mt-2">Akses Portal <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
             </div>
         </nav>
+
+        <header class="vault-hero reveal is-visible">
+            <div>
+                <div class="vault-kicker">Arsip khusus · akses terbatas</div>
+                <h1>Hal-hal yang lebih baik <span>tetap rahasia.</span></h1>
+                <p>Simpan tautan, catatan, dan potongan kode dalam satu ruang arsip pribadi. Tertata rapi, mudah dicari, dan selalu dalam jangkauan Anda.</p>
+            </div>
+            <div class="vault-stamp" aria-label="Arsip rahasia">Top secret<br>jangan sebarkan</div>
+        </header>
 
         <!-- SECTION 1: LOGIN / USER SELECTION (Auto-skipped jika tersimpan) -->
         <div id="loginSection" class="reveal is-visible my-auto max-w-md mx-auto w-full bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 text-center">
