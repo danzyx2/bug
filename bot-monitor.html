@@ -56,6 +56,59 @@
         .orb-blue { animation: drift-blue 18s ease-in-out infinite; }
         .orb-purple { animation: drift-purple 22s ease-in-out infinite; }
 
+        @keyframes star-drift {
+          from { transform: translate3d(0, 0, 0); }
+          to { transform: translate3d(-24px, 18px, 0); }
+        }
+
+        @keyframes live-glow {
+          0%, 100% { box-shadow: 0 0 0 rgba(34, 197, 94, 0); }
+          50% { box-shadow: 0 0 18px rgba(34, 197, 94, 0.24); }
+        }
+
+        @keyframes open-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.35); }
+          60% { box-shadow: 0 0 0 6px rgba(96, 165, 250, 0); }
+        }
+
+        @keyframes trade-enter {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes history-enter {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cosmic-stars {
+          background-image:
+            radial-gradient(1px 1px at 20px 30px, rgba(191, 219, 254, 0.55) 50%, transparent 100%),
+            radial-gradient(1px 1px at 100px 80px, rgba(196, 181, 253, 0.45) 50%, transparent 100%),
+            radial-gradient(2px 2px at 160px 40px, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+          background-size: 210px 130px;
+          animation: star-drift 28s linear infinite alternate;
+        }
+
+        #status-badge.live-indicator,
+        #open-trades-panel.has-open-trades { animation: live-glow 2.8s ease-in-out infinite; }
+        .open-status-pulse { animation: open-pulse 2s ease-out infinite; }
+        .trade-row { animation: trade-enter 0.45s ease both; }
+        #trade-history-details[open] .history-content { animation: history-enter 0.35s ease both; }
+        #trade-history-details summary { transition: background-color 0.2s ease; }
+        #trade-history-details summary::after {
+          content: '';
+          width: 0.55rem;
+          height: 0.55rem;
+          margin-left: auto;
+          border-right: 2px solid #60a5fa;
+          border-bottom: 2px solid #60a5fa;
+          transform: rotate(45deg);
+          transition: transform 0.2s ease;
+          flex: 0 0 auto;
+        }
+        #trade-history-details[open] summary::after { transform: rotate(225deg); }
+
         .reveal {
           opacity: 0;
           transform: translateY(24px);
@@ -83,6 +136,7 @@
 
   <!-- Animated Background Orbs -->
   <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+      <div class="cosmic-stars absolute inset-0 opacity-40"></div>
       <div class="orb-blue absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen"></div>
       <div class="orb-purple absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] mix-blend-screen"></div>
   </div>
@@ -212,7 +266,7 @@
 <!-- END AADS AD UNIT 2456035 -->
         <!-- RINGKASAN METRIK PER STRATEGI (CARDS) -->
         <div id="metrics-container" class="reveal grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Card BTCUSDT & ETHUSDT akan di-render dinamis oleh JavaScript -->
+          <!-- Kartu SOLUSDT dan aset yang memiliki riwayat trade dirender dinamis -->
         </div>
 
         <!-- GRAFIK EQUITY CURVE -->
@@ -233,13 +287,13 @@
           </div>
         </div>
 
-        <!-- TABEL RIWAYAT TRANSAKSI -->
-        <div class="reveal glass-panel rounded-2xl shadow-lg overflow-hidden">
+        <!-- POSISI TRADE YANG MASIH OPEN -->
+        <section id="open-trades-panel" class="reveal glass-panel rounded-2xl shadow-lg overflow-hidden transition-shadow duration-500">
           <div class="p-6 border-b border-slate-800 flex justify-between items-center">
             <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                <i data-lucide="list" class="w-5 h-5 text-blue-400"></i> Riwayat Transaksi
+              <i data-lucide="activity" class="w-5 h-5 text-blue-400"></i> Posisi Trade Open
             </h2>
-            <span id="total-trades-count" class="text-xs font-medium text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">Total: 0 Trades</span>
+            <span id="open-trades-count" class="text-xs font-medium text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">0 Posisi</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-sm">
@@ -254,14 +308,43 @@
                   <th class="p-4 font-medium text-right">PnL (USDT)</th>
                 </tr>
               </thead>
-              <tbody id="trade-history-body" class="divide-y divide-slate-800/50 text-slate-300">
-                <tr>
-                  <td colspan="7" class="p-8 text-center text-slate-500">Memuat data transaksi...</td>
-                </tr>
+              <tbody id="open-trades-body" class="divide-y divide-slate-800/50 text-slate-300">
+                <tr><td colspan="7" class="p-8 text-center text-slate-500">Memuat posisi...</td></tr>
               </tbody>
             </table>
           </div>
-        </div>
+        </section>
+
+        <!-- RIWAYAT TRADE SELESAI, DAPAT DISEMBUNYIKAN -->
+        <details id="trade-history-details" class="reveal glass-panel rounded-2xl shadow-lg overflow-hidden">
+          <summary class="cursor-pointer list-none p-6 flex justify-between items-center gap-4 hover:bg-slate-800/30">
+            <span class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="list" class="w-5 h-5 text-blue-400"></i> Riwayat Trade Selesai
+            </span>
+            <span class="flex items-center gap-3">
+              <span id="total-trades-count" class="text-xs font-medium text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">Total: 0 Trades</span>
+              <span class="text-xs text-blue-400">Tampilkan / sembunyikan</span>
+            </span>
+          </summary>
+          <div class="history-content overflow-x-auto border-t border-slate-800">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-900/50 text-slate-400 uppercase text-[11px] tracking-wider border-b border-slate-800">
+                  <th class="p-4 font-medium">Waktu</th>
+                  <th class="p-4 font-medium">Aset</th>
+                  <th class="p-4 font-medium">Tipe</th>
+                  <th class="p-4 font-medium">Entry Price</th>
+                  <th class="p-4 font-medium">Exit Price</th>
+                  <th class="p-4 font-medium">Status</th>
+                  <th class="p-4 font-medium text-right">PnL (USDT)</th>
+                </tr>
+              </thead>
+              <tbody id="trade-history-body" class="divide-y divide-slate-800/50 text-slate-300">
+                <tr><td colspan="7" class="p-8 text-center text-slate-500">Memuat riwayat trade...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
 
         </div>
       </div>
@@ -407,14 +490,65 @@
     let equityChartInstance = null;
     let dashboardTrades = [];
     const STRATEGY_LABELS = {
-      BTCUSDT: 'EMA 9/21 + RSI 14',
-      ETHUSDT: 'Donchian Breakout 20',
-      ETHUSDT_SIDEWAY: 'Bollinger Bands + RSI',
-      ETHUSDT_BREAKOUT: 'Donchian Breakout 30'
+      SOLUSDT: 'Scalping EMA 9/21 + RSI + ATR'
     };
 
     function getStrategyLabel(asset) {
       return STRATEGY_LABELS[asset] || asset;
+    }
+
+    function getStrategyParameters(asset, trades) {
+      if (asset === 'SOLUSDT') {
+        return {
+          leverage: '10x',
+          margin: '5 USDT',
+          position: '~50 USDT',
+          stopLoss: '0,35%–0,75% (ATR × 1,2)',
+          takeProfit: '1,5x risiko (0,525%–1,125%)',
+          entry: 'Tren EMA 5m; reclaim EMA 1m; RSI 52–68 LONG / 32–48 SHORT',
+          source: 'Konfigurasi strategi aktif'
+        };
+      }
+
+      const latestTrade = trades
+        .filter(trade => trade.asset === asset)
+        .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))[0];
+      if (!latestTrade) {
+        return {
+          leverage: '—',
+          margin: '—',
+          position: '—',
+          stopLoss: '—',
+          takeProfit: '—',
+          entry: 'Parameter belum tersedia',
+          source: 'Belum ada data trade'
+        };
+      }
+
+      const entryPrice = Number(latestTrade.price);
+      const stopLossPercent = entryPrice > 0
+        ? Math.abs((entryPrice - Number(latestTrade.sl)) / entryPrice * 100)
+        : NaN;
+      const takeProfitPercent = entryPrice > 0
+        ? Math.abs((Number(latestTrade.tp) - entryPrice) / entryPrice * 100)
+        : NaN;
+      const margin = Number(latestTrade.margin);
+      const leverage = Number(latestTrade.leverage);
+      const amount = Number(latestTrade.amount);
+      const positionSize = Number.isFinite(amount) && entryPrice > 0
+        ? amount * entryPrice
+        : margin * leverage;
+      const formatPercent = value => Number.isFinite(value) ? `${value.toFixed(2)}%` : '—';
+
+      return {
+        leverage: Number.isFinite(leverage) ? `${leverage}x` : '—',
+        margin: Number.isFinite(margin) ? `${margin.toFixed(2)} USDT` : '—',
+        position: Number.isFinite(positionSize) ? `${positionSize.toFixed(2)} USDT` : '—',
+        stopLoss: formatPercent(stopLossPercent),
+        takeProfit: formatPercent(takeProfitPercent),
+        entry: 'Mengikuti parameter pada posisi yang tercatat',
+        source: 'Berdasarkan trade terakhir tersimpan'
+      };
     }
 
     function escapeHtml(value) {
@@ -498,8 +632,11 @@
       supabaseConnectionGate.classList.remove('hidden');
       supabaseConnectionError.classList.add('hidden');
       document.getElementById('metrics-container').innerHTML = '';
+      document.getElementById('open-trades-body').innerHTML = '';
+      document.getElementById('open-trades-count').innerText = '0 Posisi';
       document.getElementById('trade-history-body').innerHTML = '';
       document.getElementById('total-trades-count').innerText = 'Total: 0 Trades';
+      document.getElementById('trade-history-details').open = false;
       dashboardTrades = [];
       document.getElementById('equity-strategy-filter').value = 'all';
       if (equityChartInstance) {
@@ -555,6 +692,7 @@
         dashboardTrades = trades;
         renderStrategyFilter(trades);
         renderStrategyCards(trades);
+        renderOpenTrades(trades);
         renderTradeHistory(trades);
         renderEquityChart(trades);
 
@@ -565,6 +703,7 @@
           </span>
           Live / Terhubung
         `;
+        badge.classList.add('live-indicator');
       } catch (err) {
         console.error('Error fetching data:', err);
         if (isConnecting) {
@@ -597,7 +736,7 @@
       const filter = document.getElementById('equity-strategy-filter');
       const selectedAsset = filter.value;
       const assets = [...new Set([
-        ...Object.keys(STRATEGY_LABELS),
+        'SOLUSDT',
         ...trades.map(trade => trade.asset).filter(Boolean)
       ])];
 
@@ -610,7 +749,7 @@
 
     function renderStrategyCards(trades) {
       const assets = [...new Set([
-        ...Object.keys(STRATEGY_LABELS),
+        'SOLUSDT',
         ...trades.map(trade => trade.asset).filter(Boolean)
       ])];
       const container = document.getElementById('metrics-container');
@@ -623,6 +762,7 @@
         const losses = assetTrades.filter(t => t.profit_loss < 0).length;
         const totalPnl = assetTrades.reduce((acc, t) => acc + (Number(t.profit_loss) || 0), 0);
         const winrate = totalTrades > 0 ? ((wins / totalTrades) * 100).toFixed(1) : '0.0';
+        const parameters = getStrategyParameters(asset, trades);
 
         const cardHtml = `
           <div class="glass-panel p-6 rounded-2xl space-y-4 hover:border-blue-500/30 transition-colors">
@@ -636,6 +776,38 @@
               <span class="px-3 py-1 rounded-lg text-sm font-bold ${winrate >= 50 ? 'bg-green-500/20 text-green-400 border border-green-500/20' : 'bg-red-500/20 text-red-400 border border-red-500/20'}">
                 WR: ${winrate}%
               </span>
+            </div>
+
+            <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+              <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <h4 class="text-sm font-semibold text-slate-200">Parameter Strategi</h4>
+                <span class="text-[11px] text-slate-500">${escapeHtml(parameters.source)}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div>
+                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Leverage</p>
+                  <p class="mt-1 text-sm font-semibold text-white">${escapeHtml(parameters.leverage)}</p>
+                </div>
+                <div>
+                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Margin / Posisi</p>
+                  <p class="mt-1 text-sm font-semibold text-white">${escapeHtml(parameters.margin)} / ${escapeHtml(parameters.position)}</p>
+                </div>
+                <div>
+                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Stop Loss</p>
+                  <p class="mt-1 text-sm font-semibold text-red-300">${escapeHtml(parameters.stopLoss)}</p>
+                </div>
+                <div>
+                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Take Profit</p>
+                  <p class="mt-1 text-sm font-semibold text-green-300">${escapeHtml(parameters.takeProfit)}</p>
+                </div>
+                <div class="col-span-2 sm:col-span-2">
+                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Setup Entry</p>
+                  <p class="mt-1 text-sm text-slate-300">${escapeHtml(parameters.entry)}</p>
+                </div>
+              </div>
+              <p class="mt-3 border-t border-slate-800 pt-3 text-[11px] leading-relaxed text-slate-500">
+                Jarak SL/TP dihitung dari harga entry; harga aktual mengikuti entry setiap posisi. Ukuran posisi adalah estimasi margin × leverage dan belum memperhitungkan biaya atau slippage.
+              </p>
             </div>
 
             <div class="grid grid-cols-3 gap-3 text-center">
@@ -663,48 +835,67 @@
     // -------------------------------------------------------------
     // 4. RENDER TABEL HISTORI TRANSAKSI
     // -------------------------------------------------------------
-    function renderTradeHistory(trades) {
-      const tbody = document.getElementById('trade-history-body');
-      document.getElementById('total-trades-count').innerText = `Total: ${trades.length} Trades`;
-
-      if (trades.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500">Belum ada transaksi tercatat.</td></tr>`;
-        return;
-      }
-
-      // Urutkan transaksi terbaru di paling atas
-      const reversedTrades = [...trades].reverse();
-
-      tbody.innerHTML = reversedTrades.map(trade => {
-        const isProfit = trade.profit_loss > 0;
-        const pnlText = trade.status === 'CLOSED' 
-          ? `<span class="font-bold ${isProfit ? 'text-green-400' : 'text-red-400'}">${trade.profit_loss >= 0 ? '+' : ''}${trade.profit_loss} USDT</span>`
-          : `<span class="text-blue-400 italic font-medium">Running...</span>`;
-
-        const typeBadge = trade.type === 'LONG' 
-          ? `<span class="px-2 py-1 text-[10px] font-bold bg-green-500/20 text-green-400 rounded border border-green-500/20 tracking-wider">LONG</span>`
-          : `<span class="px-2 py-1 text-[10px] font-bold bg-red-500/20 text-red-400 rounded border border-red-500/20 tracking-wider">SHORT</span>`;
-
-        const dateFormatted = new Date(trade.created_at).toLocaleString('id-ID', {
-          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-        });
+    function renderTradeRows(trades) {
+      return [...trades].reverse().map((trade, index) => {
+        const status = String(trade.status || '').toUpperCase();
+        const profitLoss = Number(trade.profit_loss);
+        const hasProfitLoss = Number.isFinite(profitLoss);
+        const pnlText = status === 'CLOSED' && hasProfitLoss
+          ? `<span class="font-bold ${profitLoss >= 0 ? 'text-green-400' : 'text-red-400'}">${profitLoss > 0 ? '+' : ''}${profitLoss} USDT</span>`
+          : status === 'OPEN'
+            ? `<span class="text-blue-400 italic font-medium">Berjalan</span>`
+            : '<span class="text-slate-500">-</span>';
+        const type = String(trade.type || '').toUpperCase();
+        const typeBadge = type === 'LONG'
+          ? '<span class="px-2 py-1 text-[10px] font-bold bg-green-500/20 text-green-400 rounded border border-green-500/20 tracking-wider">LONG</span>'
+          : '<span class="px-2 py-1 text-[10px] font-bold bg-red-500/20 text-red-400 rounded border border-red-500/20 tracking-wider">SHORT</span>';
+        const timestamp = Date.parse(trade.created_at);
+        const dateFormatted = Number.isNaN(timestamp)
+          ? '-'
+          : new Date(timestamp).toLocaleString('id-ID', {
+              month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+        const entryPrice = trade.price == null ? '-' : `$${escapeHtml(trade.price)}`;
+        const exitPrice = trade.close_price == null || trade.close_price === ''
+          ? '-'
+          : `$${escapeHtml(trade.close_price)}`;
+        const statusClasses = status === 'OPEN'
+          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+          : 'bg-slate-800 text-slate-400 border border-slate-700';
 
         return `
-          <tr class="hover:bg-slate-800/40 transition-colors">
-            <td class="p-4 text-xs text-slate-400 whitespace-nowrap">${dateFormatted}</td>
-            <td class="p-4 font-bold text-white">${trade.asset}</td>
+          <tr class="trade-row hover:bg-slate-800/40 transition-colors" style="animation-delay: ${Math.min(index * 70, 490)}ms">
+            <td class="p-4 text-xs text-slate-400 whitespace-nowrap">${escapeHtml(dateFormatted)}</td>
+            <td class="p-4 font-bold text-white">${escapeHtml(trade.asset || '-')}</td>
             <td class="p-4">${typeBadge}</td>
-            <td class="p-4 font-medium">$${trade.price}</td>
-            <td class="p-4 font-medium">${trade.close_price ? '$' + trade.close_price : '-'}</td>
+            <td class="p-4 font-medium">${entryPrice}</td>
+            <td class="p-4 font-medium">${exitPrice}</td>
             <td class="p-4">
-              <span class="px-2 py-1 text-[10px] font-semibold rounded-full tracking-wider ${trade.status === 'OPEN' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}">
-                ${trade.status}
-              </span>
+              <span class="px-2 py-1 text-[10px] font-semibold rounded-full tracking-wider ${statusClasses} ${status === 'OPEN' ? 'open-status-pulse' : ''}">${escapeHtml(status || '-')}</span>
             </td>
             <td class="p-4 text-right">${pnlText}</td>
           </tr>
         `;
       }).join('');
+    }
+
+    function renderOpenTrades(trades) {
+      const openTrades = trades.filter(trade => String(trade.status || '').toUpperCase() === 'OPEN');
+      const tbody = document.getElementById('open-trades-body');
+      document.getElementById('open-trades-panel').classList.toggle('has-open-trades', openTrades.length > 0);
+      document.getElementById('open-trades-count').innerText = `${openTrades.length} Posisi`;
+      tbody.innerHTML = openTrades.length
+        ? renderTradeRows(openTrades)
+        : '<tr><td colspan="7" class="p-8 text-center text-slate-500">Tidak ada posisi trade yang sedang open.</td></tr>';
+    }
+
+    function renderTradeHistory(trades) {
+      const closedTrades = trades.filter(trade => String(trade.status || '').toUpperCase() === 'CLOSED');
+      const tbody = document.getElementById('trade-history-body');
+      document.getElementById('total-trades-count').innerText = `Total: ${closedTrades.length} Trades`;
+      tbody.innerHTML = closedTrades.length
+        ? renderTradeRows(closedTrades)
+        : '<tr><td colspan="7" class="p-8 text-center text-slate-500">Belum ada trade yang selesai.</td></tr>';
     }
 
     // -------------------------------------------------------------
