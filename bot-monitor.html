@@ -95,8 +95,12 @@
         .open-status-pulse { animation: open-pulse 2s ease-out infinite; }
         .trade-row { animation: trade-enter 0.45s ease both; }
         #trade-history-details[open] .history-content { animation: history-enter 0.35s ease both; }
-        #trade-history-details summary { transition: background-color 0.2s ease; }
-        #trade-history-details summary::after {
+        #trade-history-details summary,
+        #smc-signals-details summary,
+        .strategy-parameters-details summary { transition: background-color 0.2s ease; }
+        #trade-history-details summary::after,
+        #smc-signals-details summary::after,
+        .strategy-parameters-details summary::after {
           content: '';
           width: 0.55rem;
           height: 0.55rem;
@@ -107,7 +111,9 @@
           transition: transform 0.2s ease;
           flex: 0 0 auto;
         }
-        #trade-history-details[open] summary::after { transform: rotate(225deg); }
+        #trade-history-details[open] summary::after,
+        #smc-signals-details[open] summary::after,
+        .strategy-parameters-details[open] summary::after { transform: rotate(225deg); }
 
         .reveal {
           opacity: 0;
@@ -314,6 +320,42 @@
             </table>
           </div>
         </section>
+
+        <!-- SINYAL SMC, DAPAT DIBUKA / DITUTUP -->
+        <details id="smc-signals-details" class="reveal glass-panel rounded-2xl shadow-lg overflow-hidden">
+          <summary class="cursor-pointer list-none p-6 flex justify-between items-center gap-4 hover:bg-slate-800/30">
+            <span class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="scan-line" class="w-5 h-5 text-purple-400"></i> Sinyal SMC
+            </span>
+            <span class="flex items-center gap-3">
+              <span id="smc-signals-count" class="text-xs font-medium text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">0 Sinyal</span>
+              <span class="text-xs text-blue-400">Tampilkan / sembunyikan</span>
+            </span>
+          </summary>
+          <div class="overflow-x-auto border-t border-slate-800">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-900/50 text-slate-400 uppercase text-[11px] tracking-wider border-b border-slate-800">
+                  <th class="p-4 font-medium">Waktu</th>
+                  <th class="p-4 font-medium">Symbol</th>
+                  <th class="p-4 font-medium">Timeframe</th>
+                  <th class="p-4 font-medium">Action</th>
+                  <th class="p-4 font-medium">Entry</th>
+                  <th class="p-4 font-medium">Stop Loss</th>
+                  <th class="p-4 font-medium">Take Profit</th>
+                  <th class="p-4 font-medium">Leverage</th>
+                  <th class="p-4 font-medium">Margin</th>
+                  <th class="p-4 font-medium">Kadaluarsa</th>
+                  <th class="p-4 font-medium">OB Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="smc-signals-body" class="divide-y divide-slate-800/50 text-slate-300">
+                <tr><td colspan="11" class="p-8 text-center text-slate-500">Memuat sinyal SMC...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p id="smc-copy-status" class="hidden border-t border-slate-800 px-6 py-3 text-sm text-emerald-300" role="status" aria-live="polite"></p>
+        </details>
 
         <!-- RIWAYAT TRADE SELESAI, DAPAT DISEMBUNYIKAN -->
         <details id="trade-history-details" class="reveal glass-panel rounded-2xl shadow-lg overflow-hidden">
@@ -637,6 +679,9 @@
       document.getElementById('trade-history-body').innerHTML = '';
       document.getElementById('total-trades-count').innerText = 'Total: 0 Trades';
       document.getElementById('trade-history-details').open = false;
+      document.getElementById('smc-signals-body').innerHTML = '';
+      document.getElementById('smc-signals-count').innerText = '0 Sinyal';
+      document.getElementById('smc-signals-details').open = false;
       dashboardTrades = [];
       document.getElementById('equity-strategy-filter').value = 'all';
       if (equityChartInstance) {
@@ -648,6 +693,153 @@
     // -------------------------------------------------------------
     // 2. AMBIL DATA LANGSUNG DARI DATABASE
     // -------------------------------------------------------------
+    function renderSmcSignalsMessage(message, count = '0 Sinyal') {
+      const body = document.getElementById('smc-signals-body');
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = 11;
+      cell.className = 'p-8 text-center text-slate-500';
+      cell.textContent = message;
+      row.appendChild(cell);
+      body.replaceChildren(row);
+      document.getElementById('smc-signals-count').textContent = count;
+    }
+
+    function formatSmcDate(value) {
+      const timestamp = Date.parse(value);
+      return Number.isNaN(timestamp)
+        ? (value ? escapeHtml(value) : '-')
+        : escapeHtml(new Date(timestamp).toLocaleString('id-ID', {
+            year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+          }));
+    }
+
+    function formatSmcNumber(value) {
+      if (value == null || value === '') return '-';
+      const number = Number(value);
+      return Number.isFinite(number)
+        ? escapeHtml(number.toLocaleString('id-ID', { maximumFractionDigits: 8 }))
+        : escapeHtml(value);
+    }
+
+    function renderSmcCopyPrice(value, colorClass = 'text-white') {
+      if (value == null || value === '') return '-';
+      return `
+        $<button type="button" class="smc-copy-price cursor-copy rounded px-1 font-medium underline decoration-dotted underline-offset-4 transition-colors hover:bg-slate-700/60 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 ${colorClass}"
+          data-copy-value="${escapeHtml(value)}" title="Klik untuk menyalin ${escapeHtml(value)}">${formatSmcNumber(value)}</button>
+      `;
+    }
+
+    async function copySmcPrice(value) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(value);
+        } else {
+          const copyInput = document.createElement('textarea');
+          copyInput.value = value;
+          copyInput.setAttribute('readonly', '');
+          copyInput.style.position = 'fixed';
+          copyInput.style.opacity = '0';
+          document.body.appendChild(copyInput);
+          copyInput.select();
+          const copied = document.execCommand('copy');
+          copyInput.remove();
+          if (!copied) throw new Error('Browser tidak mengizinkan akses clipboard.');
+        }
+
+        const status = document.getElementById('smc-copy-status');
+        status.textContent = `Tersalin: ${value}`;
+        status.classList.remove('hidden', 'text-red-300');
+        status.classList.add('text-emerald-300');
+      } catch (error) {
+        console.error('Error copying SMC price:', error);
+        const status = document.getElementById('smc-copy-status');
+        status.textContent = 'Gagal menyalin angka. Periksa izin clipboard browser.';
+        status.classList.remove('hidden', 'text-emerald-300');
+        status.classList.add('text-red-300');
+      }
+    }
+
+    function renderSmcSignals(signals) {
+      const body = document.getElementById('smc-signals-body');
+      document.getElementById('smc-signals-count').textContent = `${signals.length} Sinyal`;
+      if (signals.length === 0) {
+        renderSmcSignalsMessage('Belum ada sinyal SMC.', '0 Sinyal');
+        return;
+      }
+
+      body.innerHTML = signals.map(signal => {
+        const action = String(signal.action || '').toUpperCase();
+        const actionClass = action === 'BUY'
+          ? 'bg-green-500/20 text-green-400 border-green-500/30'
+          : action === 'SELL'
+            ? 'bg-red-500/20 text-red-400 border-red-500/30'
+            : 'bg-slate-800 text-slate-300 border-slate-700';
+        const expiryTimestamp = Date.parse(signal.kadaluarsa_sampai);
+        const isExpired = Number.isFinite(expiryTimestamp) && expiryTimestamp < Date.now();
+        const expiryClass = isExpired
+          ? 'bg-slate-800 text-slate-400 border-slate-700'
+          : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20';
+        const expiryStatus = Number.isNaN(expiryTimestamp)
+          ? 'Tidak diketahui'
+          : isExpired ? 'Kadaluarsa' : 'Aktif';
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition-colors">
+            <td class="p-4 text-xs text-slate-400 whitespace-nowrap">${formatSmcDate(signal.created_at)}</td>
+            <td class="p-4 font-bold text-white whitespace-nowrap">${escapeHtml(signal.symbol || '-')}</td>
+            <td class="p-4 whitespace-nowrap">${escapeHtml(signal.timeframe || '-')}</td>
+            <td class="p-4"><span class="px-2 py-1 text-[10px] font-bold rounded border ${actionClass}">${escapeHtml(action || '-')}</span></td>
+            <td class="p-4 whitespace-nowrap">${renderSmcCopyPrice(signal.entry_jaring)}</td>
+            <td class="p-4 whitespace-nowrap">${renderSmcCopyPrice(signal.sl_price, 'text-red-300')}</td>
+            <td class="p-4 whitespace-nowrap">${renderSmcCopyPrice(signal.tp_price, 'text-green-300')}</td>
+            <td class="p-4 whitespace-nowrap">${formatSmcNumber(signal.leverage)}x</td>
+            <td class="p-4 whitespace-nowrap">$${formatSmcNumber(signal.margin_usd)}</td>
+            <td class="p-4 whitespace-nowrap">
+              <span class="px-2 py-1 text-[10px] font-semibold rounded border ${expiryClass}">${expiryStatus}</span>
+              <span class="mt-1 block text-xs text-slate-400">${formatSmcDate(signal.kadaluarsa_sampai)}</span>
+            </td>
+            <td class="p-4 text-xs text-slate-400 whitespace-nowrap">${escapeHtml(signal.ob_timestamp || '-')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('smc-signals-body').addEventListener('click', event => {
+      const button = event.target.closest('.smc-copy-price');
+      if (button) copySmcPrice(button.dataset.copyValue);
+    });
+
+    async function fetchSmcSignals(anonKey) {
+      try {
+        const baseUrl = SUPABASE_URL.replace(/\/+$/, '');
+        const response = await fetch(
+          `${baseUrl}/rest/v1/smc_signals?select=id,created_at,symbol,timeframe,action,entry_jaring,sl_price,tp_price,leverage,margin_usd,kadaluarsa_sampai,ob_timestamp&order=created_at.desc&limit=100`,
+          {
+            cache: 'no-store',
+            headers: {
+              apikey: anonKey,
+              Authorization: `Bearer ${anonKey}`
+            }
+          }
+        );
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.message || result.error || 'Data sinyal SMC gagal dimuat.');
+        }
+        if (!Array.isArray(result)) {
+          throw new Error('Format data sinyal SMC tidak valid.');
+        }
+        renderSmcSignals(result);
+      } catch (err) {
+        console.error('Error fetching SMC signals:', err);
+        const message = err instanceof TypeError
+          ? 'Koneksi gagal saat memuat sinyal SMC.'
+          : `Gagal memuat sinyal SMC: ${err.message}`;
+        renderSmcSignalsMessage(message, 'Error');
+      }
+    }
+
     async function fetchDashboardData(isConnecting = false) {
       const badge = document.getElementById('status-badge');
       supabaseConnectSubmit.disabled = true;
@@ -695,6 +887,7 @@
         renderOpenTrades(trades);
         renderTradeHistory(trades);
         renderEquityChart(trades);
+        await fetchSmcSignals(anonKey);
 
         badge.className = 'px-3 py-1 text-xs font-semibold rounded-full bg-green-500/10 text-green-500 border border-green-500/20 flex items-center gap-2';
         badge.innerHTML = `
@@ -778,37 +971,39 @@
               </span>
             </div>
 
-            <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-              <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <h4 class="text-sm font-semibold text-slate-200">Parameter Strategi</h4>
+            <details class="strategy-parameters-details rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden">
+              <summary class="cursor-pointer list-none p-4 flex flex-wrap items-center gap-2 hover:bg-slate-800/30">
+                <span class="text-sm font-semibold text-slate-200">Parameter Strategi</span>
                 <span class="text-[11px] text-slate-500">${escapeHtml(parameters.source)}</span>
+              </summary>
+              <div class="px-4 pb-4">
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  <div>
+                    <p class="text-[11px] uppercase tracking-wider text-slate-500">Leverage</p>
+                    <p class="mt-1 text-sm font-semibold text-white">${escapeHtml(parameters.leverage)}</p>
+                  </div>
+                  <div>
+                    <p class="text-[11px] uppercase tracking-wider text-slate-500">Margin / Posisi</p>
+                    <p class="mt-1 text-sm font-semibold text-white">${escapeHtml(parameters.margin)} / ${escapeHtml(parameters.position)}</p>
+                  </div>
+                  <div>
+                    <p class="text-[11px] uppercase tracking-wider text-slate-500">Stop Loss</p>
+                    <p class="mt-1 text-sm font-semibold text-red-300">${escapeHtml(parameters.stopLoss)}</p>
+                  </div>
+                  <div>
+                    <p class="text-[11px] uppercase tracking-wider text-slate-500">Take Profit</p>
+                    <p class="mt-1 text-sm font-semibold text-green-300">${escapeHtml(parameters.takeProfit)}</p>
+                  </div>
+                  <div class="col-span-2 sm:col-span-2">
+                    <p class="text-[11px] uppercase tracking-wider text-slate-500">Setup Entry</p>
+                    <p class="mt-1 text-sm text-slate-300">${escapeHtml(parameters.entry)}</p>
+                  </div>
+                </div>
+                <p class="mt-3 border-t border-slate-800 pt-3 text-[11px] leading-relaxed text-slate-500">
+                  Jarak SL/TP dihitung dari harga entry; harga aktual mengikuti entry setiap posisi. Ukuran posisi adalah estimasi margin × leverage dan belum memperhitungkan biaya atau slippage.
+                </p>
               </div>
-              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                <div>
-                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Leverage</p>
-                  <p class="mt-1 text-sm font-semibold text-white">${escapeHtml(parameters.leverage)}</p>
-                </div>
-                <div>
-                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Margin / Posisi</p>
-                  <p class="mt-1 text-sm font-semibold text-white">${escapeHtml(parameters.margin)} / ${escapeHtml(parameters.position)}</p>
-                </div>
-                <div>
-                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Stop Loss</p>
-                  <p class="mt-1 text-sm font-semibold text-red-300">${escapeHtml(parameters.stopLoss)}</p>
-                </div>
-                <div>
-                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Take Profit</p>
-                  <p class="mt-1 text-sm font-semibold text-green-300">${escapeHtml(parameters.takeProfit)}</p>
-                </div>
-                <div class="col-span-2 sm:col-span-2">
-                  <p class="text-[11px] uppercase tracking-wider text-slate-500">Setup Entry</p>
-                  <p class="mt-1 text-sm text-slate-300">${escapeHtml(parameters.entry)}</p>
-                </div>
-              </div>
-              <p class="mt-3 border-t border-slate-800 pt-3 text-[11px] leading-relaxed text-slate-500">
-                Jarak SL/TP dihitung dari harga entry; harga aktual mengikuti entry setiap posisi. Ukuran posisi adalah estimasi margin × leverage dan belum memperhitungkan biaya atau slippage.
-              </p>
-            </div>
+            </details>
 
             <div class="grid grid-cols-3 gap-3 text-center">
               <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
