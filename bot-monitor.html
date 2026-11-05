@@ -321,6 +321,81 @@
           </div>
         </section>
 
+        <section id="risk-management-panel" class="reveal glass-panel p-6 rounded-2xl shadow-lg space-y-5" aria-labelledby="risk-management-title">
+          <div>
+            <h2 id="risk-management-title" class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i> Manajemen Risiko & Rekomendasi Leverage
+            </h2>
+            <p class="mt-1 text-sm text-slate-400">Atur modal dan batas risiko. Entry serta stop loss mengikuti sinyal SMC yang dipilih.</p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <label for="risk-total-capital" class="mb-2 block text-sm font-medium text-slate-300">Total modal (USDT)</label>
+              <input id="risk-total-capital" type="number" min="0.01" step="any" inputmode="decimal"
+                class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+                placeholder="Contoh: 1000">
+            </div>
+            <div>
+              <label for="risk-per-trade" class="mb-2 block text-sm font-medium text-slate-300">Risiko per trade (% modal)</label>
+              <input id="risk-per-trade" type="number" min="0.01" max="100" step="any" inputmode="decimal"
+                class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+                placeholder="Contoh: 1">
+            </div>
+            <div>
+              <label for="risk-margin" class="mb-2 block text-sm font-medium text-slate-300">Batas margin per posisi (USDT)</label>
+              <input id="risk-margin" type="number" min="0.01" step="any" inputmode="decimal"
+                class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+                placeholder="Contoh: 100">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div class="md:col-span-1">
+              <label for="risk-signal-select" class="mb-2 block text-sm font-medium text-slate-300">Pilih sinyal SMC</label>
+              <select id="risk-signal-select" class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30">
+                <option value="">Menunggu data sinyal...</option>
+              </select>
+            </div>
+            <div>
+              <label for="risk-entry-price" class="mb-2 block text-sm font-medium text-slate-300">Harga entry otomatis</label>
+              <input id="risk-entry-price" type="text" readonly
+                class="w-full rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-slate-300" placeholder="Pilih sinyal">
+            </div>
+            <div>
+              <label for="risk-stop-price" class="mb-2 block text-sm font-medium text-slate-300">Harga stop loss otomatis</label>
+              <input id="risk-stop-price" type="text" readonly
+                class="w-full rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-slate-300" placeholder="Pilih sinyal">
+            </div>
+          </div>
+
+          <div id="risk-calculator-result" class="rounded-xl border border-slate-800 bg-slate-950/60 p-4" aria-live="polite">
+            <p id="risk-calculator-message" class="text-sm text-slate-400">Isi modal, risiko, margin, dan hubungkan sinyal untuk menghitung rekomendasi.</p>
+            <div id="risk-calculator-values" class="mt-4 hidden grid-cols-2 gap-4 sm:grid-cols-4">
+              <div>
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">Risiko maksimum</p>
+                <p id="risk-result-amount" class="mt-1 font-semibold text-white">—</p>
+              </div>
+              <div>
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">Jarak stop loss</p>
+                <p id="risk-result-distance" class="mt-1 font-semibold text-white">—</p>
+              </div>
+              <div>
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">Ukuran posisi</p>
+                <p id="risk-result-position" class="mt-1 font-semibold text-white">—</p>
+              </div>
+              <div>
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">Rekomendasi leverage</p>
+                <p id="risk-result-leverage" class="mt-1 text-xl font-bold text-emerald-300">—</p>
+                <p id="risk-result-margin-used" class="mt-1 text-xs text-slate-400"></p>
+              </div>
+            </div>
+            <p class="mt-4 border-t border-slate-800 pt-3 text-xs leading-relaxed text-slate-500">
+              Estimasi tidak mencakup biaya, funding, slippage, atau aturan leverage bursa. Leverage dibulatkan ke atas; sesuaikan ukuran posisi ke nilai yang dihitung agar risiko tidak melampaui batas.
+            </p>
+          </div>
+        </section>
+
         <!-- SINYAL SMC, DAPAT DIBUKA / DITUTUP -->
         <details id="smc-signals-details" class="reveal glass-panel rounded-2xl shadow-lg overflow-hidden">
           <summary class="cursor-pointer list-none p-6 flex justify-between items-center gap-4 hover:bg-slate-800/30">
@@ -524,6 +599,7 @@
 
     const SUPABASE_URL = 'https://blobtwzuuqjhrqwqnezx.supabase.co';
     const STORAGE_KEY = 'bot-monitor-access-key';
+    const RISK_SETTINGS_KEY = 'bot-monitor-risk-settings';
     const supabaseAnonKeyInput = document.getElementById('supabase-anon-key-input');
     const supabaseConnectSubmit = document.getElementById('supabase-connect-submit');
     const supabaseConnectionError = document.getElementById('supabase-connection-error');
@@ -531,6 +607,7 @@
     const dashboardContent = document.getElementById('dashboard-content');
     let equityChartInstance = null;
     let dashboardTrades = [];
+    let smcSignals = [];
     const STRATEGY_LABELS = {
       SOLUSDT: 'Scalping EMA 9/21 + RSI + ATR'
     };
@@ -682,6 +759,7 @@
       document.getElementById('smc-signals-body').innerHTML = '';
       document.getElementById('smc-signals-count').innerText = '0 Sinyal';
       document.getElementById('smc-signals-details').open = false;
+      populateRiskSignalSelector([]);
       dashboardTrades = [];
       document.getElementById('equity-strategy-filter').value = 'all';
       if (equityChartInstance) {
@@ -695,6 +773,7 @@
     // -------------------------------------------------------------
     function renderSmcSignalsMessage(message, count = '0 Sinyal') {
       const body = document.getElementById('smc-signals-body');
+      smcSignals = [];
       const row = document.createElement('tr');
       const cell = document.createElement('td');
       cell.colSpan = 11;
@@ -703,6 +782,7 @@
       row.appendChild(cell);
       body.replaceChildren(row);
       document.getElementById('smc-signals-count').textContent = count;
+      populateRiskSignalSelector([]);
     }
 
     function formatSmcDate(value) {
@@ -762,6 +842,7 @@
 
     function renderSmcSignals(signals) {
       const body = document.getElementById('smc-signals-body');
+      populateRiskSignalSelector(signals);
       document.getElementById('smc-signals-count').textContent = `${signals.length} Sinyal`;
       if (signals.length === 0) {
         renderSmcSignalsMessage('Belum ada sinyal SMC.', '0 Sinyal');
@@ -803,6 +884,153 @@
           </tr>
         `;
       }).join('');
+    }
+
+    function getRiskSignalKey(signal) {
+      return String(signal.id ?? `${signal.symbol}|${signal.created_at}|${signal.entry_jaring}|${signal.sl_price}`);
+    }
+
+    function isRiskSignalValid(signal) {
+      const entry = Number(signal.entry_jaring);
+      const stop = Number(signal.sl_price);
+      const action = String(signal.action || '').toUpperCase();
+      return Number.isFinite(entry) && entry > 0 && Number.isFinite(stop) && stop > 0
+        && ((action === 'BUY' && stop < entry) || (action === 'SELL' && stop > entry));
+    }
+
+    function isRiskSignalActive(signal) {
+      const expiry = Date.parse(signal.kadaluarsa_sampai);
+      return Number.isFinite(expiry) && expiry >= Date.now();
+    }
+
+    function populateRiskSignalSelector(signals) {
+      const selector = document.getElementById('risk-signal-select');
+      const previousIndex = selector.value === '' ? -1 : Number(selector.value);
+      const previousSignal = Number.isInteger(previousIndex) && previousIndex >= 0
+        ? smcSignals[previousIndex]
+        : null;
+      const previousKey = previousSignal ? getRiskSignalKey(previousSignal) : '';
+      smcSignals = signals.filter(isRiskSignalActive);
+      selector.replaceChildren(new Option(smcSignals.length ? 'Pilih sinyal...' : 'Tidak ada sinyal aktif', ''));
+
+      smcSignals.forEach((signal, index) => {
+        const details = [
+          signal.symbol || 'Tanpa simbol',
+          String(signal.action || 'UNKNOWN').toUpperCase(),
+          signal.timeframe || '-',
+          formatSmcNumber(signal.entry_jaring)
+        ].filter(Boolean);
+        selector.add(new Option(details.join(' · '), String(index)));
+      });
+
+      let selectedIndex = previousKey
+        ? smcSignals.findIndex(signal => getRiskSignalKey(signal) === previousKey)
+        : -1;
+      if (selectedIndex < 0) {
+        selectedIndex = smcSignals.findIndex(isRiskSignalValid);
+      }
+      selector.value = selectedIndex >= 0 ? String(selectedIndex) : '';
+      updateRiskSignalPrices();
+    }
+
+    function formatRiskCurrency(value) {
+      return `${value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`;
+    }
+
+    function updateRiskSignalPrices() {
+      const selector = document.getElementById('risk-signal-select');
+      const index = selector.value === '' ? -1 : Number(selector.value);
+      const signal = Number.isInteger(index) && index >= 0 ? smcSignals[index] : null;
+      document.getElementById('risk-entry-price').value = signal && signal.entry_jaring != null
+        ? String(signal.entry_jaring)
+        : '';
+      document.getElementById('risk-stop-price').value = signal && signal.sl_price != null
+        ? String(signal.sl_price)
+        : '';
+      calculateRiskRecommendation();
+    }
+
+    function calculateRiskRecommendation() {
+      const message = document.getElementById('risk-calculator-message');
+      const values = document.getElementById('risk-calculator-values');
+      const showMessage = text => {
+        message.textContent = text;
+        values.classList.add('hidden');
+        values.classList.remove('grid');
+      };
+      const capital = Number(document.getElementById('risk-total-capital').value);
+      const riskPercent = Number(document.getElementById('risk-per-trade').value);
+      const margin = Number(document.getElementById('risk-margin').value);
+      const selectedSignal = document.getElementById('risk-signal-select').value;
+      const index = selectedSignal === '' ? -1 : Number(selectedSignal);
+      const signal = Number.isInteger(index) && index >= 0 ? smcSignals[index] : null;
+
+      if (!(capital > 0) || !(riskPercent > 0) || !(margin > 0)) {
+        showMessage('Isi total modal, risiko per trade, dan batas margin dengan angka lebih dari 0.');
+        return;
+      }
+      if (riskPercent > 100) {
+        showMessage('Risiko per trade tidak boleh lebih dari 100% modal.');
+        return;
+      }
+      if (margin > capital) {
+        showMessage('Batas margin per posisi tidak boleh lebih besar dari total modal.');
+        return;
+      }
+      if (!signal) {
+        showMessage('Tidak ada sinyal aktif. Tunggu sinyal SMC yang masih berlaku.');
+        return;
+      }
+      if (!isRiskSignalActive(signal)) {
+        showMessage('Sinyal sudah kedaluwarsa. Pilih sinyal aktif lainnya.');
+        return;
+      }
+      if (!isRiskSignalValid(signal)) {
+        showMessage('Sinyal tidak valid: BUY harus memiliki stop loss di bawah entry, sedangkan SELL harus di atas entry.');
+        return;
+      }
+
+      const entry = Number(signal.entry_jaring);
+      const stop = Number(signal.sl_price);
+      const stopDistancePercent = Math.abs(entry - stop) / entry * 100;
+      const riskAmount = capital * riskPercent / 100;
+      const positionSize = riskAmount / (stopDistancePercent / 100);
+      const leverage = Math.max(1, Math.ceil(positionSize / margin - 1e-10));
+      const usedMargin = positionSize / leverage;
+      if (![stopDistancePercent, riskAmount, positionSize, leverage, usedMargin].every(Number.isFinite)) {
+        showMessage('Hasil perhitungan di luar rentang angka yang dapat diproses. Periksa kembali nilai yang dimasukkan.');
+        return;
+      }
+
+      document.getElementById('risk-result-amount').textContent = formatRiskCurrency(riskAmount).trim();
+      document.getElementById('risk-result-distance').textContent = `${stopDistancePercent.toLocaleString('id-ID', { maximumFractionDigits: 4 })}%`;
+      document.getElementById('risk-result-position').textContent = formatRiskCurrency(positionSize).trim();
+      document.getElementById('risk-result-leverage').textContent = `${leverage.toLocaleString('id-ID')}x`;
+      document.getElementById('risk-result-margin-used').textContent = `Estimasi margin: ${formatRiskCurrency(usedMargin).trim()}`;
+
+      message.textContent = `Risiko maksimum dihitung sebesar ${riskPercent}% dari modal.`;
+      values.classList.remove('hidden');
+      values.classList.add('grid');
+    }
+
+    function initializeRiskCalculator() {
+      const capitalInput = document.getElementById('risk-total-capital');
+      const riskInput = document.getElementById('risk-per-trade');
+      const marginInput = document.getElementById('risk-margin');
+      capitalInput.value = localStorage.getItem(`${RISK_SETTINGS_KEY}-capital`) || '';
+      riskInput.value = localStorage.getItem(`${RISK_SETTINGS_KEY}-risk`) || '';
+      marginInput.value = localStorage.getItem(`${RISK_SETTINGS_KEY}-margin`) || '';
+
+      [capitalInput, riskInput, marginInput].forEach(input => {
+        input.addEventListener('input', () => {
+          localStorage.setItem(`${RISK_SETTINGS_KEY}-capital`, capitalInput.value);
+          localStorage.setItem(`${RISK_SETTINGS_KEY}-risk`, riskInput.value);
+          localStorage.setItem(`${RISK_SETTINGS_KEY}-margin`, marginInput.value);
+          calculateRiskRecommendation();
+        });
+      });
+      document.getElementById('risk-signal-select').addEventListener('change', updateRiskSignalPrices);
+      calculateRiskRecommendation();
     }
 
     document.getElementById('smc-signals-body').addEventListener('click', event => {
@@ -1186,6 +1414,8 @@
       renderEquityChart(dashboardTrades);
     });
 
+    initializeRiskCalculator();
+    window.setInterval(() => populateRiskSignalSelector(smcSignals), 60000);
     const savedKey = loadSavedAccessKey();
     if (savedKey) {
       fetchDashboardData(true);
@@ -1196,6 +1426,6 @@ var infolinks_pid = 3447906;
 var infolinks_wsid = 0;
 </script>
 <script type="text/javascript" src="https://resources.infolinks.com/js/infolinks_main.js"></script>
-  <script src="promosi.js"></script>
+ 
 </body>
 </html>
