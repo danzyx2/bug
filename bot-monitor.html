@@ -272,7 +272,7 @@
 <!-- END AADS AD UNIT 2456035 -->
         <!-- RINGKASAN METRIK PER STRATEGI (CARDS) -->
         <div id="metrics-container" class="reveal grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Kartu SOLUSDT dan aset yang memiliki riwayat trade dirender dinamis -->
+          <!-- Kartu XRPUSDT SMC dan aset lain yang memiliki riwayat trade dirender dinamis -->
         </div>
 
         <!-- GRAFIK EQUITY CURVE -->
@@ -297,7 +297,7 @@
         <section id="open-trades-panel" class="reveal glass-panel rounded-2xl shadow-lg overflow-hidden transition-shadow duration-500">
           <div class="p-6 border-b border-slate-800 flex justify-between items-center">
             <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <i data-lucide="activity" class="w-5 h-5 text-blue-400"></i> Posisi Trade Open
+              <i data-lucide="activity" class="w-5 h-5 text-blue-400"></i> Posisi Open / Menunggu Entry
             </h2>
             <span id="open-trades-count" class="text-xs font-medium text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">0 Posisi</span>
           </div>
@@ -609,7 +609,7 @@
     let dashboardTrades = [];
     let smcSignals = [];
     const STRATEGY_LABELS = {
-      SOLUSDT: 'Scalping EMA 9/21 + RSI + ATR'
+      XRPUSDT: 'SMC Order Block + FVG (15m)'
     };
 
     function getStrategyLabel(asset) {
@@ -617,14 +617,14 @@
     }
 
     function getStrategyParameters(asset, trades) {
-      if (asset === 'SOLUSDT') {
+      if (asset === 'XRPUSDT') {
         return {
-          leverage: '10x',
+          leverage: 'Dinamis (risiko 2%)',
           margin: '5 USDT',
-          position: '~50 USDT',
-          stopLoss: '0,35%–0,75% (ATR × 1,2)',
-          takeProfit: '1,5x risiko (0,525%–1,125%)',
-          entry: 'Tren EMA 5m; reclaim EMA 1m; RSI 52–68 LONG / 32–48 SHORT',
+          position: 'Berdasarkan jarak SL',
+          stopLoss: 'Level ekstrem candle Order Block',
+          takeProfit: '2x risiko',
+          entry: 'Order Block + displacement + FVG pada candle tertutup 15m',
           source: 'Konfigurasi strategi aktif'
         };
       }
@@ -1157,7 +1157,7 @@
       const filter = document.getElementById('equity-strategy-filter');
       const selectedAsset = filter.value;
       const assets = [...new Set([
-        'SOLUSDT',
+        'XRPUSDT',
         ...trades.map(trade => trade.asset).filter(Boolean)
       ])];
 
@@ -1170,7 +1170,7 @@
 
     function renderStrategyCards(trades) {
       const assets = [...new Set([
-        'SOLUSDT',
+        'XRPUSDT',
         ...trades.map(trade => trade.asset).filter(Boolean)
       ])];
       const container = document.getElementById('metrics-container');
@@ -1265,6 +1265,8 @@
         const hasProfitLoss = Number.isFinite(profitLoss);
         const pnlText = status === 'CLOSED' && hasProfitLoss
           ? `<span class="font-bold ${profitLoss >= 0 ? 'text-green-400' : 'text-red-400'}">${profitLoss > 0 ? '+' : ''}${profitLoss} USDT</span>`
+          : status === 'PENDING'
+            ? '<span class="text-amber-400 italic font-medium">Menunggu entry</span>'
           : status === 'OPEN'
             ? `<span class="text-blue-400 italic font-medium">Berjalan</span>`
             : '<span class="text-slate-500">-</span>';
@@ -1284,7 +1286,9 @@
           : `$${escapeHtml(trade.close_price)}`;
         const statusClasses = status === 'OPEN'
           ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-          : 'bg-slate-800 text-slate-400 border border-slate-700';
+          : status === 'PENDING'
+            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+            : 'bg-slate-800 text-slate-400 border border-slate-700';
 
         return `
           <tr class="trade-row hover:bg-slate-800/40 transition-colors" style="animation-delay: ${Math.min(index * 70, 490)}ms">
@@ -1294,7 +1298,7 @@
             <td class="p-4 font-medium">${entryPrice}</td>
             <td class="p-4 font-medium">${exitPrice}</td>
             <td class="p-4">
-              <span class="px-2 py-1 text-[10px] font-semibold rounded-full tracking-wider ${statusClasses} ${status === 'OPEN' ? 'open-status-pulse' : ''}">${escapeHtml(status || '-')}</span>
+              <span class="px-2 py-1 text-[10px] font-semibold rounded-full tracking-wider ${statusClasses} ${status === 'OPEN' ? 'open-status-pulse' : ''}">${escapeHtml(status === 'PENDING' ? 'MENUNGGU ENTRY' : status || '-')}</span>
             </td>
             <td class="p-4 text-right">${pnlText}</td>
           </tr>
@@ -1303,13 +1307,19 @@
     }
 
     function renderOpenTrades(trades) {
-      const openTrades = trades.filter(trade => String(trade.status || '').toUpperCase() === 'OPEN');
+      const activeTrades = trades.filter(trade =>
+        ['OPEN', 'PENDING'].includes(String(trade.status || '').toUpperCase())
+      );
+      const openCount = activeTrades.filter(trade =>
+        String(trade.status || '').toUpperCase() === 'OPEN'
+      ).length;
+      const pendingCount = activeTrades.length - openCount;
       const tbody = document.getElementById('open-trades-body');
-      document.getElementById('open-trades-panel').classList.toggle('has-open-trades', openTrades.length > 0);
-      document.getElementById('open-trades-count').innerText = `${openTrades.length} Posisi`;
-      tbody.innerHTML = openTrades.length
-        ? renderTradeRows(openTrades)
-        : '<tr><td colspan="7" class="p-8 text-center text-slate-500">Tidak ada posisi trade yang sedang open.</td></tr>';
+      document.getElementById('open-trades-panel').classList.toggle('has-open-trades', activeTrades.length > 0);
+      document.getElementById('open-trades-count').innerText = `${openCount} Open • ${pendingCount} Menunggu`;
+      tbody.innerHTML = activeTrades.length
+        ? renderTradeRows(activeTrades)
+        : '<tr><td colspan="7" class="p-8 text-center text-slate-500">Tidak ada posisi open atau setup yang menunggu entry.</td></tr>';
     }
 
     function renderTradeHistory(trades) {
