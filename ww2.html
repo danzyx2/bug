@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>Werewolf Online</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS Client v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { --safe-b: env(safe-area-inset-bottom, 0px); }
+    * { -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .hidden { display: none !important; }
+
+    /* ---------- LATAR BERGANTI TEMA ---------- */
+    .bg-layer { position: fixed; inset: 0; opacity: 0; transition: opacity 1.2s ease; z-index: -2; pointer-events: none; }
+    body[data-theme="lobby"] .bg-lobby,
+    body[data-theme="night"] .bg-night,
+    body[data-theme="day"]   .bg-day,
+    body[data-theme="vote"]  .bg-vote,
+    body[data-theme="ended"] .bg-ended { opacity: 1; }
+    .bg-lobby { background: radial-gradient(120% 80% at 50% 0%, #1e1b3a 0%, #0b1020 60%, #05070f 100%); }
+    .bg-night { background: radial-gradient(120% 80% at 50% 0%, #17204d 0%, #0a0f26 55%, #03050d 100%); }
+    .bg-day   { background: linear-gradient(180deg, #3b2a14 0%, #1f2a44 55%, #0f172a 100%); }
+    .bg-vote  { background: radial-gradient(120% 80% at 50% 0%, #4a1820 0%, #1a0d18 55%, #07050b 100%); }
+    .bg-ended { background: radial-gradient(120% 80% at 50% 0%, #4a3a0f 0%, #1a1405 60%, #070502 100%); }
+
+    .stars { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .0; transition: opacity 1.2s; }
+    body[data-theme="night"] .stars, body[data-theme="lobby"] .stars { opacity: 1; }
+    .stars::before, .stars::after {
+      content: ""; position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent),
+        radial-gradient(1px 1px at 28% 62%, #cbd5e1, transparent),
+        radial-gradient(1.5px 1.5px at 46% 12%, #fff, transparent),
+        radial-gradient(1px 1px at 63% 38%, #e2e8f0, transparent),
+        radial-gradient(1.5px 1.5px at 78% 22%, #fff, transparent),
+        radial-gradient(1px 1px at 90% 70%, #cbd5e1, transparent),
+        radial-gradient(1px 1px at 8% 84%, #e2e8f0, transparent),
+        radial-gradient(1.5px 1.5px at 55% 88%, #fff, transparent);
+      animation: twinkle 4s ease-in-out infinite;
+    }
+    .stars::after { transform: translate(18px, 26px) scale(1.1); animation-delay: 2s; opacity: .7; }
+    @keyframes twinkle { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+
+    .moon-glow { position: fixed; top: -60px; right: -40px; width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(251,191,36,.28), transparent 65%); z-index: -1; pointer-events: none;
+      animation: floaty 7s ease-in-out infinite; }
+    body[data-theme="day"] .moon-glow { background: radial-gradient(circle, rgba(251,191,36,.5), transparent 65%); }
+    body[data-theme="vote"] .moon-glow { background: radial-gradient(circle, rgba(239,68,68,.35), transparent 65%); }
+    @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(14px); } }
+
+    /* ---------- ANIMASI UMUM ---------- */
+    @keyframes popIn { from { opacity: 0; transform: translateY(8px) scale(.85); } to { opacity: 1; transform: none; } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes flipIn { from { opacity: 0; transform: perspective(600px) rotateX(-80deg); } to { opacity: 1; transform: none; } }
+    @keyframes shine { to { background-position: 200% center; } }
+    @keyframes howl { 0%,100% { transform: rotate(-4deg) scale(1); } 50% { transform: rotate(4deg) scale(1.08); } }
+    @keyframes pulseRed { 0%,100% { box-shadow: 0 0 0 0 rgba(248,113,113,.5); } 50% { box-shadow: 0 0 0 8px rgba(248,113,113,0); } }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+
+    .fade-up { animation: fadeUp .5s ease both; }
+    .pop { animation: popIn .4s cubic-bezier(.2,.9,.3,1.3) both; }
+    .flip-in { animation: flipIn .7s cubic-bezier(.2,.8,.2,1) both; }
+    .howl { animation: howl 3s ease-in-out infinite; display: inline-block; }
+    .msg-in { animation: msgIn .25s ease both; }
+    .timer-urgent { animation: pulseRed 1s ease-in-out infinite; border-color: rgba(248,113,113,.7) !important; }
+    .title-shine {
+      background: linear-gradient(90deg, #f59e0b, #fde68a, #f59e0b);
+      background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: shine 4s linear infinite;
+    }
+
+    .glass { background: rgba(15,23,42,.62); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(148,163,184,.15); }
+
+    /* ---------- LAYOUT 1 LAYAR ---------- */
+    #app { height: 100dvh; display: flex; flex-direction: column; max-width: 64rem; margin: 0 auto; padding: 8px 12px calc(8px + var(--safe-b)); }
+    #screen-home { margin: auto 0; }
+    #screen-game { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
+    #screen-game.hidden { display: none !important; }
+    #main-area { flex: 1; min-height: 0; display: flex; gap: 12px; }
+    #players-panel { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 10px; border-radius: 16px; }
+    #players-grid { flex: 1; min-height: 0; overflow-y: auto; align-content: start; padding: 2px; scrollbar-width: none; }
+    #players-grid::-webkit-scrollbar { display: none; }
+
+    .player-card { position: relative; overflow: hidden; transition: transform .15s ease, border-color .2s, background .2s; }
+    .player-card:active { transform: scale(.93); }
+    .player-card.alive:hover { transform: translateY(-2px); }
+    .player-card.me { animation: breathe 3.5s ease-in-out infinite; }
+    .player-card.dead { filter: grayscale(1); }
+
+    /* Chat: bottom sheet di HP, kolom di desktop */
+    #chat-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 30; }
+    #chat-backdrop.open { opacity: 1; pointer-events: auto; }
+    #chat-panel {
+      position: fixed; left: 0; right: 0; bottom: 0; height: 68dvh; z-index: 40;
+      transform: translateY(105%); transition: transform .35s cubic-bezier(.2,.9,.3,1);
+      border-radius: 20px 20px 0 0; padding: 10px 12px calc(10px + var(--safe-b)); display: flex; flex-direction: column;
+      background: rgba(15,23,42,.96); border: 1px solid rgba(148,163,184,.2);
+    }
+    #chat-panel.open { transform: translateY(0); }
+    #chat-messages { scrollbar-width: thin; }
+    #chat-input-form input { font-size: 16px; } /* cegah zoom iOS */
+
+    #chat-dock { display: flex; }
+
+    @media (min-width: 768px) {
+      #app { padding: 16px 24px; }
+      #chat-panel { position: static; transform: none; height: auto; width: 20rem; border-radius: 16px; padding: 12px; background: rgba(15,23,42,.62); backdrop-filter: blur(10px); transition: none; z-index: auto; }
+      #chat-backdrop { display: none; }
+      #chat-dock { display: none !important; }
+      #chat-close { display: none !important; }
+      #chat-input-form input { font-size: 13px; }
+    }
+    @media (max-height: 640px) {
+      #my-role-desc { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body data-theme="lobby" class="bg-slate-950 text-slate-100 font-sans antialiased">
+
+  <!-- Latar dinamis -->
+  <div class="bg-layer bg-lobby"></div>
+  <div class="bg-layer bg-night"></div>
+  <div class="bg-layer bg-day"></div>
+  <div class="bg-layer bg-vote"></div>
+  <div class="bg-layer bg-ended"></div>
+  <div class="stars"></div>
+  <div class="moon-glow"></div>
+
+  <!-- NOTIFIKASI / ERROR TOAST -->
+  <div id="alert-box" class="hidden"></div>
+
+  <div id="app">
+    <!-- HEADER -->
+    <header class="flex items-center justify-between pb-2 shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl howl">🐺</span>
+        <h1 class="text-lg md:text-2xl font-extrabold tracking-widest title-shine">WEREWOLF</h1>
+      </div>
+      <div id="room-badge" class="hidden items-center gap-2">
+        <span class="text-[10px] uppercase tracking-wider text-slate-400">Room</span>
+        <button onclick="copyInviteLink()" id="display-room-code" title="Klik untuk salin link undangan"
+          class="glass text-amber-400 font-mono font-bold text-sm px-3 py-1 rounded-full active:scale-95 transition">
+          ------
+        </button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: HOME (BUAT / GABUNG ROOM) -->
+    <section id="screen-home" class="w-full max-w-md mx-auto glass rounded-3xl p-5 shadow-2xl fade-up">
+      <div class="text-center mb-4">
+        <div class="text-5xl howl mb-1">🌕</div>
+        <h2 class="text-lg font-bold">Masuk ke Desa</h2>
+        <p class="text-xs text-slate-400">Siapa serigala di antara kita?</p>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1 ml-1">Nama Panggilan (Nickname)</label>
+          <input type="text" id="input-username" maxlength="20" placeholder="Contoh: Budi"
+            class="w-full bg-slate-950/70 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition" />
+        </div>
+
+        <button onclick="createRoom()" id="btn-create"
+          class="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 active:scale-[.97] text-slate-950 font-bold py-3 rounded-xl shadow-lg shadow-amber-900/30 transition">
+          + Buat Room Baru
+        </button>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-700/60"></div>
+          <span class="flex-shrink mx-3 text-[10px] tracking-widest text-slate-500">ATAU GABUNG ROOM</span>
+          <div class="flex-grow border-t border-slate-700/60"></div>
+        </div>
+
+        <div class="flex gap-2">
+          <input type="text" id="input-room-code" maxlength="6" placeholder="KODE"
+            class="w-1/2 bg-slate-950/70 border border-slate-700 rounded-xl px-4 py-3 text-center font-mono text-base uppercase tracking-widest text-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition" />
+          <button onclick="joinRoom()" id="btn-join"
+            class="w-1/2 bg-slate-800/80 hover:bg-slate-700 active:scale-[.97] text-white font-semibold py-3 rounded-xl border border-slate-700 transition">
+            Gabung
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: LOBBY & MEJA PERMAINAN -->
+    <section id="screen-game" class="hidden">
+
+      <!-- STATUS BAR FASE & TIMER -->
+      <div id="phase-banner" class="glass rounded-2xl px-3 py-2.5 flex items-center justify-between gap-3 shrink-0 transition-colors">
+        <div class="min-w-0">
+          <span id="phase-title" class="block text-sm md:text-lg font-bold text-amber-400 truncate">Menunggu Pemain di Lobby...</span>
+          <p id="phase-desc" class="text-[11px] md:text-xs text-slate-400 leading-snug line-clamp-2">Bagikan kode room ke temanmu (minimal 5 pemain).</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <div id="timer-box" class="hidden text-center bg-slate-950/70 px-3 py-1 rounded-xl border border-slate-700 transition">
+            <span class="block text-[9px] uppercase tracking-wider text-slate-500 leading-none">Sisa</span>
+            <span id="timer-display" class="font-mono text-lg font-bold text-red-400 leading-tight">00:00</span>
+          </div>
+          <!-- Tombol Mulai (Hanya muncul untuk Host di Lobby) -->
+          <button onclick="startGame()" id="btn-start-game"
+            class="hidden bg-gradient-to-r from-emerald-600 to-emerald-500 active:scale-95 text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-900/40 transition animate-pulse">
+            ▶ Mulai
+          </button>
+        </div>
+      </div>
+
+      <!-- KARTU PERAN SAYA (Muncul setelah game dimulai) -->
+      <div id="my-role-card" class="hidden shrink-0 rounded-2xl p-3 flex items-center justify-between gap-3 border border-amber-500/40 bg-gradient-to-r from-amber-950/60 via-slate-900/80 to-slate-900/80 backdrop-blur">
+        <div class="min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400">Peran Rahasiamu</span>
+          <h3 id="my-role-name" class="text-lg md:text-2xl font-extrabold text-amber-400 leading-tight">---</h3>
+          <p id="my-role-desc" class="text-[11px] text-slate-300 mt-0.5 leading-snug line-clamp-2">---</p>
+        </div>
+        <div id="my-role-icon" class="text-4xl md:text-5xl shrink-0">🎭</div>
+      </div>
+
+      <!-- AREA UTAMA: PEMAIN & CHAT -->
+      <div id="main-area">
+
+        <!-- MEJA PEMAIN -->
+        <div id="players-panel" class="glass">
+          <div class="flex justify-between items-center mb-2 shrink-0">
+            <h3 class="font-semibold text-xs text-slate-300">Warga Desa (<span id="player-count">0</span>)</h3>
+            <span class="text-[10px] text-slate-500">Ketuk pemain untuk aksi</span>
+          </div>
+          <div id="players-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            <!-- Kartu pemain di-render otomatis via JS -->
+          </div>
+        </div>
+
+        <!-- BACKDROP + PANEL CHAT -->
+        <div id="chat-backdrop" onclick="toggleChat(false)"></div>
+        <div id="chat-panel">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-2 mb-2 shrink-0">
+            <h3 class="font-semibold text-sm text-slate-300">💬 Log &amp; Obrolan</h3>
+            <button id="chat-close" onclick="toggleChat(false)" class="text-slate-400 text-xl leading-none px-2 active:scale-90">✕</button>
+          </div>
+
+          <div id="chat-messages" class="flex-1 min-h-0 overflow-y-auto space-y-2 text-xs pr-1 mb-3">
+            <!-- Pesan di-render otomatis via JS -->
+          </div>
+
+          <form id="chat-input-form" onsubmit="sendMessage(event)" class="flex gap-2 shrink-0">
+            <input type="text" id="input-chat" placeholder="Ketik pesan..." autocomplete="off"
+              class="flex-1 bg-slate-950/70 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-amber-500" />
+            <button type="submit" class="bg-gradient-to-r from-amber-600 to-amber-500 active:scale-95 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition">
+              Kirim
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- DOCK CHAT (khusus HP) -->
+      <button id="chat-dock" onclick="toggleChat(true)"
+        class="glass shrink-0 items-center gap-3 rounded-2xl px-4 py-3 text-left active:scale-[.98] transition">
+        <span class="text-xl">💬</span>
+        <span id="chat-preview" class="flex-1 min-w-0 truncate text-xs text-slate-400">Ketuk untuk membuka obrolan…</span>
+        <span id="chat-unread" class="hidden bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[20px] h-5 px-1.5 items-center justify-center">0</span>
+      </button>
+    </section>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. KONFIGURASI SUPABASE (GANTI DENGAN MILIK PROYEKMU)
+    // =========================================================================
+    const SUPABASE_URL = "https://blobtwzuuqjhrqwqnezx.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsb2J0d3p1dXFqaHJxd3FuZXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzAyODUsImV4cCI6MjEwMDcwNjI4NX0.cTaIAhvHxgqg1AZTGKqV63ZaUBUj8DO6_Z9rOO8u_QE";
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // State Global Aplikasi
+    let currentUser = null;
+    let currentRoom = null;
+    let myPlayer = null;
+    let playersList = [];
+    let timerInterval = null;
+    let roomChannel = null;
+    let roomPollInterval = null;
+    let roomFetchInProgress = false;
+    let lastRoomPollErrorAt = 0;
+    let playersPollInterval = null;
+    let playersFetchInProgress = false;
+    let lastPlayersErrorAt = 0;
+    let playersSnapshot = null;
+    let resolvingNight = false;
+    let advancingDay = false;
+    let chatPollInterval = null;
+    let chatFetchInProgress = false;
+    let lastChatErrorAt = 0;
+    let lastMessageTimestamp = null;
+    const seenMessageIds = new Set();
+    const seenNotificationIds = new Set();
+    let notificationFetchInProgress = false;
+
+    // State khusus tampilan (UI saja)
+    let alertTimeout = null;
+    let chatOpen = false;
+    let unreadCount = 0;
+    let lastRoleShown = null;
+
+    const ROLE_INFO = {
+      WEREWOLF: { icon: "🐺", desc: "Mangsa satu warga setiap malam bersama kawananmu." },
+      SEER: { icon: "🔮", desc: "Terawang satu pemain setiap malam untuk mengetahui identitasnya." },
+      GUARDIAN: { icon: "🛡️", desc: "Lindungi satu pemain setiap malam dari serangan Werewolf." },
+      WITCH: { icon: "🧪", desc: "Gunakan satu ramuan racun untuk menghabisi pemain." },
+      HUNTER: { icon: "🏹", desc: "Jika kamu mati, kamu bisa menembak mati 1 pemain lain." },
+      CUPID: { icon: "💘", desc: "Pasangkan 2 pemain di malam pertama sebagai sehidup semati." },
+      TANNER: { icon: "🤡", desc: "Menang sendirian jika warga mengeksekusimu saat voting!" },
+      VILLAGER: { icon: "🧑‍🌾", desc: "Cari dan gantung semua Werewolf lewat diskusi siang." }
+    };
+
+    // =========================================================================
+    // 2. INISIALISASI & AUTO-LOGIN ANONYMOUS
+    // =========================================================================
+    window.addEventListener("DOMContentLoaded", async () => {
+      // Cek jika ada kode room di URL (?room=WOLF99)
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get("room");
+      if (roomParam) {
+        document.getElementById("input-room-code").value = roomParam.toUpperCase();
+      }
+
+      // Login Anonymous otomatis agar pemain punya auth.uid() untuk RLS
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        currentUser = session.user;
+      } else {
+        const { data, error } = await sb.auth.signInAnonymously();
+        if (error) {
+          showAlert("Gagal terhubung ke server: " + error.message, "error");
+          return;
+        }
+        currentUser = data.user;
+      }
+
+      if (roomParam) await resumeRoom(roomParam);
+    });
+
+    // =========================================================================
+    // 3. BUAT ROOM & GABUNG ROOM
+    // =========================================================================
+    function generateRoomCode() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+      return code;
+    }
+
+    async function createRoom() {
+      const username = document.getElementById("input-username").value.trim();
+      if (!username) return showAlert("Masukkan nama panggilan terlebih dahulu!", "error");
+
+      const roomCode = generateRoomCode();
+      const { data: room, error: roomErr } = await sb
+        .from("rooms")
+        .insert({ room_code: roomCode, status: "LOBBY" })
+        .select()
+        .single();
+
+      if (roomErr) return showAlert("Gagal membuat room: " + roomErr.message, "error");
+
+      await enterRoom(room, username, true);
+    }
+
+    async function joinRoom() {
+      const username = document.getElementById("input-username").value.trim();
+      const roomCode = document.getElementById("input-room-code").value.trim().toUpperCase();
+
+      if (!username) return showAlert("Masukkan nama panggilan terlebih dahulu!", "error");
+      if (roomCode.length < 4) return showAlert("Masukkan kode room yang valid!", "error");
+
+      const { data: room, error: roomErr } = await sb
+        .from("rooms")
+        .select("*")
+        .eq("room_code", roomCode)
+        .single();
+
+      if (roomErr || !room) return showAlert("Room tidak ditemukan!", "error");
+      if (room.status !== "LOBBY") return showAlert("Permainan di room ini sudah dimulai!", "error");
+
+      await enterRoom(room, username, false);
+    }
+
+    async function enterRoom(room, username, isHost) {
+      const { data: { user }, error: userErr } = await sb.auth.getUser();
+      if (userErr) return showAlert("Gagal memeriksa sesi login: " + userErr.message, "error");
+      if (!user) return showAlert("Sesi login tidak ditemukan. Muat ulang halaman.", "error");
+
+      currentUser = user;
+
+      const { data: rlsCheck, error: rlsCheckErr } = await sb.rpc("debug_player_join", {
+        p_room_id: room.id,
+        p_user_id: user.id
+      });
+
+      const { error: joinErr } = await sb.rpc("join_room", {
+        p_room_id: room.id,
+        p_username: username
+      });
+
+      if (joinErr) {
+        const diagnostic = {
+          code: joinErr.code || null,
+          message: joinErr.message,
+          details: joinErr.details || null,
+          hint: joinErr.hint || null,
+          roomId: room.id,
+          roomStatus: room.status,
+          authUserId: user.id,
+          databaseCheck: rlsCheck,
+          databaseCheckError: rlsCheckErr
+            ? {
+                code: rlsCheckErr.code || null,
+                message: rlsCheckErr.message,
+                details: rlsCheckErr.details || null,
+                hint: rlsCheckErr.hint || null
+              }
+            : null,
+          request: {
+            room_id: room.id,
+            auth_user_id: user.id,
+            username_length: username.length
+          }
+        };
+        console.error("[Werewolf] Gagal menyimpan pemain:", diagnostic);
+
+        const errorText = [
+          `Kode: ${diagnostic.code || "tidak tersedia"}`,
+          `Pesan: ${diagnostic.message}`,
+          diagnostic.details && `Detail: ${diagnostic.details}`,
+          diagnostic.hint && `Petunjuk: ${diagnostic.hint}`,
+          `Room: ${diagnostic.roomId} (${diagnostic.roomStatus})`,
+          `User ID: ${diagnostic.authUserId}`,
+          `Pemeriksaan database: ${JSON.stringify(diagnostic.databaseCheck || diagnostic.databaseCheckError)}`
+        ].filter(Boolean).join("\n");
+
+        return showAlert("Gagal masuk room:\n" + errorText, "error", 15000);
+      }
+
+      await openRoom(room);
+    }
+
+    async function resumeRoom(roomCode) {
+      const { data: { user }, error: userErr } = await sb.auth.getUser();
+      if (userErr) return showAlert("Gagal memeriksa sesi login: " + userErr.message, "error");
+      if (!user) return showAlert("Sesi login tidak ditemukan. Silakan muat ulang halaman.", "error");
+      currentUser = user;
+
+      const { data: room, error: roomErr } = await sb
+        .from("rooms")
+        .select("*")
+        .eq("room_code", roomCode)
+        .maybeSingle();
+
+      if (roomErr) return showAlert("Gagal memuat room: " + roomErr.message, "error");
+      if (!room) return showAlert("Room pada link ini tidak ditemukan.", "error");
+
+      const { data: membership, error: membershipErr } = await sb
+        .from("public_players")
+        .select("id")
+        .eq("room_id", room.id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (membershipErr) {
+        return showAlert("Gagal memeriksa keanggotaan room: " + membershipErr.message, "error");
+      }
+      if (!membership) {
+        return showAlert(
+          "Tidak bisa kembali ke room: sesi browser ini bukan pemain yang terdaftar di room tersebut.",
+          "error",
+          10000
+        );
+      }
+
+      await openRoom(room);
+    }
+
+    async function openRoom(room) {
+      currentRoom = room;
+
+      // Update URL tanpa reload halaman
+      window.history.replaceState({}, "", `?room=${room.room_code}`);
+
+      // Pindah tampilan ke Meja Permainan
+      document.getElementById("screen-home").classList.add("hidden");
+      document.getElementById("screen-game").classList.remove("hidden");
+      document.getElementById("room-badge").classList.replace("hidden", "flex");
+      document.getElementById("display-room-code").innerText = room.room_code;
+
+      // Muat data awal & aktifkan Realtime Listener
+      if (playersPollInterval) clearInterval(playersPollInterval);
+      if (chatPollInterval) clearInterval(chatPollInterval);
+      if (roomPollInterval) clearInterval(roomPollInterval);
+      clearInterval(timerInterval);
+      playersSnapshot = null;
+      await fetchPlayers();
+      startPlayersPolling();
+      document.getElementById("chat-messages").innerHTML = "";
+      seenMessageIds.clear();
+      lastMessageTimestamp = null;
+      await fetchMessages(true);
+      seenNotificationIds.clear();
+      await fetchPrivateNotifications();
+      startChatPolling();
+      updateRoomUI(room);
+      startRoomPolling();
+      subscribeRealtime(room.id);
+    }
+
+    // =========================================================================
+    // 4. SUPABASE REALTIME SUBSCRIPTION
+    // =========================================================================
+    function subscribeRealtime(roomId) {
+      if (roomChannel) sb.removeChannel(roomChannel);
+
+      roomChannel = sb.channel(`room-${roomId}`)
+        // Dengarkan perubahan status room (LOBBY -> NIGHT -> DAY)
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${roomId}` }, (payload) => {
+          currentRoom = payload.new;
+          updateRoomUI(currentRoom);
+          fetchPlayers(); // Refresh peran jika game baru saja dimulai
+        })
+        // Dengarkan pesan chat & pengumuman sistem baru
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `room_id=eq.${roomId}` }, (payload) => {
+          appendMessage(payload.new);
+        })
+        .subscribe((status, error) => {
+          if (status === "SUBSCRIBED") {
+            console.info("[Realtime] Terhubung ke room", roomId);
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            console.error("[Realtime] Gagal berlangganan room", {
+              roomId,
+              status,
+              error
+            });
+            showAlert(
+              `Realtime gagal (${status}). Periksa Realtime untuk tabel rooms dan messages.`,
+              "error",
+              10000
+            );
+          }
+        });
+    }
+
+    // =========================================================================
+    // 5. PENGAMBILAN DATA & RENDER UI
+    // =========================================================================
+    async function fetchPlayers() {
+      if (!currentRoom || playersFetchInProgress) return;
+      playersFetchInProgress = true;
+
+      try {
+        // Query ke VIEW aman `public_players` agar role orang lain tetap tersembunyi
+        const { data, error } = await sb
+          .from("public_players")
+          .select("*")
+          .eq("room_id", currentRoom.id)
+          .order("username", { ascending: true });
+
+        if (error) {
+          const now = Date.now();
+          if (now - lastPlayersErrorAt >= 10000) {
+            lastPlayersErrorAt = now;
+            console.error("[Players] Gagal memuat pemain:", error);
+            showAlert(`Gagal memuat pemain [${error.code || "ERROR"}]: ${error.message}`, "error");
+          }
+          return;
+        }
+        if (!data) return;
+
+        playersList = data;
+        myPlayer = playersList.find((p) => p.user_id === currentUser.id);
+        document.getElementById("player-count").innerText = playersList.length;
+
+        const btnStart = document.getElementById("btn-start-game");
+        if (myPlayer?.is_host && currentRoom.status === "LOBBY") {
+          btnStart.classList.remove("hidden");
+        } else {
+          btnStart.classList.add("hidden");
+        }
+
+        if (myPlayer?.role) {
+          const info = ROLE_INFO[myPlayer.role] || { icon: "🎭", desc: "" };
+          const roleCard = document.getElementById("my-role-card");
+          roleCard.classList.remove("hidden");
+          document.getElementById("my-role-name").innerText = myPlayer.role;
+          document.getElementById("my-role-desc").innerText = info.desc;
+          document.getElementById("my-role-icon").innerText = info.icon;
+          // Animasi membuka kartu peran (hanya saat peran baru muncul)
+          if (lastRoleShown !== myPlayer.role) {
+            lastRoleShown = myPlayer.role;
+            roleCard.classList.remove("flip-in");
+            void roleCard.offsetWidth;
+            roleCard.classList.add("flip-in");
+          }
+        } else {
+          document.getElementById("my-role-card").classList.add("hidden");
+          lastRoleShown = null;
+        }
+
+        const snapshot = JSON.stringify(playersList);
+        if (snapshot === playersSnapshot) return;
+        playersSnapshot = snapshot;
+
+        const grid = document.getElementById("players-grid");
+        grid.innerHTML = "";
+
+        playersList.forEach((p, idx) => {
+          const isMe = p.user_id === currentUser.id;
+          const card = document.createElement("div");
+          card.className = `player-card pop p-2 rounded-xl border text-center cursor-pointer ${
+            !p.is_alive
+              ? "dead bg-slate-950/60 border-slate-800 opacity-50"
+              : isMe
+              ? "alive me bg-slate-800/80 border-amber-500/60 shadow-lg shadow-amber-900/20"
+              : "alive bg-slate-950/70 border-slate-800 hover:border-slate-500"
+          }`;
+          card.style.animationDelay = `${Math.min(idx * 40, 400)}ms`;
+
+          card.innerHTML = `
+            <div class="text-2xl leading-none mb-1">${!p.is_alive ? "🪦" : p.role === "WEREWOLF" ? "🐺" : "👤"}</div>
+            <div class="font-semibold text-xs truncate">${escapeHtml(p.username)}${isMe ? " <span class='text-amber-400'>•</span>" : ""}</div>
+            <div class="text-[10px] mt-0.5 ${p.is_host ? "text-amber-400" : "text-slate-500"}">
+              ${!p.is_alive ? "Tewas" : p.is_host ? "👑 Host" : isMe ? "Kamu" : "Hidup"}
+            </div>
+          `;
+
+          card.onclick = () => handlePlayerClick(p);
+          grid.appendChild(card);
+        });
+      } finally {
+        playersFetchInProgress = false;
+      }
+    }
+
+    function startPlayersPolling() {
+      if (playersPollInterval) clearInterval(playersPollInterval);
+      playersPollInterval = setInterval(() => fetchPlayers(), 1000);
+    }
+
+    async function fetchRoomStatus() {
+      if (!currentRoom || roomFetchInProgress) return;
+      roomFetchInProgress = true;
+
+      try {
+        const { data, error } = await sb
+          .from("rooms")
+          .select("*")
+          .eq("id", currentRoom.id)
+          .maybeSingle();
+
+        if (error) {
+          const now = Date.now();
+          if (now - lastRoomPollErrorAt >= 10000) {
+            lastRoomPollErrorAt = now;
+            console.error("[Room] Gagal memuat status:", error);
+          }
+          return;
+        }
+        if (!data) return;
+
+        const roomChanged =
+          data.status !== currentRoom.status ||
+          data.day_count !== currentRoom.day_count ||
+          data.phase_end_at !== currentRoom.phase_end_at ||
+          data.winner !== currentRoom.winner;
+
+        if (roomChanged) {
+          currentRoom = data;
+          updateRoomUI(currentRoom);
+          await fetchPlayers();
+          await fetchMessages();
+        }
+      } finally {
+        roomFetchInProgress = false;
+      }
+    }
+
+    function startRoomPolling() {
+      if (roomPollInterval) clearInterval(roomPollInterval);
+      roomPollInterval = setInterval(() => fetchRoomStatus(), 1000);
+    }
+
+    function setTheme(theme) {
+      document.body.dataset.theme = theme;
+    }
+
+    function updateRoomUI(room) {
+      const title = document.getElementById("phase-title");
+      const desc = document.getElementById("phase-desc");
+      const timerBox = document.getElementById("timer-box");
+
+      if (room.status === "LOBBY") {
+        setTheme("lobby");
+        title.innerText = "Menunggu Pemain di Lobby...";
+        desc.innerText = "Bagikan kode room ke temanmu (minimal 5 pemain).";
+        timerBox.classList.add("hidden");
+      } else if (room.status === "NIGHT") {
+        setTheme("night");
+        title.innerText = `🌙 Malam ke-${room.day_count}`;
+        desc.innerText = "Desa tertidur. Peran aktif silakan pilih target di meja pemain.";
+        startCountdown(room.phase_end_at);
+      } else if (room.status === "DAY_DISCUSS") {
+        setTheme("day");
+        title.innerText = `☀️ Siang ke-${room.day_count} (Diskusi)`;
+        desc.innerText = "Diskusikan siapa Werewolf yang bersembunyi di antara warga!";
+        startCountdown(room.phase_end_at);
+      } else if (room.status === "DAY_VOTE") {
+        setTheme("vote");
+        title.innerText = `🗳️ Siang ke-${room.day_count} (Voting)`;
+        desc.innerText = "Pilih kartu pemain yang ingin kamu eksekusi. Suara bisa diubah sampai timer habis.";
+        startCountdown(room.phase_end_at);
+      } else if (room.status === "ENDED") {
+        setTheme("ended");
+        title.innerText = `🏆 Permainan Selesai! Pemenang: ${room.winner}`;
+        desc.innerText = "Semua peran telah terungkap.";
+        timerBox.classList.add("hidden");
+      }
+
+      // Animasi singkat saat fase berganti
+      const banner = document.getElementById("phase-banner");
+      banner.classList.remove("pop");
+      void banner.offsetWidth;
+      banner.classList.add("pop");
+    }
+
+    function startCountdown(endTimeIso) {
+      if (!endTimeIso) return;
+      const timerBox = document.getElementById("timer-box");
+      const display = document.getElementById("timer-display");
+      timerBox.classList.remove("hidden");
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const diff = Math.max(0, Math.floor((new Date(endTimeIso) - Date.now()) / 1000));
+        const mins = String(Math.floor(diff / 60)).padStart(2, "0");
+        const secs = String(diff % 60).padStart(2, "0");
+        display.innerText = `${mins}:${secs}`;
+        timerBox.classList.toggle("timer-urgent", diff > 0 && diff <= 10);
+
+        if (diff <= 0) {
+          clearInterval(timerInterval);
+          timerBox.classList.remove("timer-urgent");
+          if (currentRoom?.status === "NIGHT") {
+            resolveNightAtDeadline(currentRoom.id);
+          } else if (currentRoom?.status === "DAY_DISCUSS" || currentRoom?.status === "DAY_VOTE") {
+            advanceDayAtDeadline(currentRoom.id);
+          }
+        }
+      }, 1000);
+    }
+
+    async function resolveNightAtDeadline(roomId) {
+      if (resolvingNight) return;
+      resolvingNight = true;
+
+      try {
+        const { data, error } = await sb.functions.invoke("resolve-night", {
+          body: { room_id: roomId }
+        });
+
+        if (error) {
+          if (error.context?.status === 409 && currentRoom?.id === roomId && currentRoom.status === "NIGHT") {
+            console.info("[resolve-night] Deadline belum tercapai di server; mencoba lagi sebentar.");
+            window.setTimeout(() => resolveNightAtDeadline(roomId), 1000);
+            return;
+          }
+          console.error("[resolve-night] Invocation failed:", error);
+          showAlert("Gagal melanjutkan fase malam: " + error.message, "error", 10000);
+          return;
+        }
+
+        if (data?.room) {
+          currentRoom = { ...currentRoom, ...data.room };
+          updateRoomUI(currentRoom);
+          await fetchMessages();
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("[resolve-night] Unexpected invocation error:", error);
+        showAlert("Gagal melanjutkan fase malam: " + message, "error", 10000);
+      } finally {
+        resolvingNight = false;
+      }
+    }
+
+    async function advanceDayAtDeadline(roomId) {
+      if (advancingDay) return;
+      advancingDay = true;
+
+      try {
+        const { data, error } = await sb.functions.invoke("advance-day", {
+          body: { room_id: roomId }
+        });
+
+        if (error) {
+          if (
+            error.context?.status === 409 &&
+            currentRoom?.id === roomId &&
+            (currentRoom.status === "DAY_DISCUSS" || currentRoom.status === "DAY_VOTE")
+          ) {
+            console.info("[advance-day] Deadline belum tercapai di server; mencoba lagi sebentar.");
+            window.setTimeout(() => advanceDayAtDeadline(roomId), 1000);
+            return;
+          }
+          console.error("[advance-day] Invocation failed:", error);
+          showAlert("Gagal melanjutkan fase siang: " + error.message, "error", 10000);
+          return;
+        }
+
+        if (data?.room) {
+          currentRoom = { ...currentRoom, ...data.room };
+          updateRoomUI(currentRoom);
+          await fetchMessages();
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("[advance-day] Unexpected invocation error:", error);
+        showAlert("Gagal melanjutkan fase siang: " + message, "error", 10000);
+      } finally {
+        advancingDay = false;
+      }
+    }
+
+    // =========================================================================
+    // 6. PANGGIL EDGE FUNCTION START-GAME & AKSI PEMAIN
+    // =========================================================================
+    async function startGame() {
+      const btn = document.getElementById("btn-start-game");
+      btn.disabled = true;
+      btn.innerText = "Memulai...";
+
+      try {
+        const { data, error } = await sb.functions.invoke("start-game", {
+          body: { room_id: currentRoom.id }
+        });
+
+        if (error) {
+          console.error("[start-game] Invocation failed:", error);
+          showAlert("Gagal memulai game: " + (error.message || "Periksa log Edge Function."), "error", 10000);
+          return;
+        }
+
+        if (data?.room) {
+          currentRoom = { ...currentRoom, ...data.room };
+          updateRoomUI(currentRoom);
+          await fetchPlayers();
+        }
+        showAlert("Permainan dimulai!", "success");
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("[start-game] Unexpected invocation error:", error);
+        showAlert("Gagal memulai game: " + message, "error", 10000);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "▶ Mulai";
+      }
+    }
+
+    async function handlePlayerClick(targetPlayer) {
+      if (!myPlayer || !myPlayer.is_alive || !targetPlayer.is_alive) return;
+      if (currentRoom.status === "DAY_VOTE") {
+        try {
+          const { data, error } = await sb.functions.invoke("submit-vote", {
+            body: {
+              room_id: currentRoom.id,
+              target_player_id: targetPlayer.id
+            }
+          });
+
+          if (error) {
+            console.error("[submit-vote] Invocation failed:", error);
+            showAlert("Gagal mengirim vote: " + error.message, "error", 10000);
+          } else {
+            showAlert(
+              `Vote untuk ${data.target_username} tercatat. Klik pemain lain jika ingin mengubah pilihan.`,
+              "success"
+            );
+          }
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error("[submit-vote] Unexpected error:", error);
+          showAlert("Gagal mengirim vote: " + message, "error", 10000);
+        }
+        return;
+      }
+      if (currentRoom.status !== "NIGHT") return;
+
+      try {
+        const { data, error } = await sb.functions.invoke("submit-night-action", {
+          body: {
+            room_id: currentRoom.id,
+            target_player_id: targetPlayer.id
+          }
+        });
+
+        if (error) {
+          console.error("[submit-night-action] Invocation failed:", error);
+          showAlert("Gagal mengirim aksi: " + error.message, "error", 10000);
+        } else {
+          showAlert(
+            `Aksi ${data.action} berhasil diarahkan ke ${data.target_username}!`,
+            "success"
+          );
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("[submit-night-action] Unexpected error:", error);
+        showAlert("Gagal mengirim aksi: " + message, "error", 10000);
+      }
+    }
+
+    async function fetchPrivateNotifications() {
+      if (!currentRoom || !currentUser || notificationFetchInProgress) return;
+      notificationFetchInProgress = true;
+
+      try {
+        const { data, error } = await sb
+          .from("player_notifications")
+          .select("id, content")
+          .eq("room_id", currentRoom.id)
+          .eq("user_id", currentUser.id)
+          .eq("day_count", currentRoom.day_count)
+          .order("created_at", { ascending: true });
+
+        if (error) {
+          console.error("[Notifications] Gagal memuat notifikasi pribadi:", error);
+          return;
+        }
+
+        for (const notification of data || []) {
+          if (seenNotificationIds.has(notification.id)) continue;
+          seenNotificationIds.add(notification.id);
+          showAlert(notification.content, "info", 10000);
+        }
+      } finally {
+        notificationFetchInProgress = false;
+      }
+    }
+
+    // =========================================================================
+    // 7. CHAT & UTILITAS
+    // =========================================================================
+    async function fetchMessages(initialLoad = false) {
+      if (!currentRoom || chatFetchInProgress) return;
+      chatFetchInProgress = true;
+
+      try {
+        let query = sb
+          .from("messages")
+          .select("*")
+          .eq("room_id", currentRoom.id);
+
+        if (initialLoad || !lastMessageTimestamp) {
+          query = query
+            .order("created_at", { ascending: false })
+            .order("id", { ascending: false })
+            .limit(50);
+        } else {
+          query = query
+            .gte("created_at", lastMessageTimestamp)
+            .order("created_at", { ascending: true })
+            .order("id", { ascending: true })
+            .limit(1000);
+        }
+
+        const { data, error } = await query;
+        if (error) {
+          const now = Date.now();
+          if (now - lastChatErrorAt >= 10000) {
+            lastChatErrorAt = now;
+            console.error("[Chat] Gagal memuat pesan:", error);
+            showAlert(`Gagal memuat chat [${error.code || "ERROR"}]: ${error.message}`, "error");
+          }
+          return;
+        }
+
+        const orderedMessages = initialLoad ? [...data].reverse() : data;
+        orderedMessages.forEach(appendMessage);
+
+        if (orderedMessages.length) {
+          lastMessageTimestamp = orderedMessages[orderedMessages.length - 1].created_at;
+        }
+      } finally {
+        chatFetchInProgress = false;
+      }
+    }
+
+    function startChatPolling() {
+      if (chatPollInterval) clearInterval(chatPollInterval);
+      chatPollInterval = setInterval(() => {
+        fetchMessages();
+        fetchPrivateNotifications();
+      }, 1000);
+    }
+
+    function appendMessage(msg) {
+      if (msg.id && seenMessageIds.has(msg.id)) return;
+      if (msg.id) seenMessageIds.add(msg.id);
+
+      const box = document.getElementById("chat-messages");
+      const div = document.createElement("div");
+      let previewText = "";
+
+      if (msg.channel === "SYSTEM") {
+        div.className = "msg-in bg-amber-950/50 border border-amber-800/50 text-amber-200 p-2 rounded-lg";
+        div.innerText = msg.content;
+        previewText = "📢 " + msg.content;
+      } else {
+        const sender = playersList.find((p) => p.id === msg.sender_id);
+        const senderName = sender ? sender.username : "Warga";
+        div.className = "msg-in bg-slate-950/80 p-2 rounded-lg border border-slate-800/80";
+        div.innerHTML = `<span class="font-bold text-amber-400">${escapeHtml(senderName)}:</span> <span class="text-slate-200">${escapeHtml(msg.content)}</span>`;
+        previewText = `${senderName}: ${msg.content}`;
+      }
+
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+
+      // Pratinjau di dock + penghitung pesan belum dibaca (khusus tampilan HP)
+      const preview = document.getElementById("chat-preview");
+      if (preview) preview.innerText = previewText;
+      if (!chatOpen && window.innerWidth < 768) {
+        unreadCount++;
+        const badge = document.getElementById("chat-unread");
+        badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
+        badge.classList.remove("hidden");
+        badge.classList.add("flex");
+        badge.classList.remove("pop");
+        void badge.offsetWidth;
+        badge.classList.add("pop");
+      }
+    }
+
+    function toggleChat(open) {
+      chatOpen = open;
+      document.getElementById("chat-panel").classList.toggle("open", open);
+      document.getElementById("chat-backdrop").classList.toggle("open", open);
+      if (open) {
+        unreadCount = 0;
+        const badge = document.getElementById("chat-unread");
+        badge.classList.add("hidden");
+        badge.classList.remove("flex");
+        const box = document.getElementById("chat-messages");
+        setTimeout(() => { box.scrollTop = box.scrollHeight; }, 50);
+      }
+    }
+
+    async function sendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById("input-chat");
+      const content = input.value.trim();
+      if (!content || !myPlayer) return;
+
+      input.value = "";
+      const channel = currentRoom.status === "NIGHT" && myPlayer.role === "WEREWOLF" ? "WEREWOLF_CHAT" : "PUBLIC";
+
+      const { error } = await sb.from("messages").insert({
+        room_id: currentRoom.id,
+        sender_id: myPlayer.id,
+        channel: channel,
+        content: content
+      });
+
+      if (error) {
+        console.error("[Chat] Gagal mengirim pesan:", error);
+        showAlert(`Gagal mengirim chat [${error.code || "ERROR"}]: ${error.message}`, "error");
+      }
+    }
+
+    function copyInviteLink() {
+      const url = `${window.location.origin}${window.location.pathname}?room=${currentRoom.room_code}`;
+      navigator.clipboard.writeText(url);
+      showAlert("Link undangan berhasil disalin! Kirim ke temanmu.", "success");
+    }
+
+    function showAlert(text, type = "info", duration = 4000) {
+      const box = document.getElementById("alert-box");
+      box.innerText = text;
+      box.style.cssText = "position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:12px;right:12px;margin:0 auto;max-width:28rem;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:slideDown .3s ease both;";
+      box.className = `p-3 rounded-xl text-xs font-medium whitespace-pre-wrap break-words backdrop-blur ${
+        type === "error"
+          ? "bg-red-950/95 border border-red-800 text-red-200"
+          : type === "success"
+          ? "bg-emerald-950/95 border border-emerald-800 text-emerald-200"
+          : "bg-slate-800/95 border border-slate-700 text-slate-200"
+      }`;
+      box.classList.remove("hidden");
+      if (alertTimeout) clearTimeout(alertTimeout);
+      alertTimeout = setTimeout(() => box.classList.add("hidden"), duration);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+    }
+  </script>
+</body>
+</html>
