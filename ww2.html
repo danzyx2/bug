@@ -79,6 +79,19 @@
 
     .glass { background: rgba(15,23,42,.62); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(148,163,184,.15); }
 
+    #help-dialog {
+      width: min(42rem, calc(100vw - 24px));
+      max-height: 85dvh;
+      margin: auto;
+      padding: 0;
+      color: #e2e8f0;
+      background: rgba(15,23,42,.98);
+      border: 1px solid rgba(148,163,184,.25);
+      border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.55);
+    }
+    #help-dialog::backdrop { background: rgba(0,0,0,.72); backdrop-filter: blur(4px); }
+
     /* ---------- LAYOUT 1 LAYAR ---------- */
     #app { height: 100dvh; display: flex; flex-direction: column; max-width: 64rem; margin: 0 auto; padding: 8px 12px calc(8px + var(--safe-b)); }
     #screen-home { margin: auto 0; }
@@ -154,7 +167,83 @@
           ------
         </button>
       </div>
+      <button type="button" onclick="document.getElementById('help-dialog').showModal()"
+        class="glass text-xs font-semibold text-amber-300 px-3 py-2 rounded-xl active:scale-95 transition"
+        aria-haspopup="dialog" aria-controls="help-dialog">
+        ❔ Cara Main
+      </button>
     </header>
+
+    <dialog id="help-dialog" aria-labelledby="help-title" onclick="if (event.target === this) this.close()">
+      <div class="p-5 md:p-6 overflow-y-auto" style="max-height:85dvh">
+        <div class="flex items-start justify-between gap-4 mb-5">
+          <div>
+            <p class="text-[10px] uppercase tracking-[.2em] text-amber-400">Panduan permainan</p>
+            <h2 id="help-title" class="text-xl md:text-2xl font-extrabold text-white mt-1">Cara bermain Werewolf</h2>
+          </div>
+          <button type="button" onclick="document.getElementById('help-dialog').close()"
+            class="text-slate-400 hover:text-white text-2xl leading-none px-2" aria-label="Tutup panduan">✕</button>
+        </div>
+
+        <div class="space-y-5 text-sm leading-relaxed text-slate-300">
+          <section>
+            <h3 class="font-bold text-amber-300 mb-1">1. Buat atau gabung room</h3>
+            <p>Masukkan nama panggilan, lalu buat room baru atau isi kode room dari teman. Host membagikan kode atau link undangan. Tunggu sampai minimal 5 pemain bergabung, kemudian host menekan <strong class="text-white">Mulai</strong>.</p>
+          </section>
+
+          <section>
+            <h3 class="font-bold text-amber-300 mb-1">2. Kenali tujuanmu</h3>
+            <p>Peran dibagikan secara rahasia saat permainan dimulai. Baca kartu <strong class="text-white">Peran Rahasiamu</strong> di layar; pemain lain tidak bisa melihat peranmu dari kartu pemain. Gunakan kemampuan dan informasi yang kamu punya untuk membantu tujuan tim atau tujuan pribadimu.</p>
+          </section>
+
+          <section>
+            <h3 class="font-bold text-amber-300 mb-1">3. Ikuti pergantian fase</h3>
+            <ul class="list-disc pl-5 space-y-1">
+              <li><strong class="text-white">Malam:</strong> peran yang memiliki aksi memilih target dengan mengetuk kartu pemain yang masih hidup. Werewolf dapat berkoordinasi melalui chat kawanan.</li>
+              <li><strong class="text-white">Siang – Diskusi:</strong> semua pemain membahas kejadian dan mencurigai siapa Werewolf. Gunakan chat untuk berdiskusi.</li>
+              <li><strong class="text-white">Siang – Voting:</strong> ketuk pemain yang ingin kamu eksekusi. Pilihan dapat diganti dengan mengetuk pemain lain sebelum waktu habis.</li>
+              <li>Waktu tiap fase ditampilkan di penghitung mundur. Setelah waktunya habis, permainan berpindah fase secara otomatis.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="font-bold text-amber-300 mb-1">4. Cara memakai aksi</h3>
+            <p>Pilih pemain hidup pada meja pemain saat fase yang sesuai. Aksi malam hanya dapat dilakukan oleh peran yang memiliki kemampuan; voting hanya tersedia pada fase voting. Jika tidak ada pilihan yang cocok, tunggu instruksi fase berikutnya.</p>
+          </section>
+
+          <section>
+            <h3 class="font-bold text-amber-300 mb-1">Peran yang tersedia</h3>
+            <ul class="list-disc pl-5 space-y-1">
+              <li><strong class="text-white">Werewolf:</strong> bekerja bersama kawanan untuk memangsa warga pada malam hari.</li>
+              <li><strong class="text-white">Seer:</strong> menerawang identitas satu pemain setiap malam.</li>
+              <li><strong class="text-white">Guardian:</strong> melindungi satu pemain setiap malam dari serangan Werewolf.</li>
+              <li><strong class="text-white">Witch:</strong> memiliki satu ramuan racun untuk menghabisi pemain.</li>
+              <li><strong class="text-white">Hunter:</strong> dapat menembak satu pemain lain jika dirinya mati.</li>
+              <li><strong class="text-white">Cupid:</strong> memasangkan dua pemain pada malam pertama; nasib pasangan saling terkait.</li>
+              <li><strong class="text-white">Tanner:</strong> menang sendiri jika dieksekusi oleh warga saat voting.</li>
+              <li><strong class="text-white">Villager:</strong> mencari Werewolf lewat diskusi dan voting siang.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="font-bold text-amber-300 mb-1">Chat, pemain mati, dan tips</h3>
+            <ul class="list-disc pl-5 space-y-1">
+              <li>Ketuk panel chat di bagian bawah layar HP untuk membuka obrolan; di komputer chat tampil di samping meja pemain.</li>
+              <li>Pemain yang mati tidak dapat melakukan aksi atau voting lagi. Ikuti informasi yang tampil di log permainan.</li>
+              <li>Amati informasi dari malam ke malam, sampaikan alasan saat menuduh, dan jangan membagikan peran secara sembarangan.</li>
+              <li>Hormati pemain lain dan hindari membocorkan informasi di luar room.</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-700/70 flex justify-end">
+          <button type="button" onclick="document.getElementById('help-dialog').close()"
+            class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl transition">
+            Mengerti
+          </button>
+        </div>
+      </div>
+    </dialog>
 
     <!-- SCREEN 1: HOME (BUAT / GABUNG ROOM) -->
     <section id="screen-home" class="w-full max-w-md mx-auto glass rounded-3xl p-5 shadow-2xl fade-up">
